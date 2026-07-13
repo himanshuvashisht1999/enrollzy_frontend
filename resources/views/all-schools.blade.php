@@ -289,62 +289,62 @@
                     <div class="catalog-header-bar d-flex justify-content-between align-items-center flex-wrap gap-3">
                         <div class="d-flex align-items-center gap-2">
                             <span class="fw-bold" style="font-size: 16px; color: #3771C8;">Boarding Schools in India</span>
-                            <span class="text-muted" style="font-size: 16px;">- 1467 Schools | Updated at : 07 Jul 2026, 11:52 am</span>
+                            <span class="text-muted" style="font-size: 16px;">- {{ $schools->total() }} Schools | Updated at : {{ now()->format('d M Y, h:i a') }}</span>
                         </div>
                     </div>
 
                     <!-- Schools Grid row -->
                     <div class="row row-cols-1 row-cols-md-2 g-4">
-                        
-                        <!-- Card 1: The Doon School -->
+                        @foreach($schools as $school)
                         <div class="col">
                             <div class="school-card">
                                 <div class="swiper school-image-swiper">
                                     <div class="swiper-wrapper">
                                         <div class="swiper-slide">
-                                            <img src="assets/images/about_tablet_use.png" alt="The Doon School View 1">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/about_team_meeting.png" alt="The Doon School View 2">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/blog_1.png" alt="The Doon School View 3">
+                                            <a href="{{ route('school.detail', $school->slug) }}">
+                                                <img src="{{ $school->cover_image_url ? env('BACKEND_URL') . '/' . $school->cover_image_url : asset('assets/images/about_team_meeting.png') }}" alt="{{ $school->name }} Cover">
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="swiper-pagination"></div>
-                                    <span class="school-rating-badge"><i class="fa-solid fa-star"></i> 4.5</span>
-                                    <span class="school-gender-badge">Boys</span>
+                                    <span class="school-rating-badge"><i class="fa-solid fa-star"></i> {{ $school->average_rating ?? '4.5' }}</span>
+                                    @if($school->minority_type || $school->brand_type)
+                                    <span class="school-gender-badge">{{ $school->minority_type ?? $school->brand_type }}</span>
+                                    @endif
                                     <button class="btn-school-compare">Compare</button>
                                 </div>
                                 <div class="school-info-body">
                                     <div class="school-identity-row">
-                                        <div class="school-logo-box">
-                                            <img src="assets/images/school-card-logo.png" alt="The Doon School Logo">
+                                        <div class="school-logo-box" style="width: 48px; height: 48px; flex-shrink: 0;">
+                                            <img src="{{ $school->logo_url ? env('BACKEND_URL') . '/' . $school->logo_url : asset('assets/images/school-card-logo.png') }}" alt="{{ $school->name }} Logo" style="object-fit: contain;">
                                         </div>
                                         <div class="school-identity-text">
-                                            <h3 class="school-name">The Doon School</h3>
-                                            <span class="school-location"><i class="fa-solid fa-location-dot me-1 text-muted"></i> Dehradun, Uttarakhand</span>
+                                            <h3 class="school-name"><a href="{{ route('school.detail', $school->slug) }}" class="text-dark text-decoration-none">{{ $school->name }}</a></h3>
+                                            @php
+                                                $locations = array_merge($school->cities_present_in ?? [], $school->states_present_in ?? []);
+                                            @endphp
+                                            <span class="school-location"><i class="fa-solid fa-location-dot me-1 text-muted"></i> {{ implode(', ', $locations) }}</span>
                                         </div>
                                     </div>
                                     <div class="school-stats-grid">
                                         <div class="school-stat-col">
                                             <span class="school-stat-lbl">Annual Fees</span>
-                                            <span class="school-stat-val">₹ 26.12 L</span>
+                                            <span class="school-stat-val">Ask</span>
                                         </div>
                                         <div class="school-stat-col">
                                             <span class="school-stat-lbl">Board</span>
-                                            <a href="#" class="school-stat-val underlined">ICSE, IB Board +1</a>
+                                            <a href="#" class="school-stat-val underlined">{{ implode(', ', $school->education_boards_supported ?? []) }}</a>
                                         </div>
                                         <div class="school-stat-col">
                                             <span class="school-stat-lbl">Classes</span>
-                                            <span class="school-stat-val">7 - 12 Class</span>
+                                            <span class="school-stat-val">{{ implode(', ', $school->education_levels_supported ?? []) }}</span>
                                         </div>
                                         <div class="school-stat-col">
                                             <span class="school-stat-lbl">Established in</span>
-                                            <span class="school-stat-val">1935</span>
+                                            <span class="school-stat-val">{{ $school->established_year ?? 'N/A' }}</span>
                                         </div>
                                     </div>
-                                    <p class="school-card-desc">The Doon School, Dehradun, is India's premier all-boys' boarding school known for academic excellence and holistic development. Set on a lush 70-acre campus, it offers IB, IGCSE, and ISC curricula, top-notch facilities, and 40+ extracurriculars. With a legacy of producing leaders like Rajiv Gandhi and Abhinav</p>
+                                    <p class="school-card-desc">{{ Str::limit($school->meta_description ?? strip_tags($school->about_organisation ?? ''), 200, '...') }}</p>
                                     <div class="school-card-actions">
                                         <button class="btn-school-call"><i class="fa-solid fa-phone"></i> Call School</button>
                                         <button class="btn-school-callback">Request a Callback <i class="fa-solid fa-chevron-right ms-1" style="font-size: 9px;"></i></button>
@@ -352,339 +352,13 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Card 2: Mayo College -->
-                        <div class="col">
-                            <div class="school-card">
-                                <div class="swiper school-image-swiper">
-                                    <div class="swiper-wrapper">
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-1.png" alt="Mayo College View 1">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-2.png" alt="Mayo College View 2">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-3.png" alt="Mayo College View 3">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-4.png" alt="Mayo College View 3">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-5.png" alt="Mayo College View 3">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-pagination"></div>
-                                    <span class="school-rating-badge"><i class="fa-solid fa-star"></i> 4.6</span>
-                                    <span class="school-gender-badge">Boys</span>
-                                    <button class="btn-school-compare">Compare</button>
-                                </div>
-                                <div class="school-info-body">
-                                    <div class="school-identity-row">
-                                        <div class="school-logo-box">
-                                            <img src="assets/images/school-card-logo.png" alt="Mayo College Logo">
-                                        </div>
-                                        <div class="school-identity-text">
-                                            <h3 class="school-name">Mayo College</h3>
-                                            <span class="school-location"><i class="fa-solid fa-location-dot me-1 text-muted"></i> Ajmer, Rajasthan</span>
-                                        </div>
-                                    </div>
-                                    <div class="school-stats-grid">
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Annual Fees</span>
-                                            <span class="school-stat-val">₹ 14.50 L</span>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Board</span>
-                                            <a href="#" class="school-stat-val underlined">CBSE Board</a>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Classes</span>
-                                            <span class="school-stat-val">4 - 12 Class</span>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Established in</span>
-                                            <span class="school-stat-val">1875</span>
-                                        </div>
-                                    </div>
-                                    <p class="school-card-desc">Mayo College in Ajmer is one of the oldest and most prestigious boarding schools in India. Combining classic traditions with modern learning, it features a vast, stunning campus, rich heritage, state-of-the-art sports facilities, and strong character-building programs.</p>
-                                    <div class="school-card-actions">
-                                        <button class="btn-school-call"><i class="fa-solid fa-phone"></i> Call School</button>
-                                        <button class="btn-school-callback">Request a Callback <i class="fa-solid fa-chevron-right ms-1" style="font-size: 9px;"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 3: Welham Girls' School -->
-                        <div class="col">
-                            <div class="school-card">
-                                <div class="swiper school-image-swiper">
-                                     <div class="swiper-wrapper">
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-1.png" alt="Mayo College View 1">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-2.png" alt="Mayo College View 2">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-3.png" alt="Mayo College View 3">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-4.png" alt="Mayo College View 3">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-5.png" alt="Mayo College View 3">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-pagination"></div>
-                                    <span class="school-rating-badge"><i class="fa-solid fa-star"></i> 4.7</span>
-                                    <span class="school-gender-badge" style="background-color: #E02424;">Girls</span>
-                                    <button class="btn-school-compare">Compare</button>
-                                </div>
-                                <div class="school-info-body">
-                                    <div class="school-identity-row">
-                                        <div class="school-logo-box">
-                                            <img src="assets/images/school-card-logo.png" alt="Welham Girls Logo">
-                                        </div>
-                                        <div class="school-identity-text">
-                                            <h3 class="school-name">Welham Girls' School</h3>
-                                            <span class="school-location"><i class="fa-solid fa-location-dot me-1 text-muted"></i> Dehradun, Uttarakhand</span>
-                                        </div>
-                                    </div>
-                                    <div class="school-stats-grid">
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Annual Fees</span>
-                                            <span class="school-stat-val">₹ 16.80 L</span>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Board</span>
-                                            <a href="#" class="school-stat-val underlined">ICSE, ISC Board</a>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Classes</span>
-                                            <span class="school-stat-val">6 - 12 Class</span>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Established in</span>
-                                            <span class="school-stat-val">1957</span>
-                                        </div>
-                                    </div>
-                                    <p class="school-card-desc">Welham Girls' School is a top-tier residential school for girls in Dehradun. It aims to provide a progressive education system that empowers girls to think independently, foster leadership skills, excel in academics, and lead meaningful social changes.</p>
-                                    <div class="school-card-actions">
-                                        <button class="btn-school-call"><i class="fa-solid fa-phone"></i> Call School</button>
-                                        <button class="btn-school-callback">Request a Callback <i class="fa-solid fa-chevron-right ms-1" style="font-size: 9px;"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 4: Bishop Cotton School -->
-                        <div class="col">
-                            <div class="school-card">
-                                <div class="swiper school-image-swiper">
-                                     <div class="swiper-wrapper">
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-1.png" alt="Mayo College View 1">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-2.png" alt="Mayo College View 2">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-3.png" alt="Mayo College View 3">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-4.png" alt="Mayo College View 3">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-5.png" alt="Mayo College View 3">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-pagination"></div>
-                                    <span class="school-rating-badge"><i class="fa-solid fa-star"></i> 4.4</span>
-                                    <span class="school-gender-badge">Boys</span>
-                                    <button class="btn-school-compare">Compare</button>
-                                </div>
-                                <div class="school-info-body">
-                                    <div class="school-identity-row">
-                                        <div class="school-logo-box">
-                                            <img src="assets/images/school-card-logo.png" alt="Bishop Cotton Logo">
-                                        </div>
-                                        <div class="school-identity-text">
-                                            <h3 class="school-name">Bishop Cotton School</h3>
-                                            <span class="school-location"><i class="fa-solid fa-location-dot me-1 text-muted"></i> Shimla, Himachal Pradesh</span>
-                                        </div>
-                                    </div>
-                                    <div class="school-stats-grid">
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Annual Fees</span>
-                                            <span class="school-stat-val">₹ 9.20 L</span>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Board</span>
-                                            <a href="#" class="school-stat-val underlined">ICSE, ISC Board</a>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Classes</span>
-                                            <span class="school-stat-val">3 - 12 Class</span>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Established in</span>
-                                            <span class="school-stat-val">1859</span>
-                                        </div>
-                                    </div>
-                                    <p class="school-card-desc">Bishop Cotton School is one of the oldest boarding schools in Asia, perched in the hills of Shimla. The school offers a structured, holistic environment focused on academic distinction, sportsmanship, and developing well-rounded global citizens.</p>
-                                    <div class="school-card-actions">
-                                        <button class="btn-school-call"><i class="fa-solid fa-phone"></i> Call School</button>
-                                        <button class="btn-school-callback">Request a Callback <i class="fa-solid fa-chevron-right ms-1" style="font-size: 9px;"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 5: Scindia School -->
-                        <div class="col">
-                            <div class="school-card">
-                                <div class="swiper school-image-swiper">
-                                     <div class="swiper-wrapper">
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-1.png" alt="Mayo College View 1">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-2.png" alt="Mayo College View 2">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-3.png" alt="Mayo College View 3">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-4.png" alt="Mayo College View 3">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-5.png" alt="Mayo College View 3">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-pagination"></div>
-                                    <span class="school-rating-badge"><i class="fa-solid fa-star"></i> 4.3</span>
-                                    <span class="school-gender-badge">Boys</span>
-                                    <button class="btn-school-compare">Compare</button>
-                                </div>
-                                <div class="school-info-body">
-                                    <div class="school-identity-row">
-                                        <div class="school-logo-box">
-                                            <img src="assets/images/school-card-logo.png" alt="Scindia Logo">
-                                        </div>
-                                        <div class="school-identity-text">
-                                            <h3 class="school-name">Scindia School</h3>
-                                            <span class="school-location"><i class="fa-solid fa-location-dot me-1 text-muted"></i> Gwalior, Madhya Pradesh</span>
-                                        </div>
-                                    </div>
-                                    <div class="school-stats-grid">
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Annual Fees</span>
-                                            <span class="school-stat-val">₹ 13.25 L</span>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Board</span>
-                                            <a href="#" class="school-stat-val underlined">CBSE Board</a>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Classes</span>
-                                            <span class="school-stat-val">6 - 12 Class</span>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Established in</span>
-                                            <span class="school-stat-val">1897</span>
-                                        </div>
-                                    </div>
-                                    <p class="school-card-desc">The Scindia School is an outstanding all-boys boarding school located inside the historic Gwalior Fort. It focuses on nurturing self-discipline, academic vigor, creative exploration, and leadership qualities for students from diverse backgrounds.</p>
-                                    <div class="school-card-actions">
-                                        <button class="btn-school-call"><i class="fa-solid fa-phone"></i> Call School</button>
-                                        <button class="btn-school-callback">Request a Callback <i class="fa-solid fa-chevron-right ms-1" style="font-size: 9px;"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 6: Lawrence School -->
-                        <div class="col">
-                            <div class="school-card">
-                                <div class="swiper school-image-swiper">
-                                     <div class="swiper-wrapper">
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-1.png" alt="Mayo College View 1">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-2.png" alt="Mayo College View 2">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-3.png" alt="Mayo College View 3">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-4.png" alt="Mayo College View 3">
-                                        </div>
-                                        <div class="swiper-slide">
-                                            <img src="assets/images/school-img-5.png" alt="Mayo College View 3">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-pagination"></div>
-                                    <span class="school-rating-badge"><i class="fa-solid fa-star"></i> 4.5</span>
-                                    <span class="school-gender-badge" style="background-color: #10B981;">Co-Ed</span>
-                                    <button class="btn-school-compare">Compare</button>
-                                </div>
-                                <div class="school-info-body">
-                                    <div class="school-identity-row">
-                                        <div class="school-logo-box">
-                                            <img src="assets/images/school-card-logo.png" alt="Lawrence Logo">
-                                        </div>
-                                        <div class="school-identity-text">
-                                            <h3 class="school-name">Lawrence School</h3>
-                                            <span class="school-location"><i class="fa-solid fa-location-dot me-1 text-muted"></i> Lovedale, Tamil Nadu</span>
-                                        </div>
-                                    </div>
-                                    <div class="school-stats-grid">
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Annual Fees</span>
-                                            <span class="school-stat-val">₹ 8.50 L</span>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Board</span>
-                                            <a href="#" class="school-stat-val underlined">CBSE Board</a>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Classes</span>
-                                            <span class="school-stat-val">5 - 12 Class</span>
-                                        </div>
-                                        <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Established in</span>
-                                            <span class="school-stat-val">1858</span>
-                                        </div>
-                                    </div>
-                                    <p class="school-card-desc">The Lawrence School at Lovedale is a premium co-educational boarding school set in the scenic Nilgiri Hills. It offers a well-balanced learning ecosystem that drives academic, physical, and moral excellence across all grade levels.</p>
-                                    <div class="school-card-actions">
-                                        <button class="btn-school-call"><i class="fa-solid fa-phone"></i> Call School</button>
-                                        <button class="btn-school-callback">Request a Callback <i class="fa-solid fa-chevron-right ms-1" style="font-size: 9px;"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+                        @endforeach
                     </div>
-
-                    
-
+                    <div class="mt-4">
+                        {{ $schools->links('pagination::bootstrap-5') }}
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-
-  
-
-    <!-- Curved Footer Section -->
-
-   
-
-  
-   
-   
-    <!-- Bootstrap Bundle JS -->
 @endsection

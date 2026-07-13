@@ -11,7 +11,7 @@
                     <div class="col-lg-4">
                         <!-- Brand Logo -->
                         <a href="#" class="d-flex align-items-center mb-3 text-decoration-none">
-                            <img src="assets/images/logo.svg" alt="" style="    width: 246px;">
+                            <img src="{{ asset('assets/images/logo.svg') }}" alt="" style="    width: 246px;">
                         </a>
                         <!-- Tech description -->
                         <p class="text-muted mb-4"
@@ -38,22 +38,22 @@
                             <div class="social-icons-list">
                                 @if(!empty($siteSettings->twitter_url))
                                 <a href="{{ $siteSettings->twitter_url }}" class="social-icon-circle social-twitter">
-                                    <img src="assets/images/twitter-icon.png" alt="Twitter">
+                                    <img src="{{ asset('assets/images/twitter-icon.png') }}" alt="Twitter">
                                 </a>
                                 @endif
                                 @if(!empty($siteSettings->instagram_url))
                                 <a href="{{ $siteSettings->instagram_url }}" class="social-icon-circle social-instagram">
-                                    <img src="assets/images/footer-insta-icon.png" alt="Instagram">
+                                    <img src="{{ asset('assets/images/footer-insta-icon.png') }}" alt="Instagram">
                                 </a>
                                 @endif
                                 @if(!empty($siteSettings->facebook_url))
                                 <a href="{{ $siteSettings->facebook_url }}" class="social-icon-circle social-facebook">
-                                    <img src="assets/images/footer-facebook-icon.png" alt="Facebook">
+                                    <img src="{{ asset('assets/images/footer-facebook-icon.png') }}" alt="Facebook">
                                 </a>
                                 @endif
                                 @if(!empty($siteSettings->linkedin_url))
                                 <a href="{{ $siteSettings->linkedin_url }}" class="social-icon-circle social-linkedin">
-                                    <img src="assets/images/footer-linkdin-icon.png" alt="LinkedIn">
+                                    <img src="{{ asset('assets/images/footer-linkdin-icon.png') }}" alt="LinkedIn">
                                 </a>
                                 @endif
                             </div>
@@ -64,7 +64,7 @@
                     <div class="col-lg-8">
                         <!-- Top Banner SVG illustration -->
                         <div class="footer-banner-box">
-                            <img src="assets/images/footer-rect-img.png" alt="" style="width: 100%;">
+                            <img src="{{ asset('assets/images/footer-rect-img.png') }}" alt="" style="width: 100%;">
                         </div>
 
                         <!-- columns directories -->

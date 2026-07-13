@@ -757,11 +757,11 @@ header {
 }
 
 .journey-icon-wrapper {
-    /* width: 72px; */
-    /* height: 72px; */
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
-    /* background-color: var(--bg-white); */
-    /* border: 2px solid var(--primary-blue); */
+    background-color: #ffffff;
+    border: 2px solid #2864C6;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -770,6 +770,11 @@ header {
     transition: all 0.3s ease;
 }
 
+.journey-icon-wrapper img {
+    max-width: 45px;
+    max-height: 45px;
+    object-fit: contain;
+}
 .journey-step-col:hover .journey-icon-wrapper {
     /* transform: scale(1.08); */
     /* box-shadow: 0px 6px 18px rgba(15, 89, 199, 0.15); */

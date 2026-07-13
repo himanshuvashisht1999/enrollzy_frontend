@@ -2,21 +2,21 @@
 @section('content')
 <main class="about-hero-section ptb-70">
         <div class="bg-square">
-            <img src="assets/images/banner-square-img.svg" alt="" />
+            <img src="{{ asset('assets/images/banner-square-img.svg') }}" alt="" />
         </div>
         <div class="container">
             <div class="about-hero-container">
-                <img src="assets/images/school-detail-banner-img.png" alt="" />
+                <img src="{{ $school->cover_image_url ? env('BACKEND_URL') . '/' . $school->cover_image_url : asset('assets/images/school-detail-banner-img.png') }}" alt="{{ $school->name }} Cover" />
 
                 <!-- Centered Badge (Placed outside card to prevent clipping) -->
                 <div class="about-us-badge-wrapper">
-                    <button class="about-us-badge">The Doon School</button>
-                    <p>Dehradun, Uttrakhand</p>
+                    <button class="about-us-badge">{{ $school->name }}</button>
+                    <p>{{ implode(', ', array_merge($school->cities_present_in ?? [], $school->states_present_in ?? [])) }}</p>
                 </div>
 
                 <!-- Green Down Arrow Button -->
                 <button class="about-scroll-btn" aria-label="Scroll Down">
-                    <img style="width: 49px; height: 62px" src="assets/images/inner-banner-down-arror.png" alt="" />
+                    <img style="width: 49px; height: 62px" src="{{ asset('assets/images/inner-banner-down-arror.png') }}" alt="" />
                 </button>
             </div>
         </div>
@@ -35,7 +35,7 @@
                         <a href="all-schools.html" class="text-decoration-none active text-primary">Schools</a>
                     </li>
                     <li class="breadcrumb-item active text-primary" aria-current="page">
-                        Birla Vidya Mandir Nainital
+                        {{ $school->name }}
                     </li>
                 </ol>
             </nav>
@@ -49,7 +49,7 @@
             <div class="sd-info-card">
                 <div class="sd-title-row">
                     <div class="sd-title-box">
-                        <h1 class="sd-title">The Doon School</h1>
+                        <h1 class="sd-title">{{ $school->name }}</h1>
                         <a href="#" class="sd-location"><i class="fa-solid fa-location-dot me-1"></i> Dehradun
                             (Uttrakhand)</a>
                     </div>
@@ -397,7 +397,7 @@
                             <div class="col-md-4 d-none d-md-block">
                                 <div class="sd-schedule-right">
                                     <div class="sd-schedule-calendar-img">
-                                        <img src="assets/images/admission-calender.png" alt="">
+                                        <img src="{{ asset('assets/images/admission-calender.png') }}" alt="">
                                     </div>
                                 </div>
                             </div>
@@ -505,7 +505,7 @@
                             <div class="col-lg-4">
                                 <div class="sd-help-widget">
                                     <!-- Question mark avatar drawing -->
-                                    <img src="assets/images/need-help-img.png" alt="">
+                                    <img src="{{ asset('assets/images/need-help-img.png') }}" alt="">
                                     <div style="    display: flex;
     justify-content: space-between;
     width: 100%;
@@ -542,18 +542,18 @@
                         <div class="row g-3">
                             <div class="col-md-4 col-sm-6">
                                 <div class="sd-gallery-item">
-                                    <img src="assets/images/school-img-1.png" alt="Doon School landscape 1" />
+                                    <img src="{{ asset('assets/images/school-img-1.png') }}" alt="Doon School landscape 1" />
                                 </div>
                             </div>
                             <div class="col-md-4 col-sm-6">
                                 <div class="sd-gallery-item">
                                     <span class="sd-video-play-btn"><i class="fa-solid fa-play"></i></span>
-                                    <img src="assets/images/school-img-2.png" alt="Doon School landscape 2" />
+                                    <img src="{{ asset('assets/images/school-img-2.png') }}" alt="Doon School landscape 2" />
                                 </div>
                             </div>
                             <div class="col-md-4 col-sm-12">
                                 <div class="sd-gallery-item">
-                                    <img src="assets/images/school-img-3.png" alt="Doon School landscape 3" />
+                                    <img src="{{ asset('assets/images/school-img-3.png') }}" alt="Doon School landscape 3" />
                                 </div>
                             </div>
                         </div>
@@ -599,7 +599,7 @@
                                 <!-- Muskan card -->
                                 <div class="swiper-slide">
                                     <div class="sd-review-card">
-                                        <img src="assets/images/mentor-img-1.png" alt="Muskan avatar"
+                                        <img src="{{ asset('assets/images/mentor-img-1.png') }}" alt="Muskan avatar"
                                             class="sd-review-avatar" />
                                         <div>
                                             <div class="sd-review-stars">
@@ -615,7 +615,7 @@
                                 <!-- Review 2 -->
                                 <div class="swiper-slide">
                                     <div class="sd-review-card">
-                                        <img src="assets/images/mentor-img-2.png" alt="Student avatar 2"
+                                        <img src="{{ asset('assets/images/mentor-img-2.png') }}" alt="Student avatar 2"
                                             class="sd-review-avatar" />
                                         <div>
                                             <div class="sd-review-stars">
@@ -631,7 +631,7 @@
                                 <!-- Review 3 -->
                                 <div class="swiper-slide">
                                     <div class="sd-review-card">
-                                        <img src="assets/images/mentor-img-3.png" alt="Student avatar 3"
+                                        <img src="{{ asset('assets/images/mentor-img-3.png') }}" alt="Student avatar 3"
                                             class="sd-review-avatar" />
                                         <div>
                                             <div class="sd-review-stars">
@@ -647,7 +647,7 @@
                                 <!-- Review 4 -->
                                 <div class="swiper-slide">
                                     <div class="sd-review-card">
-                                        <img src="assets/images/mentor-img-4.png" alt="Student avatar 4"
+                                        <img src="{{ asset('assets/images/mentor-img-4.png') }}" alt="Student avatar 4"
                                             class="sd-review-avatar" />
                                         <div>
                                             <div class="sd-review-stars">
@@ -662,7 +662,7 @@
                                 </div>
                                 <div class="swiper-slide">
                                     <div class="sd-review-card">
-                                        <img src="assets/images/mentor-img-4.png" alt="Student avatar 4"
+                                        <img src="{{ asset('assets/images/mentor-img-4.png') }}" alt="Student avatar 4"
                                             class="sd-review-avatar" />
                                         <div>
                                             <div class="sd-review-stars">
@@ -677,7 +677,7 @@
                                 </div>
                                 <div class="swiper-slide">
                                     <div class="sd-review-card">
-                                        <img src="assets/images/mentor-img-4.png" alt="Student avatar 4"
+                                        <img src="{{ asset('assets/images/mentor-img-4.png') }}" alt="Student avatar 4"
                                             class="sd-review-avatar" />
                                         <div>
                                             <div class="sd-review-stars">
@@ -692,7 +692,7 @@
                                 </div>
                                 <div class="swiper-slide">
                                     <div class="sd-review-card">
-                                        <img src="assets/images/mentor-img-4.png" alt="Student avatar 4"
+                                        <img src="{{ asset('assets/images/mentor-img-4.png') }}" alt="Student avatar 4"
                                             class="sd-review-avatar" />
                                         <div>
                                             <div class="sd-review-stars">
@@ -707,7 +707,7 @@
                                 </div>
                                 <div class="swiper-slide">
                                     <div class="sd-review-card">
-                                        <img src="assets/images/mentor-img-4.png" alt="Student avatar 4"
+                                        <img src="{{ asset('assets/images/mentor-img-4.png') }}" alt="Student avatar 4"
                                             class="sd-review-avatar" />
                                         <div>
                                             <div class="sd-review-stars">
@@ -796,5 +796,25 @@
     </div>
     </div>
 
-    <!-- Bootstrap Bundle JS -->
+    
+@push('scripts')
+    <!-- Swiper Slider JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Main School Images Swiper
+            const sdImageSwiper = new Swiper(".sd-image-swiper", {
+                loop: true,
+                pagination: {
+                    el: ".sd-swiper-pagination",
+                    clickable: true,
+                },
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                },
+            });
+        });
+    </script>
+@endpush
 @endsection

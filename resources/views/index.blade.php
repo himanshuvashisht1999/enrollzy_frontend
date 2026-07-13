@@ -835,316 +835,53 @@
             </div>
 
             <!-- Outer 3 Columns Grid -->
+            @if(isset($noteworthy_categories) && $noteworthy_categories->count() > 0)
             <div class="row row-cols-1 row-cols-lg-3 g-4">
-
-                <!-- Column 1: Trending Skills -->
-                <div class="col">
-                    <div class="trending-column-container trending-border-blue">
-                        <div class="trending-column-header text-primary">
-                            <h3 class="trending-header-title mb-0">Trending Skills</h3>
-                            <span class="trending-header-arrow"><i class="fa-solid fa-arrow-right-long"></i></span>
-                        </div>
-                        <div class="row row-cols-2" style="gap: 15px 0px;">
-                            <!-- Skill Card 1 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Artificial Intelligence & Generative AI</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
+                @php
+                    $borderClasses = ['trending-border-blue', 'trending-border-yellow', 'trending-border-black'];
+                    $textClasses = ['text-primary', 'text-warning', 'text-dark'];
+                @endphp
+                @foreach ($noteworthy_categories->take(3) as $cIndex => $category)
+                    @php
+                        $borderClass = $borderClasses[$cIndex % 3];
+                        $textClass = $textClasses[$cIndex % 3];
+                    @endphp
+                    <div class="col">
+                        <div class="trending-column-container {{ $borderClass }}">
+                            <div class="trending-column-header {{ $textClass }}">
+                                <h3 class="trending-header-title mb-0">{{ $category->name }}</h3>
+                                <span class="trending-header-arrow"><i class="fa-solid fa-arrow-right-long"></i></span>
                             </div>
-                            <!-- Skill Card 2 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
+                            <div class="row row-cols-2" style="gap: 15px 0px;">
+                                @foreach ($category->mentions->take(6) as $mention)
+                                <div class="col">
+                                    <div class="skill-list-card">
+                                        <div class="skill-card-icon-wrapper" style="width: 44px; height: 44px; background-color: #0f172a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                                            @if ($mention->image)
+                                                <img src="{{ env('BACKEND_URL') . '/' . $mention->image }}" alt="" style="width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1);">
+                                            @else
+                                                <span class="text-white fw-bold" style="font-size: 12px;">AI</span>
+                                            @endif
+                                        </div>
+                                        <h4 class="skill-card-title" style="min-height: 48px;">{{ $mention->title }}</h4>
+                                        <ul class="skill-list">
+                                            @if($mention->subtitle)
+                                                @foreach(explode("\n", str_replace("\r", "", $mention->subtitle)) as $item)
+                                                    @if(trim($item) != '')
+                                                        <li class="skill-list-item">{{ trim($item) }}</li>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                        </ul>
                                     </div>
-                                    <h4 class="skill-card-title">Data Science & Analytics</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
                                 </div>
-                            </div>
-                            <!-- Skill Card 3 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Cybersecurity & Ethical Hacking</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Skill Card 4 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Cloud Computing & DevOps</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Skill Card 5 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Cybersecurity & Ethical Hacking</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Skill Card 6 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Cloud Computing & DevOps</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Column 2: Free Courses -->
-                <div class="col">
-                    <div class="trending-column-container trending-border-yellow">
-                        <div class="trending-column-header text-warning">
-                            <h3 class="trending-header-title mb-0" style="color: #F9AD0B;">Free Courses
-                            </h3>
-                            <span class="trending-header-arrow"><i class="fa-solid fa-arrow-right-long"></i></span>
-                        </div>
-                        <div class="row row-cols-2" style="gap: 15px 0px;">
-                            <!-- Course Card 1 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Artificial Intelligence & Generative AI</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Course Card 2 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Data Science & Analytics</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Course Card 3 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Cybersecurity & Ethical Hacking</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Course Card 4 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Cloud Computing & DevOps</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Course Card 5 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Cybersecurity & Ethical Hacking</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Course Card 6 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Cloud Computing & DevOps</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Column 3: Trending Programmes -->
-                <div class="col">
-                    <div class="trending-column-container trending-border-dark">
-                        <div class="trending-column-header text-dark">
-                            <h3 class="trending-header-title mb-0" style="color: #000;">Trending Programmes</h3>
-                            <span class="trending-header-arrow"><i class="fa-solid fa-arrow-right-long"></i></span>
-                        </div>
-                        <div class="row row-cols-2" style="gap: 15px 0px;">
-                            <!-- Programme Card 1 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Artificial Intelligence & Generative AI</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Programme Card 2 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Data Science & Analytics</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Programme Card 3 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Cybersecurity & Ethical Hacking</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Programme Card 4 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Cloud Computing & DevOps</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Programme Card 5 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Cybersecurity & Ethical Hacking</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Programme Card 6 -->
-                            <div class="col">
-                                <div class="skill-list-card">
-                                    <div class="skill-card-icon-wrapper">
-                                        <img src="assets/images/trending-ai-img.png" alt="">
-                                    </div>
-                                    <h4 class="skill-card-title">Cloud Computing & DevOps</h4>
-                                    <ul class="skill-list">
-                                        <li class="skill-list-item">Learn AI tools</li>
-                                        <li class="skill-list-item">automation</li>
-                                        <li class="skill-list-item">prompt engineering</li>
-                                        <li class="skill-list-item">future-ready AI technologies.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                @endforeach
             </div>
+            @endif
             <div class="text-center" style="margin-top: 57px;">
                 <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
                     View More
@@ -1345,124 +1082,34 @@
 
             <!-- FAQ Accordion -->
             <div class="accordion accordion-flush mx-auto mb-5" id="faqZoneAccordion" style="max-width: 900px;">
-                <!-- FAQ Item 1 -->
-                <div class="accordion-item">
-                    <h3 class="accordion-header" id="headingOne">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                            How does Enrollzy help students choose the right course or university?
-                        </button>
-                    </h3>
-                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-                        data-bs-parent="#faqZoneAccordion">
-                        <div class="accordion-body">
-                            Enrollzy offers personalized matching algorithms, detailed institution comparison tools,
-                            expert mentor advice, and comprehensive resource guides to help you evaluate and choose the
-                            best path.
+                @if(isset($faqs) && $faqs->count() > 0)
+                    @foreach($faqs as $index => $faq)
+                        <div class="accordion-item">
+                            <h3 class="accordion-header" id="heading{{ $index }}">
+                                <button class="accordion-button {{ $index === 0 ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse{{ $index }}" aria-expanded="{{ $index === 0 ? 'true' : 'false' }}" aria-controls="collapse{{ $index }}">
+                                    {{ $faq->question }}
+                                </button>
+                            </h3>
+                            <div id="collapse{{ $index }}" class="accordion-collapse collapse {{ $index === 0 ? 'show' : '' }}" aria-labelledby="heading{{ $index }}"
+                                data-bs-parent="#faqZoneAccordion">
+                                <div class="accordion-body">
+                                    {{ strip_tags($faq->answer) }}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <!-- FAQ Item 2 -->
-                <div class="accordion-item">
-                    <h3 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            Can I compare universities and courses on Enrollzy?
-                        </button>
-                    </h3>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-                        data-bs-parent="#faqZoneAccordion">
-                        <div class="accordion-body">
-                            Yes, students can compare universities based on fees, placements, rankings, approvals,
-                            scholarships, course structure, and career opportunities before making a decision.
-                        </div>
-                    </div>
-                </div>
-                <!-- FAQ Item 3 -->
-                <div class="accordion-item">
-                    <h3 class="accordion-header" id="headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            Does Enrollzy provide admission assistance?
-                        </button>
-                    </h3>
-                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
-                        data-bs-parent="#faqZoneAccordion">
-                        <div class="accordion-body">
-                            Yes, Enrollzy offers admission support including application form filling, document review,
-                            and guidance through the admission processes of partner schools and colleges.
-                        </div>
-                    </div>
-                </div>
-                <!-- FAQ Item 4 -->
-                <div class="accordion-item">
-                    <h3 class="accordion-header" id="headingFour">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                            Can I talk to alumni or industry experts before taking admission?
-                        </button>
-                    </h3>
-                    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
-                        data-bs-parent="#faqZoneAccordion">
-                        <div class="accordion-body">
-                            Yes, you can schedule 1:1 mentorship sessions with verified alumni and industry leaders on
-                            the Enrollzy platform to get real insights before committing.
-                        </div>
-                    </div>
-                </div>
-                <!-- FAQ Item 5 -->
-                <div class="accordion-item">
-                    <h3 class="accordion-header" id="headingFive">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                            Lorem ipsum dolor sit ame
-                        </button>
-                    </h3>
-                    <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
-                        data-bs-parent="#faqZoneAccordion">
-                        <div class="accordion-body">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
-                        </div>
-                    </div>
-                </div>
-                <!-- FAQ Item 6 -->
-                <div class="accordion-item">
-                    <h3 class="accordion-header" id="headingSix">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                            Lorem ipsum dolor sit ame
-                        </button>
-                    </h3>
-                    <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix"
-                        data-bs-parent="#faqZoneAccordion">
-                        <div class="accordion-body">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
-                        </div>
-                    </div>
-                </div>
-                <!-- FAQ Item 7 -->
-                <div class="accordion-item">
-                    <h3 class="accordion-header" id="headingSeven">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseSeven" aria-expanded="true" aria-controls="collapseSeven">
-                            Lorem ipsum dolor sit ame
-                        </button>
-                    </h3>
-                    <div id="collapseSeven" class="accordion-collapse collapse show" aria-labelledby="headingSeven"
-                        data-bs-parent="#faqZoneAccordion">
-                        <div class="accordion-body">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
-                        </div>
-                    </div>
-                </div>
+                    @endforeach
+                @else
+                    <p class="text-center text-muted">No FAQs found.</p>
+                @endif
             </div>
 
             <!-- View More Button -->
             <div class="text-center">
-                <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
-                    View More
+                <a href="{{ url('faq') }}" class="btn btn-enrollzy btn-enrollzy-lg">
+                        View More
                     <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                </button>
+                </a>
             </div>
         </div>
     </section>
@@ -1483,69 +1130,32 @@
             </div>
 
             <!-- Exams Grid -->
+            @if(isset($top_exams) && $top_exams->count() > 0)
             <div class="row row-cols-1 row-cols-md-3 g-5 mb-5 justify-content-center">
-                <!-- Exam 1 -->
+                @foreach($top_exams as $exam)
                 <div class="col text-center">
                     <div class="exam-icon-wrapper">
-                        <!-- Notebook Icon SVG -->
-                        <img src="assets/images/top-exam-icon-1.png" alt="">
+                        @if($exam->logo)
+                            <img src="{{ env('BACKEND_URL') . '/' . $exam->logo }}" alt="{{ $exam->name }}" style="max-width:45px;max-height:45px;object-fit:contain;">
+                        @else
+                            <img src="{{ asset('assets/images/top-exam-icon-1.png') }}" alt="{{ $exam->name }}">
+                        @endif
                     </div>
-                    <h3 class="exam-title">Joint Entrance Examination <br> MAINS</h3>
-                    <p class="exam-desc">Find your interests and aptitude <br> through guided assessments</p>
+                    <a href="{{ route('exam.detail', $exam->slug) }}" style="text-decoration: none;">
+                        <h3 class="exam-title">{{ $exam->name }}</h3>
+                    </a>
+                    <p class="exam-desc">{{ Str::limit(strip_tags($exam->about_exam), 80) }}</p>
                 </div>
-                <!-- Exam 2 -->
-                <div class="col text-center">
-                    <div class="exam-icon-wrapper">
-                        <!-- School Icon SVG -->
-                        <img src="assets/images/top-exam-icon-2.png" alt="">
-                    </div>
-                    <h3 class="exam-title">National Eligibility cum Entrance <br> Test (Undergraduate)</h3>
-                    <p class="exam-desc">Find your interests and aptitude <br> through guided assessments</p>
-                </div>
-                <!-- Exam 3 -->
-                <div class="col text-center">
-                    <div class="exam-icon-wrapper">
-                        <!-- Trophy Icon SVG -->
-                        <img src="assets/images/top-exam-icon-3.png" alt="">
-                    </div>
-                    <h3 class="exam-title">Graduate Aptitude Test in <br> Engineering</h3>
-                    <p class="exam-desc">Find your interests and aptitude <br> through guided assessments</p>
-                </div>
-                <!-- Exam 4 -->
-                <div class="col text-center">
-                    <div class="exam-icon-wrapper">
-                        <!-- Stacked Books Icon SVG -->
-                        <img src="assets/images/top-exam-icon-4.png" alt="">
-                    </div>
-                    <h3 class="exam-title">National Eligibility cum <br> Entrance Test – Postgraduate</h3>
-                    <p class="exam-desc">Find your interests and aptitude <br> through guided assessments</p>
-                </div>
-                <!-- Exam 5 -->
-                <div class="col text-center">
-                    <div class="exam-icon-wrapper">
-                        <!-- Laptop Users Icon SVG -->
-                        <img src="assets/images/top-exam-icon-5.png" alt="">
-                    </div>
-                    <h3 class="exam-title">Common University Entrance <br> Test – Postgraduate</h3>
-                    <p class="exam-desc">Find your interests and aptitude <br> through guided assessments</p>
-                </div>
-                <!-- Exam 6 -->
-                <div class="col text-center">
-                    <div class="exam-icon-wrapper">
-                        <!-- Briefcase Icon SVG -->
-                        <img src="assets/images/top-exam-icon-6.png" alt="">
-                    </div>
-                    <h3 class="exam-title">Xavier Aptitude Test</h3>
-                    <p class="exam-desc">Find your interests and aptitude <br> through guided assessments</p>
-                </div>
+                @endforeach
             </div>
+            @endif
 
             <!-- View More Button -->
             <div class="text-center" style="margin-top: 57px;">
-                <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
-                    View More
+                <a href="{{ route('top-exams') }}" class="btn btn-enrollzy btn-enrollzy-lg">
+                        View More
                     <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                </button>
+                </a>
             </div>
         </div>
     </section>
@@ -1576,94 +1186,28 @@
 
                     <!-- Right Column: Question Cards -->
                     <div class="col-lg-7">
-                        <!-- Card 1 -->
-                        <div class="qa-right-card-box-main">
-                            <div class="qa-question-card">
-                                <h3 class="qa-question-text">Can I compare universities and courses on Enrollzy?</h3>
-                                <p class="qa-answer-text">
-                                    Yes, students can compare universities based on fees, placements, rankings,
-                                    approvals,
-                                    scholarships, course structure, and career opportunities before making a decision.
-                                </p>
-                            </div>
-                            <!-- Card 2 -->
-                            <div class="qa-right-card-box">
-                                <div class="qa-question-card">
-                                    <h3 class="qa-question-text">Can I compare universities and courses on Enrollzy?
-                                    </h3>
-                                    <p class="qa-answer-text">
-                                        Yes, students can compare universities based on fees, placements, rankings,
-                                        approvals,
-                                        scholarships, course structure, and career opportunities before making a
-                                        decision.
-                                    </p>
-                                </div>
-                                <!-- Card 3 -->
-                                <div class="qa-right-card-box">
+                        <!-- Dynamic FAQ Cards -->
+                        @if($faqs->count() > 0)
+                            @foreach($faqs as $index => $faq)
+                                <div class="{{ $index === 0 ? 'qa-right-card-box-main' : 'qa-right-card-box' }}">
                                     <div class="qa-question-card">
-                                        <h3 class="qa-question-text">Can I compare universities and courses on Enrollzy?
-                                        </h3>
+                                        <h3 class="qa-question-text">{{ $faq->question }}</h3>
                                         <p class="qa-answer-text">
-                                            Yes, students can compare universities based on fees, placements, rankings,
-                                            approvals,
-                                            scholarships, course structure, and career opportunities before making a
-                                            decision.
+                                            {{ strip_tags($faq->answer) }}
                                         </p>
                                     </div>
-                                    <!-- Card 4 (Collapsed) -->
-                                    <div class="qa-right-card-box">
-                                        <div class="qa-question-card">
-                                            <h3 class="qa-question-text">Can I compare universities and courses on
-                                                Enrollzy?</h3>
-                                            <p class="qa-answer-text">
-                                                Yes, students can compare universities based on fees, placements,
-                                                rankings, approvals,
-                                                scholarships, course structure, and career opportunities before making a
-                                                decision.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <!-- Card 5 (Collapsed) -->
-                                    <div class="qa-right-card-box">
-                                        <div class="qa-question-card">
-                                            <h3 class="qa-question-text">Can I compare universities and courses on
-                                                Enrollzy?</h3>
-                                            <p class="qa-answer-text">
-                                                Yes, students can compare universities based on fees, placements,
-                                                rankings, approvals,
-                                                scholarships, course structure, and career opportunities before making a
-                                                decision.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <!-- Card 6 (Collapsed) -->
-                                    <div class="qa-right-card-box">
-                                        <div class="qa-question-card">
-                                            <h3 class="qa-question-text">Can I compare universities and courses on
-                                                Enrollzy?</h3>
-                                            <p class="qa-answer-text">
-                                                Yes, students can compare universities based on fees, placements,
-                                                rankings, approvals,
-                                                scholarships, course structure, and career opportunities before making a
-                                                decision.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <!-- Card 7 (Collapsed) -->
-                                    <div class="qa-right-card-box">
-                                        <div class="qa-question-card">
-                                            <h3 class="qa-question-text">Can I compare universities and courses on
-                                                Enrollzy?</h3>
-                                            <p class="qa-answer-text">
-                                                Yes, students can compare universities based on fees, placements,
-                                                rankings, approvals,
-                                                scholarships, course structure, and career opportunities before making a
-                                                decision.
-                                            </p>
-                                        </div>
-                                    </div>
+                            @endforeach
+
+                            @foreach($faqs as $faq)
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="qa-right-card-box-main">
+                                <div class="qa-question-card">
+                                    <p>No FAQs available.</p>
                                 </div>
                             </div>
+                        @endif
 
                             <!-- Book Now Button -->
                         </div>
