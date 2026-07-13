@@ -2,11 +2,11 @@
 @section('content')
 <main class="about-hero-section ptb-70">
       <div class="bg-square">
-        <img src="assets/images/banner-square-img.svg" alt="" />
+        <img src="{{ asset('assets/images/banner-square-img.svg') }}" alt="" />
       </div>
       <div class="container">
         <div class="about-hero-container">
-          <img src="assets/images/blog-banner-img.png" alt="" />
+          <img src="{{ asset('assets/images/blog-banner-img.png') }}" alt="" />
 
           <!-- Centered Badge (Placed outside card to prevent clipping) -->
           <div class="about-us-badge-wrapper">
@@ -21,7 +21,7 @@
           <button class="about-scroll-btn" aria-label="Scroll Down">
             <img
               style="width: 49px; height: 62px"
-              src="assets/images/inner-banner-down-arror.png"
+              src="{{ asset('assets/images/inner-banner-down-arror.png') }}"
               alt=""
             />
           </button>
@@ -78,7 +78,7 @@
           <div class="col">
             <div class="blog-card">
               <div class="blog-card-banner">
-                <img src="assets/images/school-img-1.png" alt="BBA vs BCom vs BA" />
+                <img src="{{ asset('assets/images/school-img-1.png') }}" alt="BBA vs BCom vs BA" />
               </div>
               <div class="blog-card-body">
                 <span class="blog-badge">BBA vs B.Com</span>
@@ -109,7 +109,7 @@
           <div class="col">
             <div class="blog-card">
               <div class="blog-card-banner">
-                <img src="assets/images/school-img-2.png" alt="BBA vs BCom vs BA" />
+                <img src="{{ asset('assets/images/school-img-2.png') }}" alt="BBA vs BCom vs BA" />
               </div>
               <div class="blog-card-body">
                 <span class="blog-badge">Updates</span>
@@ -140,7 +140,7 @@
           <div class="col">
             <div class="blog-card">
               <div class="blog-card-banner">
-                <img src="assets/images/school-img-3.png" alt="BBA vs BCom vs BA" />
+                <img src="{{ asset('assets/images/school-img-3.png') }}" alt="BBA vs BCom vs BA" />
               </div>
               <div class="blog-card-body">
                 <span class="blog-badge">Important</span>
@@ -171,7 +171,7 @@
           <div class="col">
             <div class="blog-card">
               <div class="blog-card-banner">
-                <img src="assets/images/school-img-4.png" alt="BBA vs BCom vs BA" />
+                <img src="{{ asset('assets/images/school-img-4.png') }}" alt="BBA vs BCom vs BA" />
               </div>
               <div class="blog-card-body">
                 <span class="blog-badge">Online MBA</span>
@@ -202,7 +202,7 @@
           <div class="col">
             <div class="blog-card">
               <div class="blog-card-banner">
-                <img src="assets/images/school-img-5.png" alt="BBA vs BCom vs BA" />
+                <img src="{{ asset('assets/images/school-img-5.png') }}" alt="BBA vs BCom vs BA" />
               </div>
               <div class="blog-card-body">
                 <span class="blog-badge">BBA vs B.Com</span>
@@ -233,7 +233,7 @@
           <div class="col">
             <div class="blog-card">
               <div class="blog-card-banner">
-                <img src="assets/images/school-img-1.png" alt="BBA vs BCom vs BA" />
+                <img src="{{ asset('assets/images/school-img-1.png') }}" alt="BBA vs BCom vs BA" />
               </div>
               <div class="blog-card-body">
                 <span class="blog-badge">Updates</span>
@@ -264,7 +264,7 @@
           <div class="col">
             <div class="blog-card">
               <div class="blog-card-banner">
-                <img src="assets/images/school-img-2.png" alt="BBA vs BCom vs BA" />
+                <img src="{{ asset('assets/images/school-img-2.png') }}" alt="BBA vs BCom vs BA" />
               </div>
               <div class="blog-card-body">
                 <span class="blog-badge">Important</span>
@@ -295,7 +295,7 @@
           <div class="col">
             <div class="blog-card">
               <div class="blog-card-banner">
-                <img src="assets/images/school-img-3.png" alt="BBA vs BCom vs BA" />
+                <img src="{{ asset('assets/images/school-img-3.png') }}" alt="BBA vs BCom vs BA" />
               </div>
               <div class="blog-card-body">
                 <span class="blog-badge">Online MBA</span>
@@ -326,7 +326,7 @@
           <div class="col">
             <div class="blog-card">
               <div class="blog-card-banner">
-                <img src="assets/images/school-img-4.png" alt="BBA vs BCom vs BA" />
+                <img src="{{ asset('assets/images/school-img-4.png') }}" alt="BBA vs BCom vs BA" />
               </div>
               <div class="blog-card-body">
                 <span class="blog-badge">BBA vs B.Com</span>
@@ -357,7 +357,7 @@
           <div class="col">
             <div class="blog-card">
               <div class="blog-card-banner">
-                <img src="assets/images/school-img-5.png" alt="BBA vs BCom vs BA" />
+                <img src="{{ asset('assets/images/school-img-5.png') }}" alt="BBA vs BCom vs BA" />
               </div>
               <div class="blog-card-body">
                 <span class="blog-badge">Updates</span>
@@ -388,7 +388,7 @@
           <div class="col">
             <div class="blog-card">
               <div class="blog-card-banner">
-                <img src="assets/images/school-img-1.png" alt="BBA vs BCom vs BA" />
+                <img src="{{ asset('assets/images/school-img-1.png') }}" alt="BBA vs BCom vs BA" />
               </div>
               <div class="blog-card-body">
                 <span class="blog-badge">Important</span>
@@ -419,7 +419,7 @@
           <div class="col">
             <div class="blog-card">
               <div class="blog-card-banner">
-                <img src="assets/images/school-img-3.png" alt="BBA vs BCom vs BA" />
+                <img src="{{ asset('assets/images/school-img-3.png') }}" alt="BBA vs BCom vs BA" />
               </div>
               <div class="blog-card-body">
                 <span class="blog-badge">Online MBA</span>
@@ -449,5 +449,5 @@
       </div>
     </div>
 
-    <!-- Bootstrap Bundle JS -->
+    
 @endsection

@@ -95,3 +95,7 @@
             </div>
         </div>
     </footer>
+    <div class="footer-vector">
+        <img src="{{ asset('assets/images/footer-vector.png') }}" alt="">
+    </div>
+    <div class="bottom-gradient-div ptb-70 pt-0" style="z-index: -1;"></div>

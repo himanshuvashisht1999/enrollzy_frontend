@@ -131,10 +131,10 @@
                 <div class="col">
                     <div class="category-card">
                         <div class="category-icon-wrapper" style="background-color:#FCD8CB33;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Schools</h3>
-                        <span class="category-count">850+ listed</span>
+                        <span class="category-count">{{ $schoolsCount ?? 0 }}+ listed</span>
                     </div>
                 </div>
 
@@ -142,10 +142,10 @@
                 <div class="col">
                     <div class="category-card">
                         <div class="category-icon-wrapper" style="background-color: #09FF6333;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Coaching</h3>
-                        <span class="category-count">62+ listed</span>
+                        <span class="category-count">{{ $coachingCount ?? 0 }}+ listed</span>
                     </div>
                 </div>
 
@@ -153,10 +153,10 @@
                 <div class="col">
                     <div class="category-card">
                         <div class="category-icon-wrapper" style="background-color: #83CBFF33;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Universities</h3>
-                        <span class="category-count">850+ listed</span>
+                        <span class="category-count">{{ $universitiesCount ?? 0 }}+ listed</span>
                     </div>
                 </div>
 
@@ -164,10 +164,10 @@
                 <div class="col">
                     <div class="category-card">
                         <div class="category-icon-wrapper" style="background-color: #FFCC0033;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Mentors</h3>
-                        <span class="category-count">850+ listed</span>
+                        <span class="category-count">{{ $mentorsCount ?? 0 }}+ listed</span>
                     </div>
                 </div>
 
@@ -175,7 +175,7 @@
                 <div class="col">
                     <div class="category-card">
                         <div class="category-icon-wrapper" style="background-color:#FCD8CB33;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Scholarships</h3>
                         <span class="category-count">850+ listed</span>
@@ -186,21 +186,21 @@
                 <div class="col">
                     <div class="category-card">
                         <div class="category-icon-wrapper" style="background-color:#FCD8CB33;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Internships</h3>
                         <span class="category-count">4500+ listed</span>
                     </div>
                 </div>
 
-                <!-- Row 1, Card 7: Schools -->
+                <!-- Row 1, Card 7: Schools (Duplicate in design) -->
                 <div class="col">
                     <div class="category-card">
                         <div class="category-icon-wrapper" style="background-color:#FCD8CB33;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Schools</h3>
-                        <span class="category-count">850+ listed</span>
+                        <span class="category-count">{{ $schoolsCount ?? 0 }}+ listed</span>
                     </div>
                 </div>
 
@@ -208,10 +208,10 @@
                 <div class="col">
                     <div class="category-card">
                         <div class="category-icon-wrapper " style="background-color:#FCD8CB33;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Schools</h3>
-                        <span class="category-count">850+ listed</span>
+                        <span class="category-count">{{ $schoolsCount ?? 0 }}+ listed</span>
                     </div>
                 </div>
 
@@ -219,40 +219,40 @@
                 <div class="col">
                     <div class="category-card">
                         <div class="category-icon-wrapper" style="background-color: #09FF6333;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Coaching</h3>
-                        <span class="category-count">62+ listed</span>
+                        <span class="category-count">{{ $coachingCount ?? 0 }}+ listed</span>
                     </div>
                 </div>
 
                 <!-- Row 2, Card 10: Universities -->
                 <div class="col">
                     <div class="category-card">
-                        <div class="category-icon-wrapper " style="background-color:#FCD8CB33;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                        <div class="category-icon-wrapper" style="background-color: #83CBFF33;">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Universities</h3>
-                        <span class="category-count">850+ listed</span>
+                        <span class="category-count">{{ $universitiesCount ?? 0 }}+ listed</span>
                     </div>
                 </div>
 
                 <!-- Row 2, Card 11: Mentors -->
                 <div class="col">
                     <div class="category-card">
-                        <div class="category-icon-wrapper" style="background-color:#FCD8CB33;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                        <div class="category-icon-wrapper" style="background-color: #FFCC0033;">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Mentors</h3>
-                        <span class="category-count">850+ listed</span>
+                        <span class="category-count">{{ $mentorsCount ?? 0 }}+ listed</span>
                     </div>
                 </div>
 
                 <!-- Row 2, Card 12: Scholarships -->
                 <div class="col">
                     <div class="category-card">
-                        <div class="category-icon-wrapper " style="background-color:#FCD8CB33;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                        <div class="category-icon-wrapper" style="background-color:#FCD8CB33;">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Scholarships</h3>
                         <span class="category-count">850+ listed</span>
@@ -262,8 +262,8 @@
                 <!-- Row 2, Card 13: Internships -->
                 <div class="col">
                     <div class="category-card">
-                        <div class="category-icon-wrapper " style="background-color:#FCD8CB33;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                        <div class="category-icon-wrapper" style="background-color:#FCD8CB33;">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Internships</h3>
                         <span class="category-count">4500+ listed</span>
@@ -273,23 +273,16 @@
                 <!-- Row 2, Card 14: Schools -->
                 <div class="col">
                     <div class="category-card">
-                        <div class="category-icon-wrapper " style="background-color:#FCD8CB33;">
-                            <img src="assets/images/education-list-icon.svg" alt="">
+                        <div class="category-icon-wrapper" style="background-color:#FCD8CB33;">
+                            <img src="{{ asset('assets/images/education-list-icon.svg') }}" alt="">
                         </div>
                         <h3 class="category-name">Schools</h3>
-                        <span class="category-count">850+ listed</span>
+                        <span class="category-count">{{ $schoolsCount ?? 0 }}+ listed</span>
                     </div>
                 </div>
 
             </div>
-
-            <!-- View More Action Button -->
-            <div class="text-center">
-                <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
-                    View More
-                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                </button>
-            </div>
+        </div>
     </section>
 
     <!-- Boarding School Section -->
@@ -313,122 +306,36 @@
 
                 <!-- School Cards Grid -->
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-4 mb-5 justify-content-center">
-                    <!-- Card 1 -->
-                    <div class="col">
-                        <div class="institution-card position-relative">
-                            <span class="rating-badge position-absolute">
-                                <span>4.5 <span class="star-icon">★</span></span>
-                            </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3">
-                                <img src="assets/images/boarding-school-logo.png" alt="">
+                    @if(isset($boardingSchools) && $boardingSchools->count() > 0)
+                        @foreach($boardingSchools as $school)
+                        <div class="col">
+                            <div class="institution-card position-relative h-100 d-flex flex-column">
+                                <span class="rating-badge position-absolute">
+                                    <span>{{ $school->average_rating ?? '4.5' }} <span class="star-icon">★</span></span>
+                                </span>
+                                <div class="institution-logo-wrapper mx-auto mb-3" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #fff; border: 1px solid #eee;">
+                                    <img src="{{ $school->logo_url ? env('BACKEND_URL') . '/' . $school->logo_url : asset('assets/images/boarding-school-logo.png') }}" alt="{{ $school->brand_name ?? $school->name }}" style="max-width: 100%; max-height: 100%;">
+                                </div>
+                                <span class="badge-capsule mb-2 mx-auto">{{ Str::limit($school->brand_name ?? $school->name, 20) }}</span>
+                                <div class="card-info-text text-center">{{ is_array($school->cities_present_in) ? ($school->cities_present_in[0] ?? 'Location') : ($school->cities_present_in ?? 'Location') }} &nbsp; {{ is_array($school->education_boards_supported) ? ($school->education_boards_supported[0] ?? 'CBSE') : ($school->education_boards_supported ?? 'CBSE') }}</div>
+                                <div class="card-info-text mb-3 fw-bold text-center">{{ is_array($school->education_levels_supported) ? ($school->education_levels_supported[0] ?? '3rd - 12th') : ($school->education_levels_supported ?? '3rd - 12th') }}</div>
+                                <a href="{{ route('school.detail', $school->slug ?? $school->id) }}" class="btn btn-enrollzy btn-enrollzy-sm w-100 mt-auto">
+                                    APPLY NOW
+                                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
+                                </a>
                             </div>
-                            <span class="badge-capsule mb-2">rashtriya indian</span>
-                            <div class="card-info-text">jaipur, rajasthan &nbsp; CBSE</div>
-                            <div class="card-info-text mb-3 fw-bold">3rd - 12th</div>
-                            <a href="#" class="btn btn-enrollzy btn-enrollzy-sm w-100">
-                                APPLY NOW
-                                <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                            </a>
                         </div>
-                    </div>
-                    <!-- Card 2 -->
-                    <div class="col">
-                        <div class="institution-card position-relative">
-                            <span class="rating-badge position-absolute">
-                                <span>4.5 <span class="star-icon">★</span></span>
-                            </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3">
-                                <img src="assets/images/boarding-school-logo.png" alt="">
-                            </div>
-                            <span class="badge-capsule mb-2">rashtriya indian</span>
-                            <div class="card-info-text">jaipur, rajasthan &nbsp; CBSE</div>
-                            <div class="card-info-text mb-3 fw-bold">3rd - 12th</div>
-                            <a href="#" class="btn btn-enrollzy btn-enrollzy-sm w-100">
-                                APPLY NOW
-                                <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                            </a>
+                        @endforeach
+                    @else
+                        <div class="col-12 text-center py-5">
+                            <p class="text-muted">No boarding schools found.</p>
                         </div>
-                    </div>
-                    <!-- Card 3 -->
-                    <div class="col">
-                        <div class="institution-card position-relative">
-                            <span class="rating-badge position-absolute">
-                                <span>4.5 <span class="star-icon">★</span></span>
-                            </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3">
-                                <img src="assets/images/boarding-school-logo.png" alt="">
-                            </div>
-                            <span class="badge-capsule mb-2">rashtriya indian</span>
-                            <div class="card-info-text">jaipur, rajasthan &nbsp; CBSE</div>
-                            <div class="card-info-text mb-3 fw-bold">3rd - 12th</div>
-                            <a href="#" class="btn btn-enrollzy btn-enrollzy-sm w-100">
-                                APPLY NOW
-                                <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Card 4 -->
-                    <div class="col">
-                        <div class="institution-card position-relative">
-                            <span class="rating-badge position-absolute">
-                                <span>4.5 <span class="star-icon">★</span></span>
-                            </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3">
-                                <img src="assets/images/boarding-school-logo.png" alt="">
-                            </div>
-                            <span class="badge-capsule mb-2">rashtriya indian</span>
-                            <div class="card-info-text">jaipur, rajasthan &nbsp; CBSE</div>
-                            <div class="card-info-text mb-3 fw-bold">3rd - 12th</div>
-                            <a href="#" class="btn btn-enrollzy btn-enrollzy-sm w-100">
-                                APPLY NOW
-                                <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Card 5 -->
-                    <div class="col">
-                        <div class="institution-card position-relative">
-                            <span class="rating-badge position-absolute">
-                                <span>4.5 <span class="star-icon">★</span></span>
-                            </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3">
-                                <img src="assets/images/boarding-school-logo.png" alt="">
-                            </div>
-                            <span class="badge-capsule mb-2">rashtriya indian</span>
-                            <div class="card-info-text">jaipur, rajasthan &nbsp; CBSE</div>
-                            <div class="card-info-text mb-3 fw-bold">3rd - 12th</div>
-                            <a href="#" class="btn btn-enrollzy btn-enrollzy-sm w-100">
-                                APPLY NOW
-                                <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Card 6 -->
-                    <div class="col">
-                        <div class="institution-card position-relative">
-                            <span class="rating-badge position-absolute">
-                                <span>4.5 <span class="star-icon">★</span></span>
-                            </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3">
-                                <img src="assets/images/boarding-school-logo.png" alt="">
-                            </div>
-                            <span class="badge-capsule mb-2">rashtriya indian</span>
-                            <div class="card-info-text">jaipur, rajasthan &nbsp; CBSE</div>
-                            <div class="card-info-text mb-3 fw-bold">3rd - 12th</div>
-                            <a href="#" class="btn btn-enrollzy btn-enrollzy-sm w-100">
-                                APPLY NOW
-                                <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                            </a>
-                        </div>
-                    </div>
+                    @endif
                 </div>
 
                 <!-- View More Button -->
                 <div class="text-center">
-                    <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
-                        View More
-                        <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                    </button>
+                    <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
                 </div>
             </div>
         </section>
@@ -451,134 +358,31 @@
 
                 <!-- Coaching Cards Grid -->
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-4 mb-5 justify-content-center">
-                    <!-- Card 1: ALLEN -->
+                    @foreach($coachingInstitutes as $coaching)
                     <div class="col">
-                        <div class="institution-card position-relative">
+                        <div class="institution-card position-relative h-100 d-flex flex-column">
                             <span class="rating-badge position-absolute">
-                                <span>4.5 <span class="star-icon">★</span></span>
+                                <span>{{ $coaching->average_rating ?? '4.5' }} <span class="star-icon">★</span></span>
                             </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3">
-                                <img src="assets/images/boarding-school-logo.png" alt="">
+                            <div class="institution-logo-wrapper mx-auto mb-3" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #fff; border: 1px solid #eee;">
+                                <img src="{{ $coaching->logo_url ? env('BACKEND_URL') . '/' . $coaching->logo_url : asset('assets/images/boarding-school-logo.png') }}" alt="{{ $coaching->brand_name ?? $coaching->name }}" style="max-width: 100%; max-height: 100%;">
                             </div>
-                            <span class="badge-capsule mb-2">ALLEN</span>
-                            <div class="card-info-text">sikar, rajasthan</div>
-                            <div class="card-info-text "
-                                style="font-size: 10px; font-weight: 700; color: #000000;margin-bottom: 13px;">
-                                NEET <span>|</span> IIT-JEE <span>|</span> NDA <span>|</span> CA/CS</div>
-                            <a href="#" class="btn btn-enrollzy btn-enrollzy-sm w-100">
+                            <span class="badge-capsule mb-2 mx-auto">{{ Str::limit($coaching->brand_name ?? $coaching->name, 20) }}</span>
+                            <div class="card-info-text text-center">{{ is_array($coaching->cities_present_in) ? ($coaching->cities_present_in[0] ?? 'City') : ($coaching->cities_present_in ?? 'City') }}, {{ is_array($coaching->states_present_in) ? ($coaching->states_present_in[0] ?? 'State') : ($coaching->states_present_in ?? 'State') }}</div>
+                            <div class="card-info-text text-center" style="font-size: 10px; font-weight: 700; color: #000000;margin-bottom: 13px;">
+                                {{ is_array($coaching->education_boards_supported) ? implode(' | ', $coaching->education_boards_supported) : ($coaching->education_boards_supported ?? 'NEET | IIT-JEE | NDA') }}
+                            </div>
+                            <a href="{{ route('coaching.detail', $coaching->slug ?? $coaching->id) }}" class="btn btn-enrollzy btn-enrollzy-sm w-100 mt-auto">
                                 APPLY NOW
                                 <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
                             </a>
                         </div>
                     </div>
-                    <!-- Card 2: AKASH -->
-                    <div class="col">
-                        <div class="institution-card position-relative">
-                            <span class="rating-badge position-absolute">
-                                <span>4.5 <span class="star-icon">★</span></span>
-                            </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3">
-                                <img src="assets/images/boarding-school-logo.png" alt="">
-                            </div>
-                            <span class="badge-capsule mb-2">AKASH</span>
-                            <div class="card-info-text">sikar, rajasthan</div>
-                            <div class="card-info-text "
-                                style="font-size: 10px; font-weight: 700; color: #000000;margin-bottom: 13px;">
-                                NEET <span>|</span> IIT-JEE <span>|</span> NDA <span>|</span> CA/CS</div>
-                            <a href="#" class="btn btn-enrollzy btn-enrollzy-sm w-100">
-                                APPLY NOW
-                                <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Card 3: UNACADEMY -->
-                    <div class="col">
-                        <div class="institution-card position-relative">
-                            <span class="rating-badge position-absolute">
-                                <span>4.5 <span class="star-icon">★</span></span>
-                            </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3">
-                                <img src="assets/images/boarding-school-logo.png" alt="">
-                            </div>
-                            <span class="badge-capsule mb-2">UNACADEMY</span>
-                            <div class="card-info-text">sikar, rajasthan</div>
-                            <div class="card-info-text "
-                                style="font-size: 10px; font-weight: 700; color: #000000;margin-bottom: 13px;">
-                                NEET <span>|</span> IIT-JEE <span>|</span> NDA <span>|</span> CA/CS</div>
-                            <a href="#" class="btn btn-enrollzy btn-enrollzy-sm w-100">
-                                APPLY NOW
-                                <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Card 4: PHYSICS WALLAH -->
-                    <div class="col">
-                        <div class="institution-card position-relative">
-                            <span class="rating-badge position-absolute">
-                                <span>4.5 <span class="star-icon">★</span></span>
-                            </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3">
-                                <img src="assets/images/boarding-school-logo.png" alt="">
-                            </div>
-                            <span class="badge-capsule mb-2">ALPHYSICS WALLAHLEN</span>
-                            <div class="card-info-text">sikar, rajasthan</div>
-                            <div class="card-info-text "
-                                style="font-size: 10px; font-weight: 700; color: #000000;margin-bottom: 13px;">
-                                NEET <span>|</span> IIT-JEE <span>|</span> NDA <span>|</span> CA/CS</div>
-                            <a href="#" class="btn btn-enrollzy btn-enrollzy-sm w-100">
-                                APPLY NOW
-                                <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Card 5: SRI CHAITANYA -->
-                    <div class="col">
-                        <div class="institution-card position-relative">
-                            <span class="rating-badge position-absolute">
-                                <span>4.5 <span class="star-icon">★</span></span>
-                            </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3">
-                                <img src="assets/images/boarding-school-logo.png" alt="">
-                            </div>
-                            <span class="badge-capsule mb-2">SRI CHAITANYA</span>
-                            <div class="card-info-text">sikar, rajasthan</div>
-                            <div class="card-info-text "
-                                style="font-size: 10px; font-weight: 700; color: #000000;margin-bottom: 13px;">
-                                NEET <span>|</span> IIT-JEE <span>|</span> NDA <span>|</span> CA/CS</div>
-                            <a href="#" class="btn btn-enrollzy btn-enrollzy-sm w-100">
-                                APPLY NOW
-                                <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Card 6: WHITERAY -->
-                    <div class="col">
-                        <div class="institution-card position-relative">
-                            <span class="rating-badge position-absolute">
-                                <span>4.5 <span class="star-icon">★</span></span>
-                            </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3">
-                                <img src="assets/images/boarding-school-logo.png" alt="">
-                            </div>
-                            <span class="badge-capsule mb-2">WHITERAY</span>
-                            <div class="card-info-text">sikar, rajasthan</div>
-                            <div class="card-info-text "
-                                style="font-size: 10px; font-weight: 700; color: #000000;margin-bottom: 13px;">
-                                NEET <span>|</span> IIT-JEE <span>|</span> NDA <span>|</span> CA/CS</div>
-                            <a href="#" class="btn btn-enrollzy btn-enrollzy-sm w-100">
-                                APPLY NOW
-                                <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                            </a>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
-
                 <!-- View More Button -->
                 <div class="text-center">
-                    <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
-                        View More
-                        <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                    </button>
+                    <a href="{{ route('all.coaching') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
                 </div>
             </div>
         </section>
@@ -811,10 +615,7 @@
 
             <!-- View More Button -->
             <div class="text-center">
-                <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
-                    View More
-                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                </button>
+                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
             </div>
         </div>
     </section>
@@ -883,10 +684,7 @@
             </div>
             @endif
             <div class="text-center" style="margin-top: 57px;">
-                <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
-                    View More
-                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                </button>
+                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
             </div>
         </div>
     </section>
@@ -909,158 +707,48 @@
 
             <!-- Mentors Grid -->
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
-                <!-- Mentor 1 -->
+                @foreach($mentors as $mentor)
                 <div class="col">
-                    <div class="mentor-card">
-                        <div class="mentor-img-wrapper">
-                            <img src="assets/images/mentor-img-1.png" alt="Abhishek Sharma" class="mentor-img">
+                    <div class="mentor-card h-100 d-flex flex-column">
+                        <div class="mentor-img-wrapper" style="height: 250px; overflow: hidden;">
+                            <img src="{{ $mentor->profile_photo ? env('BACKEND_URL') . '/' . $mentor->profile_photo : asset('assets/images/mentor1.png') }}" alt="{{ $mentor->first_name }} {{ $mentor->last_name }}" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
-                        <div class="mentor-card-body">
-                            <div>
-                                <h3 class="mentor-name">Abhishek Sharma</h3>
-                                <p class="mentor-title">Product Manager · Google · IIM-A</p>
-                                <div class="mentor-tags-row mb-3">
-                                    <span class="badge-mentor-tag mentor-tag-blue">MBA Prep</span>
-                                    <span class="badge-mentor-tag mentor-tag-orange">Product</span>
-                                    <span class="badge-mentor-tag mentor-tag-green">Startups</span>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="mentor-rating-row mb-3">
-                                    <div class="mentor-rating">
-                                        <span class="star-rating">★★★★★</span>
-                                        <span class="rating-value ms-1">4.9</span>
-                                    </div>
-                                    <span class="mentor-sessions">280 sessions</span>
-                                </div>
-                                <div class="mentor-footer">
-                                    <span class="mentor-price">₹500<span
-                                            style="font-size: 0.72rem; color: #777777; font-weight: 600;">/min</span></span>
-                                    <a href="#" class="btn btn-enrollzy btn-enrollzy-sm">
-                                        Book session
-                                        <i class="fa-solid fa-arrow-right-long"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Mentor 2 -->
-                <div class="col">
-                    <div class="mentor-card">
-                        <div class="mentor-img-wrapper">
-                            <img src="assets/images/mentor-img-2.png" alt="Abhishek Sharma" class="mentor-img">
-                        </div>
-                        <div class="mentor-card-body">
-                            <div>
-                                <h3 class="mentor-name">Abhishek Sharma</h3>
-                                <p class="mentor-title">Product Manager · Google · IIM-A</p>
-                                <div class="mentor-tags-row mb-3">
-                                    <span class="badge-mentor-tag mentor-tag-blue">MBA Prep</span>
-                                    <span class="badge-mentor-tag mentor-tag-orange">Product</span>
-                                    <span class="badge-mentor-tag mentor-tag-green">Startups</span>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="mentor-rating-row mb-3">
-                                    <div class="mentor-rating">
-                                        <span class="star-rating">★★★★★</span>
-                                        <span class="rating-value ms-1">4.9</span>
-                                    </div>
-                                    <span class="mentor-sessions">280 sessions</span>
-                                </div>
-                                <div class="mentor-footer">
-                                    <span class="mentor-price">₹500<span
-                                            style="font-size: 0.72rem; color: #777777; font-weight: 600;">/min</span></span>
-                                    <a href="#" class="btn btn-enrollzy btn-enrollzy-sm">
-                                        Book session
-                                        <i class="fa-solid fa-arrow-right-long"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Mentor 3 -->
-                <div class="col">
-                    <div class="mentor-card">
-                        <div class="mentor-img-wrapper">
-                            <img src="assets/images/mentor-img-3.png" alt="Abhishek Sharma" class="mentor-img">
-                        </div>
-                        <div class="mentor-card-body">
-                            <div>
-                                <h3 class="mentor-name">Abhishek Sharma</h3>
-                                <p class="mentor-title">Product Manager · Google · IIM-A</p>
-                                <div class="mentor-tags-row mb-3">
-                                    <span class="badge-mentor-tag mentor-tag-blue">MBA Prep</span>
-                                    <span class="badge-mentor-tag mentor-tag-orange">Product</span>
-                                    <span class="badge-mentor-tag mentor-tag-green">Startups</span>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="mentor-rating-row mb-3">
-                                    <div class="mentor-rating">
-                                        <span class="star-rating">★★★★★</span>
-                                        <span class="rating-value ms-1">4.9</span>
-                                    </div>
-                                    <span class="mentor-sessions">280 sessions</span>
-                                </div>
-                                <div class="mentor-footer">
-                                    <span class="mentor-price">₹500<span
-                                            style="font-size: 0.72rem; color: #777777; font-weight: 600;">/min</span></span>
-                                    <a href="#" class="btn btn-enrollzy btn-enrollzy-sm">
-                                        Book session
-                                        <i class="fa-solid fa-arrow-right-long"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Mentor 4 -->
-                <div class="col">
-                    <div class="mentor-card">
-                        <div class="mentor-img-wrapper">
-                            <img src="assets/images/mentor-img-4.png" alt="Abhishek Sharma" class="mentor-img">
-                        </div>
-                        <div class="mentor-card-body">
-                            <div>
-                                <h3 class="mentor-name">Abhishek Sharma</h3>
-                                <p class="mentor-title">Product Manager · Google · IIM-A</p>
-                                <div class="mentor-tags-row mb-3">
-                                    <span class="badge-mentor-tag mentor-tag-blue">MBA Prep</span>
-                                    <span class="badge-mentor-tag mentor-tag-orange">Product</span>
-                                    <span class="badge-mentor-tag mentor-tag-green">Startups</span>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="mentor-rating-row mb-3">
-                                    <div class="mentor-rating">
-                                        <span class="star-rating">★★★★★</span>
-                                        <span class="rating-value ms-1">4.9</span>
-                                    </div>
-                                    <span class="mentor-sessions">280 sessions</span>
-                                </div>
-                                <div class="mentor-footer">
-                                    <span class="mentor-price">₹500<span
-                                            style="font-size: 0.72rem; color: #777777; font-weight: 600;">/min</span></span>
-                                    <a href="#" class="btn btn-enrollzy btn-enrollzy-sm">
-                                        Book session
-                                        <i class="fa-solid fa-arrow-right-long"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        <div class="mentor-card-body text-center d-flex flex-column flex-grow-1">
+                            <h3 class="mentor-name">{{ $mentor->first_name }} {{ $mentor->last_name }}</h3>
+                            <p class="mentor-title">{{ $mentor->professional_headline ?? 'Expert Mentor' }}</p>
 
+                            <div class="mentor-badges d-flex flex-wrap justify-content-center gap-2 mb-3">
+                                <span class="badge-tag tag-blue">MBA Prep</span>
+                                <span class="badge-tag tag-yellow">Product</span>
+                                <span class="badge-tag tag-green">Startups</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3 mentor-stats">
+                                <div class="rating-badge-plain">
+                                    <div class="stars">
+                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                            class="fa-solid fa-star text-muted"></i>
+                                    </div>
+                                    <span class="ms-1 fw-bold">4.9</span>
+                                </div>
+                                <span class="sessions-count text-muted">280 sessions</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
+                                <div class="mentor-price">
+                                    <span class="price-amount">₹500</span><span class="price-unit">/min</span>
+                                </div>
+                                <a href="#" class="btn btn-enrollzy btn-enrollzy-sm px-3 rounded-pill">Book session <i class="fa-solid fa-arrow-right-long ms-1" style="color: #fff; font-size: 10px;"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
             <!-- View More Button -->
             <div class="text-center">
-                <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
-                    View More
-                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                </button>
+                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
             </div>
         </div>
     </section>
@@ -1241,89 +929,33 @@
 
                 <!-- Blog Grid -->
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
-                    <!-- Blog 1 -->
-                    <div class="col">
-                        <div class="blog-card">
-                            <div class="blog-img-wrapper">
-                                <img src="assets/images/blog-img-1.png" alt="BBA vs BCom vs BA" class="blog-img">
-                            </div>
-                            <div class="blog-card-body">
-                                <div>
-                                    <span class="blog-tag">Technology</span>
-                                    <h3 class="blog-title">BBA vs BCom vs BA: Which Course is Better for Your Care...
-                                    </h3>
+                    @if(isset($blogs) && $blogs->count() > 0)
+                        @foreach($blogs as $blog)
+                        <div class="col">
+                            <div class="blog-card">
+                                <div class="blog-img-wrapper">
+                                    <img src="{{ $blog->image ? env('BACKEND_URL') . '/' . $blog->image : asset('assets/images/blog-img-1.png') }}" alt="{{ $blog->title }}" class="blog-img">
                                 </div>
-                                <a href="#" class="btn btn-enrollzy btn-enrollzy-md w-100">
-                                    Read more
-                                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                                </a>
+                                <div class="blog-card-body">
+                                    <div>
+                                        <span class="blog-tag">{{ $blog->category ? $blog->category->name : 'Uncategorized' }}</span>
+                                        <h3 class="blog-title">{{ Str::limit($blog->title, 50) }}</h3>
+                                    </div>
+                                    <a href="{{ route('blog.detail', $blog->slug) }}" class="btn btn-enrollzy btn-enrollzy-md w-100">
+                                        Read more
+                                        <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Blog 2 -->
-                    <div class="col">
-                        <div class="blog-card">
-                            <div class="blog-img-wrapper">
-                                <img src="assets/images/blog-img-2.png" alt="Best Online Courses" class="blog-img">
-                            </div>
-                            <div class="blog-card-body">
-                                <div>
-                                    <span class="blog-tag">Technology</span>
-                                    <h3 class="blog-title">Best Online Courses After Graduation for High Salary Ca...
-                                    </h3>
-                                </div>
-                                <a href="#" class="btn btn-enrollzy btn-enrollzy-md w-100">
-                                    Read more
-                                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Blog 3 -->
-                    <div class="col">
-                        <div class="blog-card">
-                            <div class="blog-img-wrapper">
-                                <img src="assets/images/blog-img-3.png" alt="Best AI Courses" class="blog-img">
-                            </div>
-                            <div class="blog-card-body">
-                                <div>
-                                    <span class="blog-tag">Technology</span>
-                                    <h3 class="blog-title">Best AI Courses After 12th?</h3>
-                                </div>
-                                <a href="#" class="btn btn-enrollzy btn-enrollzy-md w-100">
-                                    Read more
-                                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Blog 4 -->
-                    <div class="col">
-                        <div class="blog-card">
-                            <div class="blog-img-wrapper">
-                                <img src="assets/images/blog-img-4.png" alt="Online MBA in India" class="blog-img">
-                            </div>
-                            <div class="blog-card-body">
-                                <div>
-                                    <span class="blog-tag">Technology</span>
-                                    <h3 class="blog-title">Online MBA in India: Complete Guide 2026 (Fees, College...
-                                    </h3>
-                                </div>
-                                <a href="#" class="btn btn-enrollzy btn-enrollzy-md w-100">
-                                    Read more
-                                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                        @endforeach
+                    @else
+                        <p class="text-center text-muted">No blogs found.</p>
+                    @endif
                 </div>
-
-                <!-- View More Button -->
+            <!-- View More Button -->
                 <div class="text-center">
-                    <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
-                        View More
-                        <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                    </button>
+                    <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
                 </div>
             </div>
         </section>
@@ -1346,86 +978,39 @@
 
             <!-- Video Cards Grid -->
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
-                <!-- Video 1 -->
-                <div class="col">
-                    <div class="testimonial-card" style="background-image: url('assets/images/mentor_1.png');">
-                        <div class="testimonial-overlay"></div>
-                        <button class="play-icon-btn" type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                class="bi bi-play-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
-                            </svg>
-                        </button>
-                        <div class="testimonial-card-body">
-                            <h3 class="testimonial-name">Abhishek sharma</h3>
-                            <p class="testimonial-sub">PHD Admission Success</p>
-                            <div class="testimonial-rating">★★★★★</div>
+                @if(isset($video_testimonials) && $video_testimonials->count() > 0)
+                    @foreach($video_testimonials as $video)
+                    <div class="col">
+                        <div class="testimonial-card" style="background-image: url('{{ $video->thumbnail ? env('BACKEND_URL') . '/' . $video->thumbnail : asset('assets/images/mentor_1.png') }}');">
+                            <div class="testimonial-overlay"></div>
+                            @if($video->video_url)
+                            <a href="{{ $video->video_url }}" target="_blank" style="text-decoration: none;">
+                            @endif
+                                <button class="play-icon-btn" type="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                        class="bi bi-play-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                                    </svg>
+                                </button>
+                            @if($video->video_url)
+                            </a>
+                            @endif
+                            <div class="testimonial-card-body">
+                                <h3 class="testimonial-name">{{ $video->name }}</h3>
+                                <p class="testimonial-sub">{{ $video->course }}</p>
+                                <div class="testimonial-rating">★ ★ ★ ★ ★</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Video 2 -->
-                <div class="col">
-                    <div class="testimonial-card" style="background-image: url('assets/images/mentor_2.png');">
-                        <div class="testimonial-overlay"></div>
-                        <button class="play-icon-btn" type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                class="bi bi-play-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
-                            </svg>
-                        </button>
-                        <div class="testimonial-card-body">
-                            <h3 class="testimonial-name">Abhishek sharma</h3>
-                            <p class="testimonial-sub">PHD Admission Success</p>
-                            <div class="testimonial-rating">★★★★★</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Video 3 -->
-                <div class="col">
-                    <div class="testimonial-card" style="background-image: url('assets/images/mentor_3.png');">
-                        <div class="testimonial-overlay"></div>
-                        <button class="play-icon-btn" type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                class="bi bi-play-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
-                            </svg>
-                        </button>
-                        <div class="testimonial-card-body">
-                            <h3 class="testimonial-name">Abhishek sharma</h3>
-                            <p class="testimonial-sub">PHD Admission Success</p>
-                            <div class="testimonial-rating">★★★★★</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Video 4 -->
-                <div class="col">
-                    <div class="testimonial-card" style="background-image: url('assets/images/mentor_4.png');">
-                        <div class="testimonial-overlay"></div>
-                        <button class="play-icon-btn" type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                class="bi bi-play-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
-                            </svg>
-                        </button>
-                        <div class="testimonial-card-body">
-                            <h3 class="testimonial-name">Abhishek sharma</h3>
-                            <p class="testimonial-sub">PHD Admission Success</p>
-                            <div class="testimonial-rating">★★★★★</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    @endforeach
+                @else
+                    <p class="text-center text-muted">No testimonials found.</p>
+                @endif            </div>
 
             <!-- View More Button -->
-            <div class="text-center" style="margin-top:76px;">
-                <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
-                    View More
-                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                </button>
+            <div class="text-center">
+                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
             </div>
         </div>
     </section>
@@ -1469,132 +1054,43 @@
             <!-- Feedback Cards Swiper -->
             <div class="swiper feedback-swiper" style="overflow: hidden;padding:0px 50px 100px 50px;">
                 <div class="swiper-wrapper">
-                    <!-- Feedback 1 -->
-                    <div class="swiper-slide h-auto">
-                        <div class="feedback-card">
-                            <div>
-                                <div class="feedback-rating">★★★★★</div>
-                                <p class="feedback-text">
-                                    Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                    minus id quod maxime placeat facere possimus.
-                                </p>
-                            </div>
-                            <div class="feedback-author-row">
-                                <img src="assets/images/mentor_2.png" alt="User Profile" class="feedback-avatar">
-                                <div>
-                                    <h4 class="feedback-author-name">Serhiy Hipskyy</h4>
-                                    <span class="feedback-author-title">CEO Universal</span>
+                    @if(isset($testimonials) && $testimonials->count() > 0)
+                        @foreach($testimonials as $testimonial)
+                        <div class="swiper-slide h-auto">
+                            <div class="feedback-card h-100 d-flex flex-column">
+                                <div class="mb-auto">
+                                    <div class="feedback-rating">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= $testimonial->rating)
+                                                ★
+                                            @else
+                                                ☆
+                                            @endif
+                                        @endfor
+                                    </div>
+                                    <p class="feedback-text">
+                                        {{ $testimonial->content }}
+                                    </p>
+                                </div>
+                                <div class="feedback-author-row mt-4">
+                                    <img src="{{ $testimonial->image ? env('BACKEND_URL') . '/' . $testimonial->image : asset('assets/images/mentor_2.png') }}" alt="{{ $testimonial->name }}" class="feedback-avatar">
+                                    <div>
+                                        <h4 class="feedback-author-name">{{ $testimonial->name }}</h4>
+                                        <span class="feedback-author-title">{{ $testimonial->role }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Feedback 2 -->
-                    <div class="swiper-slide h-auto">
-                        <div class="feedback-card">
-                            <div>
-                                <div class="feedback-rating">★★★★★</div>
-                                <p class="feedback-text">
-                                    Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                    minus id quod maxime placeat facere possimus.
-                                </p>
-                            </div>
-                            <div class="feedback-author-row">
-                                <img src="assets/images/mentor_3.png" alt="User Profile" class="feedback-avatar">
-                                <div>
-                                    <h4 class="feedback-author-name">Justus Menke</h4>
-                                    <span class="feedback-author-title">CEO Eronaman</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Feedback 3 -->
-                    <div class="swiper-slide h-auto">
-                        <div class="feedback-card">
-                            <div>
-                                <div class="feedback-rating">★★★★★</div>
-                                <p class="feedback-text">
-                                    Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                    minus id quod maxime placeat facere possimus.
-                                </p>
-                            </div>
-                            <div class="feedback-author-row">
-                                <img src="assets/images/mentor_4.png" alt="User Profile" class="feedback-avatar">
-                                <div>
-                                    <h4 class="feedback-author-name">Britain Eriksen</h4>
-                                    <span class="feedback-author-title">CEO Universal</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Feedback 1 -->
-                    <div class="swiper-slide h-auto">
-                        <div class="feedback-card">
-                            <div>
-                                <div class="feedback-rating">★★★★★</div>
-                                <p class="feedback-text">
-                                    Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                    minus id quod maxime placeat facere possimus.
-                                </p>
-                            </div>
-                            <div class="feedback-author-row">
-                                <img src="assets/images/mentor_2.png" alt="User Profile" class="feedback-avatar">
-                                <div>
-                                    <h4 class="feedback-author-name">Serhiy Hipskyy</h4>
-                                    <span class="feedback-author-title">CEO Universal</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Feedback 2 -->
-                    <div class="swiper-slide h-auto">
-                        <div class="feedback-card">
-                            <div>
-                                <div class="feedback-rating">★★★★★</div>
-                                <p class="feedback-text">
-                                    Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                    minus id quod maxime placeat facere possimus.
-                                </p>
-                            </div>
-                            <div class="feedback-author-row">
-                                <img src="assets/images/mentor_3.png" alt="User Profile" class="feedback-avatar">
-                                <div>
-                                    <h4 class="feedback-author-name">Justus Menke</h4>
-                                    <span class="feedback-author-title">CEO Eronaman</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Feedback 3 -->
-                    <div class="swiper-slide h-auto">
-                        <div class="feedback-card">
-                            <div>
-                                <div class="feedback-rating">★★★★★</div>
-                                <p class="feedback-text">
-                                    Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                    minus id quod maxime placeat facere possimus.
-                                </p>
-                            </div>
-                            <div class="feedback-author-row">
-                                <img src="assets/images/mentor_4.png" alt="User Profile" class="feedback-avatar">
-                                <div>
-                                    <h4 class="feedback-author-name">Britain Eriksen</h4>
-                                    <span class="feedback-author-title">CEO Universal</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        @endforeach
+                    @else
+                        <p class="text-center w-100">No testimonials found.</p>
+                    @endif
                 </div>
-            </div>
-
-            <!-- View More Button -->
-            <div class="text-center">
-                <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
-                    View More
-                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                </button>
             </div>
         </div>
     </section>
+
+    
 
     <!-- Find The Perfect University For You Section -->
     <section class="perfect-university-section ptb-70" style="padding-bottom: 27px;">
@@ -2496,10 +1992,7 @@
 
             <!-- View More Button -->
             <div class="text-center">
-                <button class="btn btn-enrollzy btn-enrollzy-lg" type="button">
-                    View More
-                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                </button>
+                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
             </div>
         </div>
     </section>
