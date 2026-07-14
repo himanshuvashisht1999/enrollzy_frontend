@@ -2,6 +2,9 @@
 @section('content')
 <!-- Main Content Section -->
     <main class="pb-5 hero-sec">
+        @php
+            $firstHero = $heroSliders->first();
+        @endphp
         <div class="bg-square">
             <img src="assets/images/banner-square-img.svg" alt="">
         </div>
@@ -11,18 +14,21 @@
                 <div class="col-lg-6 col-12 text-center text-lg-start">
                     <!-- Marketplace Badge -->
                     <div class="mb-4">
-                        <span class="marketplace-badge">India's no.1 Education Market place</span>
+                        <span class="marketplace-badge">{{ $firstHero->badge_text ?? "India's no.1 Education Market place" }}</span>
                     </div>
 
                     <!-- Main Heading -->
                     <h1 class="hero-title">
-                        Find your path.<br>
-                        <span class="text-orange">Learn, Apply,</span><br>
-                        <span class="fst-italic">Get Hired.</span>
+                        {!! $firstHero->heading ?? 'Find your path.<br><span class="text-orange">Learn, Apply,</span><br><span class="fst-italic">Get Hired.</span>' !!}
                     </h1>
+                    @if(!empty($firstHero->subheading))
+                        <div class="hero-subtitle mb-4">
+                            {!! $firstHero->subheading !!}
+                        </div>
+                    @endif
 
                     <!-- Search Capsule -->
-                    <div class="search-bar-container mx-auto mx-lg-0 ">
+                    <form action="#" method="GET" class="search-bar-container mx-auto mx-lg-0 ">
                         <div class="dropdown">
                             <button class="search-dropdown" type="button" id="searchFilterDropdown"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -30,14 +36,15 @@
                                 <i class="fa-solid fa-chevron-down" style="color: rgb(0, 0, 0);"></i>
                             </button>
                             <ul class="dropdown-menu border-0 shadow-sm" aria-labelledby="searchFilterDropdown">
-                                <li><a class="dropdown-item" href="#">Colleges</a></li>
-                                <li><a class="dropdown-item" href="#">Courses</a></li>
-                                <li><a class="dropdown-item" href="#">Mentors</a></li>
-                                <li><a class="dropdown-item" href="#">Schools</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="document.getElementById('searchType').value='colleges'; document.getElementById('searchFilterDropdown').firstElementChild.innerText='Colleges';">Colleges</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="document.getElementById('searchType').value='courses'; document.getElementById('searchFilterDropdown').firstElementChild.innerText='Courses';">Courses</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="document.getElementById('searchType').value='mentors'; document.getElementById('searchFilterDropdown').firstElementChild.innerText='Mentors';">Mentors</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="document.getElementById('searchType').value='schools'; document.getElementById('searchFilterDropdown').firstElementChild.innerText='Schools';">Schools</a></li>
                             </ul>
+                            <input type="hidden" name="type" id="searchType" value="">
                         </div>
 
-                        <input type="text" class="search-input" placeholder="Search courses, colleges, mentor"
+                        <input type="text" name="q" class="search-input" placeholder="Search courses, colleges, mentor"
                             aria-label="Search text">
                         <button class="search-btn" type="submit" aria-label="Submit Search">
                             Search
@@ -47,64 +54,73 @@
                                     d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8" />
                             </svg>
                         </button>
-                    </div>
+                    </form>
 
                     <!-- Search Tags -->
                     <div class=" d-flex flex-wrap justify-content-center justify-content-lg-start"
                         style="margin-bottom:41px">
                         <a href="#" class="tag-pill">Top University</a>
                         <a href="#" class="tag-pill">Top Schools</a>
-                        <a href="#" class="tag-pill">Top Schools</a>
-                        <a href="#" class="tag-pill">Top Schools</a>
+                        <a href="#" class="tag-pill">Top Exams</a>
+                        <a href="#" class="tag-pill">Top Courses</a>
                     </div>
 
                     <!-- Statistics Cards -->
                     <div class="stats-container mb-4">
                         <div class="stat-card">
-                            <span class="stat-number">2800+</span>
-                            <span class="stat-label">Institution</span>
+                            <span class="stat-number">{{ $firstHero->stat_1_count ?? '2800+' }}</span>
+                            <span class="stat-label">{{ $firstHero->stat_1_label ?? 'Institution' }}</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-number">1.2L+</span>
-                            <span class="stat-label">Student Enrolled</span>
+                            <span class="stat-number">{{ $firstHero->stat_2_count ?? '1.2L+' }}</span>
+                            <span class="stat-label">{{ $firstHero->stat_2_label ?? 'Student Enrolled' }}</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-number">4500+</span>
-                            <span class="stat-label">Scholarship's</span>
+                            <span class="stat-number">{{ $firstHero->stat_3_count ?? '4500+' }}</span>
+                            <span class="stat-label">{{ $firstHero->stat_3_label ?? "Scholarship's" }}</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column (Robot Hand Image & Carousel Slider) -->
+                <!-- Right Column (Carousel Slider) -->
                 <div class="col-lg-6 col-12 d-flex flex-column align-items-center">
                     <div class="hero-image-card swiper hero-swiper mb-4" style="overflow: hidden;">
                         <div class="swiper-wrapper">
-                            <!-- Slide 1 -->
-                            <div class="swiper-slide d-flex align-items-center justify-content-center">
-                                <img src="assets/images/banner-image.svg" alt="Futuristic Glowing Cybernetic Hand"
-                                    class="img-fluid hero-slide-img"
-                                    style="border-radius: 20px; object-fit: cover; width: 100%; height: 100%;">
-                            </div>
-                            <!-- Slide 2 -->
-                            <div class="swiper-slide d-flex align-items-center justify-content-center">
-                                <img src="assets/images/banner-image.svg" alt="Expert Mentor"
-                                    class="img-fluid hero-slide-img"
-                                    style="border-radius: 20px; object-fit: cover; width: 100%; height: 100%;">
-                            </div>
-                            <!-- Slide 3 -->
-                            <div class="swiper-slide d-flex align-items-center justify-content-center">
-                                <img src="assets/images/banner-image.svg" alt="Academic Guide"
-                                    class="img-fluid hero-slide-img"
-                                    style="border-radius: 20px; object-fit: cover; width: 100%; height: 100%;">
+                            @if($heroSliders->count() > 0)
+                                @foreach($heroSliders as $slider)
+                                    <div class="swiper-slide d-flex align-items-center justify-content-center">
+                                        <img src="{{ env('BACKEND_URL') . '/' . $slider->image_path }}" alt="{{ $slider->heading }}"
+                                            class="img-fluid hero-slide-img"
+                                            style="border-radius: 20px; object-fit: cover; width: 100%; height: 100%;">
+                                    </div>
+                                @endforeach
+                            @else
+                                <!-- Fallback if no dynamic slides -->
+                                <div class="swiper-slide d-flex align-items-center justify-content-center">
+                                    <img src="assets/images/banner-image.svg" alt="Futuristic Glowing Cybernetic Hand"
+                                        class="img-fluid hero-slide-img"
+                                        style="border-radius: 20px; object-fit: cover; width: 100%; height: 100%;">
+                                </div>
+                                <div class="swiper-slide d-flex align-items-center justify-content-center">
+                                    <img src="assets/images/banner-image.svg" alt="Expert Mentor"
+                                        class="img-fluid hero-slide-img"
+                                        style="border-radius: 20px; object-fit: cover; width: 100%; height: 100%;">
+                                </div>
+                            @endif
+                        </div>
+                        <!-- Carousel Navigation -->
+                        <div class="d-flex justify-content-center mt-3">
+                            <div class="carousel-dots d-flex gap-2">
+                                <!-- Swiper pagination will be generated here -->
                             </div>
                         </div>
                     </div>
-                    <!-- Carousel Pagination Dots -->
-                    <div class="carousel-dots"></div>
                 </div>
             </div>
         </div>
     </main>
+
+    
 
 
     <!-- Categories Section -->

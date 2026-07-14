@@ -7,12 +7,12 @@
         </div>
         <div class="container">
             <div class="about-hero-container">
-                <img src="{{ asset('assets/images/school-detail-banner-img.png') }}" alt="" />
+                <img src="{{ $coaching->cover_image_url ? (str_starts_with($coaching->cover_image_url, 'http') ? $coaching->cover_image_url : env('BACKEND_URL') . '/' . ltrim($coaching->cover_image_url, '/')) : asset('assets/images/school-detail-banner-img.png') }}" alt="{{ $coaching->name }}" />
 
                 <!-- Centered Badge (Placed outside card to prevent clipping) -->
                 <div class="about-us-badge-wrapper">
-                    <button class="about-us-badge">The Doon School</button>
-                    <p>Dehradun, Uttrakhand</p>
+                    <button class="about-us-badge">{{ mb_strtoupper($coaching->name) }}</button>
+                    <p>{{ $location }}</p>
                 </div>
 
                 <!-- Green Down Arrow Button -->
@@ -35,9 +35,7 @@
                     <li class="breadcrumb-item">
                         <a href="all-schools.html" class="text-decoration-none active text-primary">Schools</a>
                     </li>
-                    <li class="breadcrumb-item active text-primary" aria-current="page">
-                        Birla Vidya Mandir Nainital
-                    </li>
+                    <li class="breadcrumb-item active text-primary" aria-current="page">{{ $coaching->name }}</li>
                 </ol>
             </nav>
         </div>
@@ -50,49 +48,30 @@
             <div class="sd-info-card">
                 <div class="sd-title-row">
                     <div class="sd-title-box">
-                        <h1 class="sd-title">The Doon School</h1>
-                        <a href="#" class="sd-location"><i class="fa-solid fa-location-dot me-1"></i> Dehradun
-                            (Uttrakhand)</a>
+                        <h1 class="sd-title">{{ $coaching->name }}</h1>
+                        <a href="#" class="sd-location"><i class="fa-solid fa-location-dot me-1"></i> {{ $location }}</a>
                     </div>
-                    <span class="sd-status-badge">
-                        <span class="sd-status-dot"></span> Status: Admission ongoing
-                    </span>
+                    <span class="sd-status-badge">\n                        <span class="sd-status-dot"></span> Status: {{ $coaching->status == 1 ? 'Admission ongoing' : 'Closed' }}\n                    </span>
                 </div>
 
                 <div class="sd-meta-row">
                     <div class="sd-meta-item">
-                        <i class="fa-solid fa-book-open"></i> CBSE
+                        <i class="fa-solid fa-book-open"></i> {{ implode(', ', $boards) ?: 'N/A' }}
                     </div>
                     <div class="sd-meta-item">
-                        <i class="fa-solid fa-graduation-cap"></i> 6 - 12 Class
+                        <i class="fa-solid fa-graduation-cap"></i> {{ implode(', ', $grades) ?: 'N/A' }}
                     </div>
                     <div class="sd-meta-item">
-                        <i class="fa-solid fa-calendar-days"></i> Estd. 1897
+                        <i class="fa-solid fa-calendar-days"></i> Estd. {{ $coaching->established_year ?: 'N/A' }}
                     </div>
                 </div>
 
                 <div class="sd-views-row">
-                    <i class="fa-regular fa-eye"></i> 11.2k Views
+                    <i class="fa-regular fa-eye"></i> {{ $coaching->total_reviews ?? '0' }} Views
                 </div>
 
                 <h3 class="sd-about-title">About us</h3>
-                <p class="sd-about-desc">
-                    The history of The Scindia School provides a fascinating insight
-                    into the changes happening in India from feudal times to the modern
-                    day. The Scindia School was founded as The Sardar School in 1897 by
-                    the visionary HH Maharaja Madhavrao Scindia I.
-                </p>
-                <p class="sd-about-desc mb-0">
-                    The turn of the nineteenth century was a period of turmoil and
-                    disorientation, as the colonial system of education with English as
-                    the medium of instruction, was displacing the traditional
-                    pathshalas, madarsas and gurukuls. However, even then, the school
-                    captured the best of the learning of the new world and combined it
-                    with the finest of timeless India. In this respect, The Scindia
-                    School has been the torchbearer of modern education systems,
-                    combining it with a unique Indian ethos. It has been, in every way,
-                    always one step ahead of the times.
-                </p>
+                <div class="sd-about-desc mb-0">{!! $coaching->about_organisation !!}</div>
             </div>
         </div>
     </div>

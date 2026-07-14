@@ -28,7 +28,9 @@ class PageController extends Controller
         
         $coachingInstitutes = \App\Models\Organisation::where('organisation_type_id', 3)->where('status', 1)->take(6)->get();
 
-        return view('index', compact('boardingSchools', 'noteworthy_categories', 'faqs', 'home_services', 'top_exams', 'video_testimonials', 'blogs', 'testimonials', 'schoolsCount', 'coachingCount', 'universitiesCount', 'mentorsCount', 'coachingInstitutes', 'mentors'));
+        $heroSliders = \Illuminate\Support\Facades\DB::table('hero_sliders')->where('is_active', 1)->orderBy('sort_order')->get();
+
+        return view('index', compact('boardingSchools', 'noteworthy_categories', 'faqs', 'home_services', 'top_exams', 'video_testimonials', 'blogs', 'testimonials', 'schoolsCount', 'coachingCount', 'universitiesCount', 'mentorsCount', 'coachingInstitutes', 'mentors', 'heroSliders'));
     }
     public function about() { return view('about'); }
     
@@ -62,7 +64,42 @@ class PageController extends Controller
         return view('top-exam-detail', compact('exam'));
     }
     
-    public function contactUs() { return view('contact-us'); }
+    public function contactUs() {
+        $contactDetails = \Illuminate\Support\Facades\DB::table('contact_us_details')->first();
+        return view('contact-us', compact('contactDetails'));
+    }
+
+    public function submitContactUs(\Illuminate\Http\Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'company' => 'nullable|string|max:255',
+            'type' => 'nullable|string|max:100',
+            'message' => 'required|string',
+        ]);
+
+        $subjectParts = ['Contact Us'];
+        if ($request->type) $subjectParts[] = 'Type: ' . $request->type;
+        if ($request->company) $subjectParts[] = 'Company: ' . $request->company;
+        
+        $subject = implode(' | ', $subjectParts);
+
+        \Illuminate\Support\Facades\DB::table('leads')->insert([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'subject' => $subject,
+            'type' => 'Student', // ENUM only accepts 'Student','Expert','Alumni'
+            'message' => $request->message,
+            'status' => 'New',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Your message has been sent successfully. We will get back to you soon!');
+    }
+
     public function faq() {
         $categories = \App\Models\FaqCategory::whereNull('parent_id')
             ->with(['faqs' => function($q) {
@@ -85,8 +122,27 @@ class PageController extends Controller
     
     public function scholarships() { return view('scholarships-and-benefits'); }
     public function schoolDetail($slug) {
-        $school = \App\Models\Organisation::where('slug', $slug)->where('organisation_type_id', 4)->where('status', 1)->firstOrFail();
-        return view('school-detail', compact('school'));
+        $school = \App\Models\Organisation::with(['feeStructures', 'admissionRoutes'])
+            ->where('slug', $slug)
+            ->where('organisation_type_id', 4)
+            ->where('status', 1)
+            ->firstOrFail();
+            
+        $locationParts = [];
+        $cities = is_string($school->cities_present_in) ? json_decode($school->cities_present_in, true) : ($school->cities_present_in ?? []);
+        $states = is_string($school->states_present_in) ? json_decode($school->states_present_in, true) : ($school->states_present_in ?? []);
+        if (!empty($cities)) {
+            $locationParts[] = $cities[0];
+        }
+        if (!empty($states)) {
+            $locationParts[] = $states[0];
+        }
+        $location = implode(', ', $locationParts);
+        
+        $boards = is_string($school->education_boards_supported) ? json_decode($school->education_boards_supported, true) : ($school->education_boards_supported ?? []);
+        $grades = is_string($school->education_levels_supported) ? json_decode($school->education_levels_supported, true) : ($school->education_levels_supported ?? []);
+            
+        return view('school-detail', compact('school', 'location', 'boards', 'grades'));
     }
     
     public function allCoaching() {
@@ -99,8 +155,31 @@ class PageController extends Controller
     }
     
     public function coachingDetail($slug) {
-        $coaching = \App\Models\Organisation::where('slug', $slug)->where('organisation_type_id', 3)->where('status', 1)->firstOrFail();
-        return view('coaching-detail', compact('coaching'));
+        $coaching = \App\Models\Organisation::with(['feeStructures', 'admissionRoutes'])
+            ->where('slug', $slug)
+            ->where('organisation_type_id', 3)
+            ->where('status', 1)
+            ->firstOrFail();
+            
+        $locationParts = [];
+        $cities = is_string($coaching->cities_present_in) ? json_decode($coaching->cities_present_in, true) : ($coaching->cities_present_in ?? []);
+        $states = is_string($coaching->states_present_in) ? json_decode($coaching->states_present_in, true) : ($coaching->states_present_in ?? []);
+        if (!empty($cities)) {
+            $locationParts[] = $cities[0];
+        }
+        if (!empty($states)) {
+            $locationParts[] = $states[0];
+        }
+        if (empty($locationParts) && !empty($coaching->head_office_location)) {
+            $location = $coaching->head_office_location;
+        } else {
+            $location = implode(', ', $locationParts);
+        }
+        
+        $boards = is_string($coaching->education_boards_supported) ? json_decode($coaching->education_boards_supported, true) : ($coaching->education_boards_supported ?? []);
+        $grades = is_string($coaching->education_levels_supported) ? json_decode($coaching->education_levels_supported, true) : ($coaching->education_levels_supported ?? []);
+            
+        return view('coaching-detail', compact('coaching', 'location', 'boards', 'grades'));
     }
 
     public function university() { return view('university'); }

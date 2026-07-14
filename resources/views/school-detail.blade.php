@@ -7,12 +7,12 @@
         </div>
         <div class="container">
             <div class="about-hero-container">
-                <img src="{{ asset('assets/images/school-detail-banner-img.png') }}" alt="" />
+                <img src="{{ $school->cover_image_url ? str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : env('BACKEND_URL') . '/' . ltrim($school->cover_image_url, '/') : asset('assets/images/school-detail-banner-img.png') }}" alt="{{ $school->name }}" />
 
                 <!-- Centered Badge (Placed outside card to prevent clipping) -->
                 <div class="about-us-badge-wrapper">
-                    <button class="about-us-badge">The Doon School</button>
-                    <p>Dehradun, Uttrakhand</p>
+                    <button class="about-us-badge">{{ mb_strtoupper($school->name) }}</button>
+                    <p>{{ $location }}</p>
                 </div>
 
                 <!-- Green Down Arrow Button -->
@@ -35,9 +35,7 @@
                     <li class="breadcrumb-item">
                         <a href="all-schools.html" class="text-decoration-none active text-primary">Schools</a>
                     </li>
-                    <li class="breadcrumb-item active text-primary" aria-current="page">
-                        Birla Vidya Mandir Nainital
-                    </li>
+                    <li class="breadcrumb-item active text-primary" aria-current="page">{{ $school->name }}</li>
                 </ol>
             </nav>
         </div>
@@ -50,49 +48,32 @@
             <div class="sd-info-card">
                 <div class="sd-title-row">
                     <div class="sd-title-box">
-                        <h1 class="sd-title">The Doon School</h1>
-                        <a href="#" class="sd-location"><i class="fa-solid fa-location-dot me-1"></i> Dehradun
-                            (Uttrakhand)</a>
+                        <h1 class="sd-title">{{ $school->name }}</h1>
+                        <a href="#" class="sd-location"><i class="fa-solid fa-location-dot me-1"></i> {{ $location }}</a>
                     </div>
                     <span class="sd-status-badge">
-                        <span class="sd-status-dot"></span> Status: Admission ongoing
+                        <span class="sd-status-dot"></span> Status: {{ $school->status == 1 ? 'Admission ongoing' : 'Closed' }}
                     </span>
                 </div>
 
                 <div class="sd-meta-row">
                     <div class="sd-meta-item">
-                        <i class="fa-solid fa-book-open"></i> CBSE
+                        <i class="fa-solid fa-book-open"></i> {{ implode(', ', $boards) ?: 'N/A' }}
                     </div>
                     <div class="sd-meta-item">
-                        <i class="fa-solid fa-graduation-cap"></i> 6 - 12 Class
+                        <i class="fa-solid fa-graduation-cap"></i> {{ implode(', ', $grades) ?: 'N/A' }}
                     </div>
                     <div class="sd-meta-item">
-                        <i class="fa-solid fa-calendar-days"></i> Estd. 1897
+                        <i class="fa-solid fa-calendar-days"></i> Estd. {{ $school->established_year ?: 'N/A' }}
                     </div>
                 </div>
 
                 <div class="sd-views-row">
-                    <i class="fa-regular fa-eye"></i> 11.2k Views
+                    <i class="fa-regular fa-eye"></i> {{ $school->total_reviews ?? '0' }} Views
                 </div>
 
                 <h3 class="sd-about-title">About us</h3>
-                <p class="sd-about-desc">
-                    The history of The Scindia School provides a fascinating insight
-                    into the changes happening in India from feudal times to the modern
-                    day. The Scindia School was founded as The Sardar School in 1897 by
-                    the visionary HH Maharaja Madhavrao Scindia I.
-                </p>
-                <p class="sd-about-desc mb-0">
-                    The turn of the nineteenth century was a period of turmoil and
-                    disorientation, as the colonial system of education with English as
-                    the medium of instruction, was displacing the traditional
-                    pathshalas, madarsas and gurukuls. However, even then, the school
-                    captured the best of the learning of the new world and combined it
-                    with the finest of timeless India. In this respect, The Scindia
-                    School has been the torchbearer of modern education systems,
-                    combining it with a unique Indian ethos. It has been, in every way,
-                    always one step ahead of the times.
-                </p>
+                <div class="sd-about-desc mb-0">{!! $school->about_organisation !!}</div>
             </div>
         </div>
     </div>
@@ -274,20 +255,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Row 1 -->
+                                    @forelse($school->admissionRoutes as $route)
                                     <tr>
-                                        <td>Class 6</td>
+                                        <td>{{ $route->course->name ?? 'Class 6' }}</td>
                                         <td>2026-2027</td>
                                         <td>
                                             <div class="fw-bold" style="color: #0d1b2a; font-size: 14px">
                                                 Last Date
                                             </div>
                                             <div class="text-muted" style="font-size: 11px">
-                                                Jul 31, 2025
+                                                {{ $route->cutoff_year_wise ?? 'Jul 31, 2025' }}
                                             </div>
                                         </td>
-                                        <td><span class="sd-badge-ongoing">Ongoing</span></td>
-                                        <td class="fw-bold" style="color: #0d1b2a">0</td>
+                                        <td><span class="sd-badge-ongoing">{{ $route->status == 1 ? 'Ongoing' : 'Closed' }}</span></td>
+                                        <td class="fw-bold" style="color: #0d1b2a">{{ $route->application_fee ?? '0' }}</td>
                                         <td>
                                             <div class="sd-table-btn-row">
                                                 <button class="btn-sd-apply">Apply</button>
@@ -295,69 +276,11 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <!-- Row 2 -->
+                                    @empty
                                     <tr>
-                                        <td>Class 6</td>
-                                        <td>2026-2027</td>
-                                        <td>
-                                            <div class="fw-bold" style="color: #0d1b2a; font-size: 14px">
-                                                Last Date
-                                            </div>
-                                            <div class="text-muted" style="font-size: 11px">
-                                                Jul 31, 2025
-                                            </div>
-                                        </td>
-                                        <td><span class="sd-badge-ongoing">Ongoing</span></td>
-                                        <td class="fw-bold" style="color: #0d1b2a">0</td>
-                                        <td>
-                                            <div class="sd-table-btn-row">
-                                                <button class="btn-sd-apply">Apply</button>
-                                                <button class="btn-sd-enquire">Enquire</button>
-                                            </div>
-                                        </td>
+                                        <td colspan="6" class="text-center text-muted py-3">No admission routes available at the moment.</td>
                                     </tr>
-                                    <!-- Row 3 -->
-                                    <tr>
-                                        <td>Class 6</td>
-                                        <td>2026-2027</td>
-                                        <td>
-                                            <div class="fw-bold" style="color: #0d1b2a; font-size: 14px">
-                                                Last Date
-                                            </div>
-                                            <div class="text-muted" style="font-size: 11px">
-                                                Jul 31, 2025
-                                            </div>
-                                        </td>
-                                        <td><span class="sd-badge-ongoing">Ongoing</span></td>
-                                        <td class="fw-bold" style="color: #0d1b2a">0</td>
-                                        <td>
-                                            <div class="sd-table-btn-row">
-                                                <button class="btn-sd-apply">Apply</button>
-                                                <button class="btn-sd-enquire">Enquire</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <!-- Row 4 -->
-                                    <tr>
-                                        <td>Class 6</td>
-                                        <td>2026-2027</td>
-                                        <td>
-                                            <div class="fw-bold" style="color: #0d1b2a; font-size: 14px">
-                                                Last Date
-                                            </div>
-                                            <div class="text-muted" style="font-size: 11px">
-                                                Jul 31, 2025
-                                            </div>
-                                        </td>
-                                        <td><span class="sd-badge-ongoing">Ongoing</span></td>
-                                        <td class="fw-bold" style="color: #0d1b2a">0</td>
-                                        <td>
-                                            <div class="sd-table-btn-row">
-                                                <button class="btn-sd-apply">Apply</button>
-                                                <button class="btn-sd-enquire">Enquire</button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -541,22 +464,25 @@
                         </div>
 
                         <div class="row g-3">
-                            <div class="col-md-4 col-sm-6">
+                            @if($school->cover_image_url)
+                            <div class="col-md-6 col-sm-6">
                                 <div class="sd-gallery-item">
-                                    <img src="{{ asset('assets/images/school-img-1.png') }}" alt="Doon School landscape 1" />
+                                    <img src="{{ str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : env('BACKEND_URL') . '/' . ltrim($school->cover_image_url, '/') }}" alt="{{ $school->name }} Cover" />
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-6">
+                            @endif
+                            @if($school->logo_url)
+                            <div class="col-md-6 col-sm-6">
                                 <div class="sd-gallery-item">
-                                    <span class="sd-video-play-btn"><i class="fa-solid fa-play"></i></span>
-                                    <img src="{{ asset('assets/images/school-img-2.png') }}" alt="Doon School landscape 2" />
+                                    <img src="{{ str_starts_with($school->logo_url, 'http') ? $school->logo_url : env('BACKEND_URL') . '/' . ltrim($school->logo_url, '/') }}" alt="{{ $school->name }} Logo" style="object-fit: contain;" />
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-12">
-                                <div class="sd-gallery-item">
-                                    <img src="{{ asset('assets/images/school-img-3.png') }}" alt="Doon School landscape 3" />
-                                </div>
+                            @endif
+                            @if(!$school->cover_image_url && !$school->logo_url)
+                            <div class="col-12">
+                                <p class="text-center text-muted py-3">No images available for this school.</p>
                             </div>
+                            @endif
                         </div>
                     </div>
 
@@ -745,8 +671,7 @@
                                         <i class="fa-solid fa-location-dot"></i>
                                     </div>
                                     <p class="sd-contact-text">
-                                        Lorem ipsum dummy text free lorem ipsum dummy text imp free
-                                        lorem ipsum dummy text.
+                                        {{ $school->head_office_location ?? $location }}
                                     </p>
                                 </div>
                             </div>
@@ -754,9 +679,9 @@
                             <div class="col-md-3 col-sm-6">
                                 <div class="sd-contact-card">
                                     <div class="sd-contact-icon">
-                                        <i class="fa-solid fa-envelope"></i>
+                                        <i class="fa-solid fa-globe"></i>
                                     </div>
-                                    <p class="sd-contact-text">https://enrollzy.com/school</p>
+                                    <p class="sd-contact-text">{{ $school->official_website ?? 'N/A' }}</p>
                                 </div>
                             </div>
                             <!-- Col 3 -->
@@ -765,16 +690,16 @@
                                     <div class="sd-contact-icon">
                                         <i class="fa-solid fa-phone"></i>
                                     </div>
-                                    <p class="sd-contact-text">+91 9780052489</p>
+                                    <p class="sd-contact-text">{{ $school->helpdesk_contact_number ?? 'N/A' }}</p>
                                 </div>
                             </div>
                             <!-- Col 4 -->
                             <div class="col-md-3 col-sm-6">
                                 <div class="sd-contact-card">
                                     <div class="sd-contact-icon">
-                                        <i class="fa-solid fa-globe"></i>
+                                        <i class="fa-solid fa-envelope"></i>
                                     </div>
-                                    <p class="sd-contact-text">enrollzy@gmail.com</p>
+                                    <p class="sd-contact-text">{{ $school->helpdesk_email ?? 'N/A' }}</p>
                                 </div>
                             </div>
                         </div>

@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<!-- Main Content Section -->
-    <main class="about-hero-section ptb-70">
+<main class="about-hero-section ptb-70">
       <div class="bg-square">
         <img src="assets/images/banner-square-img.svg" alt="" />
       </div>
@@ -106,7 +105,7 @@
                   <table>
                     <tr>
                       <td class="label-text">Email Us</td>
-                      <td class="val-text">info@enrollzy.com</td>
+                      <td class="val-text">{{ $contactDetails->email_support ?? "info@enrollzy.com" }}</td>
                     </tr>
                     <tr>
                       <td class="label-text">Support Email</td>
@@ -236,14 +235,27 @@
                 shortly.
               </p>
 
-              <form action="#">
+              <form action="{{ route('contact.submit') }}" method="POST">
+                @csrf
+                @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label class="form-label">Full Name</label>
                     <input
                       type="text"
                       class="form-control"
-                      placeholder="Enter your name"
+                      name="name" placeholder="Enter your name"
                       required
                     />
                   </div>
@@ -252,7 +264,7 @@
                     <input
                       type="tel"
                       class="form-control"
-                      placeholder="Enter your Phone Number"
+                      name="phone" placeholder="Enter your Phone Number"
                       required
                     />
                   </div>
@@ -261,7 +273,7 @@
                     <input
                       type="email"
                       class="form-control"
-                      placeholder="Email address"
+                      name="email" placeholder="Email address"
                       required
                     />
                   </div>
@@ -270,12 +282,12 @@
                     <input
                       type="text"
                       class="form-control"
-                      placeholder="Company name"
+                      name="company" placeholder="Company name"
                     />
                   </div>
                   <div class="col-12">
                     <label class="form-label">Business Type</label>
-                    <select class="form-select">
+                    <select name="type" class="form-select">
                       <option selected>School Admission</option>
                       <option>University Admission</option>
                       <option>Coaching Programs</option>
@@ -289,7 +301,7 @@
                     <textarea
                       class="form-control"
                       rows="4"
-                      placeholder="write message..."
+                      name="message" placeholder="write message..."
                       required
                     ></textarea>
                   </div>
@@ -470,4 +482,5 @@
     </section>
 
     <!-- Curved Footer Section -->
+    
 @endsection

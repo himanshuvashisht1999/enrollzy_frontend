@@ -3,14 +3,14 @@
             <div class="container d-block">
                 <!-- Logo -->
                 <div class="d-flex header-d-fl">
-                    <a class="logo navbar-brand d-flex align-items-center text-decoration-none" href="#">
+                    <a class="logo navbar-brand d-flex align-items-center text-decoration-none" href="{{ url('/') }}">
                         <img src="{{ asset('assets/images/logo.svg') }}" alt="">
                     </a>
                     <!-- Navigation Pills (Stacked and Centered) -->
                     <div class="offcanvas-mobile offcanvas offcanvas-start order-lg-2" tabindex="-1" id="enrollzyNavbar"
                         aria-labelledby="enrollzyNavbarLabel">
                         <div class="offcanvas-header d-lg-none">
-                            <a class="logo text-decoration-none" href="#">
+                            <a class="logo text-decoration-none" href="{{ url('/') }}">
                                 <img src="{{ asset('assets/images/logo.svg') }}" alt="Enrollzy Logo" style="width: 140px;">
                             </a>
                             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
