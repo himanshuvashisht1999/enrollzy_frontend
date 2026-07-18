@@ -16,7 +16,7 @@ Route::post('/site-login', function (\Illuminate\Http\Request $request) {
     return back()->with('error', 'Invalid username or password');
 })->name('site-login.submit');
 
-Route::middleware(['simple.auth'])->group(function () {
+Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(function () {
     Route::get('/', [PageController::class, 'index']);
     Route::get('/about', [PageController::class, 'about']);
     Route::get('/all-schools', [PageController::class, 'allSchools']);
