@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
 <main class="about-hero-section ptb-70">
       <div class="bg-square">
@@ -64,18 +65,9 @@
                     </div>
 
                     <ul class="faq-topic-list">
-                        <li class="faq-topic-item active">All Topics</li>
-                        <li class="faq-topic-item">Online Degree FAQs</li>
-                        <li class="faq-topic-item">Admission FAQs</li>
-                        <li class="faq-topic-item">Degrees & Courses</li>
-                        <li class="faq-topic-item">Top Universities & Rankings</li>
-                        <li class="faq-topic-item">Technology, Engg & Future Skills</li>
-                        <li class="faq-topic-item">Career & Job Prospects</li>
-                        <li class="faq-topic-item">Fees & Cost of Education</li>
-                        <li class="faq-topic-item">Placements & Career FAQs</li>
-                        <li class="faq-topic-item">Scholarships & Financial Aid</li>
-                        <li class="faq-topic-item">Course Selection FAQs</li>
-                        <li class="faq-topic-item">Exam FAQs</li>
+                        @foreach($categories as $index => $category)
+                        <li class="faq-topic-item {{ $index === 0 ? 'active' : '' }}" data-category-id="{{ $category->id }}">{{ $category->name }}</li>
+                        @endforeach
                     </ul>
 
                     <div class="faq-contact-widget">
@@ -87,100 +79,36 @@
 
                 <!-- Right Accordion Column -->
                 <div class="col-lg-8 col-md-8">
-                    <div class="faq-active-badge">Online Degree FAQs</div>
+                    <div class="faq-active-badge">{{ $categories->count() > 0 ? $categories->first()->name : 'FAQs' }}</div>
 
                     <div class="accordion" id="faqAccordion">
-                        <!-- Accordion 1 (Expanded) -->
-                        <div class="faq-accordion-item">
-                            <div class="faq-accordion-header" data-bs-toggle="collapse" data-bs-target="#faq-collapse-1" aria-expanded="true">
-                                <span>Are online degrees valid in India?</span>
-                                <i class="fa-solid fa-minus text-muted" style="font-size: 13px;"></i>
+                        @foreach($categories as $index => $category)
+                            <div class="faq-category-content" id="content-{{ $category->id }}" style="display: {{ $index === 0 ? 'block' : 'none' }};">
+                                @if($category->faqs->count() > 0)
+                                    @foreach($category->faqs as $faqIndex => $faq)
+                                        <div class="faq-accordion-item faq-search-item">
+                                            <div class="faq-accordion-header {{ $index === 0 && $faqIndex === 0 ? '' : 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#faq-collapse-{{ $faq->id }}" aria-expanded="{{ $index === 0 && $faqIndex === 0 ? 'true' : 'false' }}">
+                                                <span class="faq-question-text">{{ $faq->question }}</span>
+                                                <i class="fa-solid {{ $index === 0 && $faqIndex === 0 ? 'fa-minus' : 'fa-plus' }} text-muted" style="font-size: 13px;"></i>
+                                            </div>
+                                            <div id="faq-collapse-{{ $faq->id }}" class="collapse {{ $index === 0 && $faqIndex === 0 ? 'show' : '' }}" data-bs-parent="#faqAccordion">
+                                                <div class="faq-accordion-content faq-answer-text">
+                                                    {!! nl2br(e($faq->answer)) !!}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="text-center py-5">
+                                        <p class="text-muted">No FAQs found for this category.</p>
+                                    </div>
+                                @endif
                             </div>
-                            <div id="faq-collapse-1" class="collapse show" data-bs-parent="#faqAccordion">
-                                <div class="faq-accordion-content">
-                                    Yes. Online degrees offered by UGC-entitled universities are valid and recognized for higher education, employment, and competitive examinations.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Accordion 2 -->
-                        <div class="faq-accordion-item">
-                            <div class="faq-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#faq-collapse-2" aria-expanded="false">
-                                <span>Is an online MBA worth it?</span>
-                                <i class="fa-solid fa-plus text-muted" style="font-size: 13px;"></i>
-                            </div>
-                            <div id="faq-collapse-2" class="collapse" data-bs-parent="#faqAccordion">
-                                <div class="faq-accordion-content">
-                                    Yes, an online MBA is highly worth it for working professionals as it offers flexibility, UGC recognition, and same career opportunities as a regular MBA.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Accordion 3 -->
-                        <div class="faq-accordion-item">
-                            <div class="faq-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#faq-collapse-3" aria-expanded="false">
-                                <span>How do exams work in online degrees?</span>
-                                <i class="fa-solid fa-plus text-muted" style="font-size: 13px;"></i>
-                            </div>
-                            <div id="faq-collapse-3" class="collapse" data-bs-parent="#faqAccordion">
-                                <div class="faq-accordion-content">
-                                    Online degree exams are typically conducted online via remote proctoring or at designated offline exam centers, depending on the university.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Accordion 4 -->
-                        <div class="faq-accordion-item">
-                            <div class="faq-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#faq-collapse-4" aria-expanded="false">
-                                <span>Can I study abroad after an online degree?</span>
-                                <i class="fa-solid fa-plus text-muted" style="font-size: 13px;"></i>
-                            </div>
-                            <div id="faq-collapse-4" class="collapse" data-bs-parent="#faqAccordion">
-                                <div class="faq-accordion-content">
-                                    Yes, UGC-recognized online degrees are widely accepted by international universities and credential evaluation services like WES for studying abroad.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Accordion 5 -->
-                        <div class="faq-accordion-item">
-                            <div class="faq-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#faq-collapse-5" aria-expanded="false">
-                                <span>What is the duration of online UG and PG courses?</span>
-                                <i class="fa-solid fa-plus text-muted" style="font-size: 13px;"></i>
-                            </div>
-                            <div id="faq-collapse-5" class="collapse" data-bs-parent="#faqAccordion">
-                                <div class="faq-accordion-content">
-                                    Generally, online Undergraduate (UG) degrees take 3 years, while Postgraduate (PG) degrees take 2 years to complete, matching regular courses.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Accordion 6 -->
-                        <div class="faq-accordion-item">
-                            <div class="faq-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#faq-collapse-6" aria-expanded="false">
-                                <span>Is there any placement support?</span>
-                                <i class="fa-solid fa-plus text-muted" style="font-size: 13px;"></i>
-                            </div>
-                            <div id="faq-collapse-6" class="collapse" data-bs-parent="#faqAccordion">
-                                <div class="faq-accordion-content">
-                                    Yes, most top-tier online universities provide dedicated placement assistance, virtual job fairs, resume building, and interview preparation support.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Accordion 7 -->
-                        <div class="faq-accordion-item">
-                            <div class="faq-accordion-header collapsed" data-bs-toggle="collapse" data-bs-target="#faq-collapse-7" aria-expanded="false">
-                                <span>How can I apply for admission?</span>
-                                <i class="fa-solid fa-plus text-muted" style="font-size: 13px;"></i>
-                            </div>
-                            <div id="faq-collapse-7" class="collapse" data-bs-parent="#faqAccordion">
-                                <div class="faq-accordion-content">
-                                    You can apply online directly through our portal by uploading required documents, paying the application fee, and submitting the form.
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
+                </div>
+            </div>
+        </div>
 
                 </div>
             </div>
@@ -190,4 +118,247 @@
 
   
     <!-- Bootstrap Bundle JS -->
+    
+
+    <!-- Swiper Slider JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hero Image Swiper
+            const heroSwiper = new Swiper('.hero-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 0,
+                loop: true,
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.carousel-dots',
+                    bulletClass: 'dot',
+                    bulletActiveClass: 'active',
+                    clickable: true,
+                }
+            });
+
+            // Student Insights & Feedback Swiper
+            const feedbackSwiper = new Swiper('.feedback-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 24,
+                loop: true,
+                navigation: {
+                    nextEl: '.feedback-next-btn',
+                    prevEl: '.feedback-prev-btn',
+                },
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                    },
+                    992: {
+                        slidesPerView: 3,
+                    }
+                }
+            });
+        });
+        (function () {
+            const slider = document.getElementById('perfectUnivTabs');
+            if (!slider) return;
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            let moved = false;
+
+            slider.addEventListener('mousedown', (e) => {
+                isDown = true;
+                moved = false;
+                slider.classList.add('dragging');
+                startX = e.pageX - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            });
+
+            slider.addEventListener('mouseleave', () => {
+                isDown = false;
+                slider.classList.remove('dragging');
+            });
+
+            slider.addEventListener('mouseup', () => {
+                isDown = false;
+                slider.classList.remove('dragging');
+            });
+
+            slider.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - slider.offsetLeft;
+                const walk = x - startX;
+                if (Math.abs(walk) > 5) moved = true; // threshold so clicks still register as clicks
+                slider.scrollLeft = scrollLeft - walk;
+            });
+
+            // Prevent tab click from firing right after a drag
+            slider.addEventListener('click', (e) => {
+                if (moved) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, true);
+        })();
+        (function () {
+            const megaMenu = document.querySelector('.mega-menu-wrapper');
+            if (!megaMenu) return;
+
+            const triggerItems = document.querySelectorAll('.nav-item[data-tab-trigger]');
+            let hideTimeout;
+
+            function showMenu(tabId) {
+                clearTimeout(hideTimeout);
+                megaMenu.classList.add('show-mega');
+
+                // Switch tab sidebar and content panel
+                const sidebarItem = megaMenu.querySelector(`.mega-sidebar-item[data-mega-tab="${tabId}"]`);
+                if (sidebarItem) {
+                    // Remove active classes
+                    megaMenu.querySelectorAll('.mega-sidebar-item').forEach(i => i.classList.remove('active'));
+                    megaMenu.querySelectorAll('.mega-tab-content').forEach(pane => pane.classList.remove('active'));
+
+                    // Set active
+                    sidebarItem.classList.add('active');
+                    const targetPane = megaMenu.querySelector('#' + tabId);
+                    if (targetPane) {
+                        targetPane.classList.add('active');
+                    }
+                }
+            }
+
+            function hideMenu() {
+                hideTimeout = setTimeout(() => {
+                    megaMenu.classList.remove('show-mega');
+                }, 150); // delay to allow moving between trigger and menu
+            }
+
+            triggerItems.forEach(item => {
+                item.addEventListener('mouseenter', function () {
+                    const tabId = this.getAttribute('data-tab-trigger');
+                    showMenu(tabId);
+                });
+
+                item.addEventListener('mouseleave', function () {
+                    hideMenu();
+                });
+            });
+
+            megaMenu.addEventListener('mouseenter', function () {
+                clearTimeout(hideTimeout);
+            });
+
+            megaMenu.addEventListener('mouseleave', function () {
+                hideMenu();
+            });
+
+            // Mega Menu inner sidebar tab switching on hover
+            const sidebarItems = megaMenu.querySelectorAll('.mega-sidebar-item');
+            sidebarItems.forEach(item => {
+                item.addEventListener('mouseenter', function () {
+                    // Remove active classes inside menu
+                    megaMenu.querySelectorAll('.mega-sidebar-item').forEach(i => i.classList.remove('active'));
+                    megaMenu.querySelectorAll('.mega-tab-content').forEach(pane => pane.classList.remove('active'));
+
+                    // Set active
+                    this.classList.add('active');
+                    const targetTabId = this.getAttribute('data-mega-tab');
+                    const targetPane = megaMenu.querySelector('#' + targetTabId);
+                    if (targetPane) {
+                        targetPane.classList.add('active');
+                    }
+                });
+            });
+        })();
+
+        // FAQ Accordions and Topic Switcher logic
+        document.addEventListener('DOMContentLoaded', function () {
+            // Topics switcher
+            const topicItems = document.querySelectorAll('.faq-topic-item');
+            const activeBadge = document.querySelector('.faq-active-badge');
+            const categoryContents = document.querySelectorAll('.faq-category-content');
+            
+            topicItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    // Update active class
+                    topicItems.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update active category badge text
+                    if (activeBadge) {
+                        activeBadge.textContent = this.textContent;
+                    }
+                    
+                    // Show/hide category content
+                    const categoryId = this.getAttribute('data-category-id');
+                    categoryContents.forEach(content => {
+                        content.style.display = 'none';
+                        if (content.id === 'content-' + categoryId) {
+                            content.style.display = 'block';
+                        }
+                    });
+                });
+            });
+
+            // Search logic
+            const searchInput = document.querySelector('.faq-search-wrapper input');
+            if(searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.toLowerCase().trim();
+                    const faqItems = document.querySelectorAll('.faq-search-item');
+                    
+                    if (query === '') {
+                        // Reset search
+                        faqItems.forEach(item => item.style.display = 'block');
+                        const activeItem = document.querySelector('.faq-topic-item.active');
+                        if (activeItem) activeItem.click();
+                        return;
+                    }
+
+                    // Hide all category constraints and badge
+                    categoryContents.forEach(content => content.style.display = 'block');
+                    topicItems.forEach(t => t.classList.remove('active'));
+                    if (activeBadge) activeBadge.textContent = 'Search Results';
+
+                    faqItems.forEach(item => {
+                        const qText = item.querySelector('.faq-question-text').textContent.toLowerCase();
+                        const aText = item.querySelector('.faq-answer-text').textContent.toLowerCase();
+                        if (qText.includes(query) || aText.includes(query)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+            // Bootstrap accordion icon toggle
+            const faqAccordion = document.getElementById('faqAccordion');
+            if (faqAccordion) {
+                faqAccordion.addEventListener('show.bs.collapse', function (e) {
+                    const header = e.target.previousElementSibling;
+                    if (header) {
+                        const icon = header.querySelector('i');
+                        if (icon) {
+                            icon.classList.replace('fa-plus', 'fa-minus');
+                        }
+                    }
+                });
+
+                faqAccordion.addEventListener('hide.bs.collapse', function (e) {
+                    const header = e.target.previousElementSibling;
+                    if (header) {
+                        const icon = header.querySelector('i');
+                        if (icon) {
+                            icon.classList.replace('fa-minus', 'fa-plus');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
 @endsection

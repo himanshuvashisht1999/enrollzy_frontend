@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
 <main class="about-hero-section ptb-70">
       <div class="bg-square">
@@ -331,359 +332,49 @@
 
                     <!-- Cards Row Grid -->
                     <div class="row row-cols-1 row-cols-md-2 g-4 uni-detail-col">
-                        
-                        <!-- Card 1 (JEE Main) -->
-                        <div class="col">
-                            <div class="exam-card">
-                                
-                                <div class="exam-card-logo">
-                                    <img src="assets/images/jee-main-logo.png" alt="">
+            @if(isset($exams) && $exams->count() > 0)
+                @foreach($exams as $exam)
+                <div class="col">
+                    <div class="card h-100 border-0 p-3" style="border: 1px solid #E1E8F1 !important; border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="icon-wrapper d-flex justify-content-center align-items-center rounded-circle me-3" style="width: 50px; height: 50px; border: 1px solid #E1E8F1; flex-shrink: 0;">
+                                    @if($exam->logo)
+                                        <img src="{{ env('BACKEND_URL') . '/' . $exam->logo }}" alt="{{ $exam->name }}" style="max-width:30px;max-height:30px;object-fit:contain;">
+                                    @else
+                                        <img src="{{ asset('assets/images/top-exam-icon-1.png') }}" alt="{{ $exam->name }}">
+                                    @endif
                                 </div>
-                                <h3 class="exam-card-title">JEE Main - (Joint Entrance Examination Main)</h3>
-                                <p class="exam-card-meta">UG &bull; <span class="conducting-body">National Testing Agency (NTA)</span> &bull; <span style="color: #F9AD0B;">Engineering</span></p>
-                                
-                                <div class="exam-card-dates-box">
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Results</span>
-                                        <span class="exam-date-value">20 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row highlighted">
-                                        <span class="exam-date-label">Exam Date</span>
-                                        <span class="exam-date-value">2 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Registration</span>
-                                        <span class="exam-date-value">12 Mar, 2026 to 13 Mar, 2028</span>
-                                    </div>
-                                </div>
-
-                                <div class="exam-card-actions">
-                                    <button class="btn-exam-details"> <i class="fa-regular fa-eye"></i>View Details</button>
-                                    <button class="btn-exam-apply">Apply Now <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></button>
-                                </div>
-
-                                <div class="exam-card-links-grid">
-                                    <a href="#" class="exam-pill-link">Admit Card</a>
-                                    <a href="#" class="exam-pill-link">Analysis</a>
-                                    <a href="#" class="exam-pill-link">Answer Key</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Application Process</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Books</a>
+                                <div>
+                                    <h5 class="card-title fw-bold mb-1" style="font-size: 16px; color: #000;">
+                                        <a href="{{ route('exam.detail', $exam->slug) }}" class="text-decoration-none text-dark">{{ $exam->name }}</a>
+                                    </h5>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col">
-                            <div class="exam-card">
-                                
-                                <div class="exam-card-logo">
-                                    <!-- Green check icon badge -->
-                                     <img src="assets/images/gate-logo.png" alt="">
-                                </div>
-                                <h3 class="exam-card-title">GATE - (Graduate Aptitude Test in Engineering)</h3>
-                                <p class="exam-card-meta">UG &bull; <span class="conducting-body">National Testing Agency (NTA)</span> &bull; <span style="color: #F9AD0B;">Engineering</span></p>
-                                
-                                <div class="exam-card-dates-box">
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Results</span>
-                                        <span class="exam-date-value">20 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row highlighted">
-                                        <span class="exam-date-label">Exam Date</span>
-                                        <span class="exam-date-value">2 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Registration</span>
-                                        <span class="exam-date-value">12 Mar, 2026 to 13 Mar, 2028</span>
-                                    </div>
-                                </div>
-
-                                <div class="exam-card-actions">
-                                    <button class="btn-exam-details"> <i class="fa-regular fa-eye"></i>View Details</button>
-                                    <button class="btn-exam-apply">Apply Now <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></button>
-                                </div>
-
-                                <div class="exam-card-links-grid">
-                                    <a href="#" class="exam-pill-link">Admit Card</a>
-                                    <a href="#" class="exam-pill-link">Analysis</a>
-                                    <a href="#" class="exam-pill-link">Answer Key</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Application Process</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Books</a>
-                                </div>
+                            <p class="card-text text-muted" style="font-size: 13px; line-height: 1.5; margin-bottom: 20px;">
+                                {{ Str::limit(strip_tags($exam->about_exam), 100) }}
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center border-top pt-3 mt-auto">
+                                <span style="font-size: 13px; font-weight: 500; color: #164081;">
+                                    <i class="fa-regular fa-clock me-1"></i> {{ $exam->exam_frequency ?? 'Once a year' }}
+                                </span>
+                                <a href="{{ route('exam.detail', $exam->slug) }}" class="text-decoration-none fw-semibold" style="font-size: 13px; color: #2864C6;">
+                                    Explore <i class="fa-solid fa-chevron-right" style="font-size: 10px; margin-left: 2px;"></i>
+                                </a>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="exam-card">
-                                <span class="exam-card-mode-badge">Online</span>
-                                <div class="exam-card-logo">
-                                    <img src="assets/images/jee-main-logo.png" alt="">
-                                </div>
-                                <h3 class="exam-card-title">JEE Main - (Joint Entrance Examination Main)</h3>
-                                <p class="exam-card-meta">UG &bull; <span class="conducting-body">National Testing Agency (NTA)</span> &bull; <span style="color: #F9AD0B;">Engineering</span></p>
-                                
-                                <div class="exam-card-dates-box">
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Results</span>
-                                        <span class="exam-date-value">20 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row highlighted">
-                                        <span class="exam-date-label">Exam Date</span>
-                                        <span class="exam-date-value">2 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Registration</span>
-                                        <span class="exam-date-value">12 Mar, 2026 to 13 Mar, 2028</span>
-                                    </div>
-                                </div>
-
-                                <div class="exam-card-actions">
-                                    <button class="btn-exam-details"> <i class="fa-regular fa-eye"></i>View Details</button>
-                                    <button class="btn-exam-apply">Apply Now <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></button>
-                                </div>
-
-                                <div class="exam-card-links-grid">
-                                    <a href="#" class="exam-pill-link">Admit Card</a>
-                                    <a href="#" class="exam-pill-link">Analysis</a>
-                                    <a href="#" class="exam-pill-link">Answer Key</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Application Process</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Books</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="exam-card">
-                                <span class="exam-card-mode-badge">Online</span>
-                                <div class="exam-card-logo">
-                                    <!-- Green check icon badge -->
-                                     <img src="assets/images/gate-logo.png" alt="">
-                                </div>
-                                <h3 class="exam-card-title">GATE - (Graduate Aptitude Test in Engineering)</h3>
-                                <p class="exam-card-meta">UG &bull; <span class="conducting-body">National Testing Agency (NTA)</span> &bull; <span style="color: #F9AD0B;">Engineering</span></p>
-                                
-                                <div class="exam-card-dates-box">
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Results</span>
-                                        <span class="exam-date-value">20 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row highlighted">
-                                        <span class="exam-date-label">Exam Date</span>
-                                        <span class="exam-date-value">2 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Registration</span>
-                                        <span class="exam-date-value">12 Mar, 2026 to 13 Mar, 2028</span>
-                                    </div>
-                                </div>
-
-                                <div class="exam-card-actions">
-                                    <button class="btn-exam-details"> <i class="fa-regular fa-eye"></i>View Details</button>
-                                    <button class="btn-exam-apply">Apply Now <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></button>
-                                </div>
-
-                                <div class="exam-card-links-grid">
-                                    <a href="#" class="exam-pill-link">Admit Card</a>
-                                    <a href="#" class="exam-pill-link">Analysis</a>
-                                    <a href="#" class="exam-pill-link">Answer Key</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Application Process</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Books</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="exam-card">
-                                <span class="exam-card-mode-badge">Online</span>
-                                <div class="exam-card-logo">
-                                    <img src="assets/images/jee-main-logo.png" alt="">
-                                </div>
-                                <h3 class="exam-card-title">JEE Main - (Joint Entrance Examination Main)</h3>
-                                <p class="exam-card-meta">UG &bull; <span class="conducting-body">National Testing Agency (NTA)</span> &bull; <span style="color: #F9AD0B;">Engineering</span></p>
-                                
-                                <div class="exam-card-dates-box">
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Results</span>
-                                        <span class="exam-date-value">20 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row highlighted">
-                                        <span class="exam-date-label">Exam Date</span>
-                                        <span class="exam-date-value">2 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Registration</span>
-                                        <span class="exam-date-value">12 Mar, 2026 to 13 Mar, 2028</span>
-                                    </div>
-                                </div>
-
-                                <div class="exam-card-actions">
-                                    <button class="btn-exam-details"> <i class="fa-regular fa-eye"></i>View Details</button>
-                                    <button class="btn-exam-apply">Apply Now <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></button>
-                                </div>
-
-                                <div class="exam-card-links-grid">
-                                    <a href="#" class="exam-pill-link">Admit Card</a>
-                                    <a href="#" class="exam-pill-link">Analysis</a>
-                                    <a href="#" class="exam-pill-link">Answer Key</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Application Process</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Books</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="exam-card">
-                                <span class="exam-card-mode-badge">Online</span>
-                                <div class="exam-card-logo">
-                                    <!-- Green check icon badge -->
-                                     <img src="assets/images/gate-logo.png" alt="">
-                                </div>
-                                <h3 class="exam-card-title">GATE - (Graduate Aptitude Test in Engineering)</h3>
-                                <p class="exam-card-meta">UG &bull; <span class="conducting-body">National Testing Agency (NTA)</span> &bull; <span style="color: #F9AD0B;">Engineering</span></p>
-                                
-                                <div class="exam-card-dates-box">
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Results</span>
-                                        <span class="exam-date-value">20 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row highlighted">
-                                        <span class="exam-date-label">Exam Date</span>
-                                        <span class="exam-date-value">2 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Registration</span>
-                                        <span class="exam-date-value">12 Mar, 2026 to 13 Mar, 2028</span>
-                                    </div>
-                                </div>
-
-                                <div class="exam-card-actions">
-                                    <button class="btn-exam-details"> <i class="fa-regular fa-eye"></i>View Details</button>
-                                    <button class="btn-exam-apply">Apply Now <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></button>
-                                </div>
-
-                                <div class="exam-card-links-grid">
-                                    <a href="#" class="exam-pill-link">Admit Card</a>
-                                    <a href="#" class="exam-pill-link">Analysis</a>
-                                    <a href="#" class="exam-pill-link">Answer Key</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Application Process</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Books</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="exam-card">
-                                <span class="exam-card-mode-badge">Online</span>
-                                <div class="exam-card-logo">
-                                    <img src="assets/images/jee-main-logo.png" alt="">
-                                </div>
-                                <h3 class="exam-card-title">JEE Main - (Joint Entrance Examination Main)</h3>
-                                <p class="exam-card-meta">UG &bull; <span class="conducting-body">National Testing Agency (NTA)</span> &bull; <span style="color: #F9AD0B;">Engineering</span></p>
-                                
-                                <div class="exam-card-dates-box">
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Results</span>
-                                        <span class="exam-date-value">20 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row highlighted">
-                                        <span class="exam-date-label">Exam Date</span>
-                                        <span class="exam-date-value">2 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Registration</span>
-                                        <span class="exam-date-value">12 Mar, 2026 to 13 Mar, 2028</span>
-                                    </div>
-                                </div>
-
-                                <div class="exam-card-actions">
-                                    <button class="btn-exam-details"> <i class="fa-regular fa-eye"></i>View Details</button>
-                                    <button class="btn-exam-apply">Apply Now <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></button>
-                                </div>
-
-                                <div class="exam-card-links-grid">
-                                    <a href="#" class="exam-pill-link">Admit Card</a>
-                                    <a href="#" class="exam-pill-link">Analysis</a>
-                                    <a href="#" class="exam-pill-link">Answer Key</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Application Process</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Books</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="exam-card">
-                                <span class="exam-card-mode-badge">Online</span>
-                                <div class="exam-card-logo">
-                                    <!-- Green check icon badge -->
-                                     <img src="assets/images/gate-logo.png" alt="">
-                                </div>
-                                <h3 class="exam-card-title">GATE - (Graduate Aptitude Test in Engineering)</h3>
-                                <p class="exam-card-meta">UG &bull; <span class="conducting-body">National Testing Agency (NTA)</span> &bull; <span style="color: #F9AD0B;">Engineering</span></p>
-                                
-                                <div class="exam-card-dates-box">
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Results</span>
-                                        <span class="exam-date-value">20 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row highlighted">
-                                        <span class="exam-date-label">Exam Date</span>
-                                        <span class="exam-date-value">2 Apr, 2026 to 20 Apr, 2026</span>
-                                    </div>
-                                    <div class="exam-date-row">
-                                        <span class="exam-date-label">Registration</span>
-                                        <span class="exam-date-value">12 Mar, 2026 to 13 Mar, 2028</span>
-                                    </div>
-                                </div>
-
-                                <div class="exam-card-actions">
-                                    <button class="btn-exam-details"> <i class="fa-regular fa-eye"></i>View Details</button>
-                                    <button class="btn-exam-apply">Apply Now <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i></button>
-                                </div>
-
-                                <div class="exam-card-links-grid">
-                                    <a href="#" class="exam-pill-link">Admit Card</a>
-                                    <a href="#" class="exam-pill-link">Analysis</a>
-                                    <a href="#" class="exam-pill-link">Answer Key</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Application Process</a>
-                                    <a href="#" class="exam-pill-link span-2">Application-form-correction</a>
-                                    <a href="#" class="exam-pill-link span-1">Books</a>
-                                </div>
-                            </div>
-                        </div>
-
-
                     </div>
-
-                    <!-- Pagination -->
-                    <div class="inner-pagination-wrapper">
-              <nav aria-label="Catalog Page Navigation">
-                <ul class="pagination">
-                  <li class="page-item me-4">
-                    <a class="page-link" href="#">Prev</a>
-                  </li>
-                  <li class="page-item active">
-                    <a class="page-num active" href="#">1</a>
-                  </li>
-                  <li class="page-item"><a class="page-num" href="#">2</a></li>
-                  <li class="page-item"><a class="page-num" href="#">3</a></li>
-                  <li class="page-item"><a class="page-num" href="#">4</a></li>
-                  <li class="page-item"><a class="page-num" href="#">5</a></li>
-                  <li class="page-item">
-                    <a class="page-num" href="#">6...</a>
-                  </li>
-                  <li class="page-item ms-4">
-                    <a class="page-link " style="background-color: #3771C8;color: #fff;" href="#">Next</a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
+                </div>
+                @endforeach
+            @else
+                <div class="col-12 text-center">
+                    <p>No exams found.</p>
+                </div>
+            @endif
+          </div>
+          <div class="inner-pagination-wrapper d-flex justify-content-center mt-4">
+            {{ $exams->links('pagination::bootstrap-5') }}
+          </div>
 
                 </div>
             </div>
@@ -695,4 +386,296 @@
    
 
     <!-- Curved Footer Section -->
+    <footer class="footer-gradient-wrapper ptb-70 ">
+
+
+        <!-- Floating Asterisk Shape -->
+
+
+        <div class="container">
+            <div class="footer-card">
+                <div class="row g-5">
+                    <!-- Left Column: Branding, Contact & Socials -->
+                    <div class="col-lg-4">
+                        <!-- Brand Logo -->
+                        <a href="#" class="d-flex align-items-center mb-3 text-decoration-none">
+                            <img src="assets/images/logo.svg" alt="" style="    width: 246px;">
+                        </a>
+                        <!-- Tech description -->
+                        <p class="text-muted mb-4"
+                            style="font-size: 14px; line-height: 1.5; font-weight: 500;color: #777777 !important;">
+                            Enrollzy, a DPIIT-recognized education technology platform, enables students to explore,
+                            compare, and access quality education opportunities with transparency and confidence.
+                        </p>
+
+                        <!-- Contact lists -->
+                        <div class="footer-contact-item">
+                            <span class="footer-contact-label">CONTACT US:</span>
+                            <a href="mailto:info@enrollzy.com"
+                                class="footer-contact-value text-decoration-none">info@enrollzy.com</a>
+                        </div>
+                        <div class="footer-contact-item d-flex align-items-start">
+                            <span class="footer-contact-label mt-1">OUR ADDRESS:</span>
+                            <span class="footer-contact-value" style="max-width: 220px; line-height: 1.4;">
+                                Workaholics Workzone, SCO 364-365-366 Second Floor, Sector 34A, Chandigarh, 160022
+                            </span>
+                        </div>
+
+                        <!-- Socials -->
+                        <div class="footer-contact-item d-flex align-items-center gap-2 mt-4">
+                            <span class="footer-contact-label">CONNECT US:</span>
+                            <div class="social-icons-list">
+                                <a href="#" class="social-icon-circle social-twitter">
+                                    <img src="assets/images/twitter-icon.png" alt="">
+                                </a>
+                                <a href="#" class="social-icon-circle social-instagram">
+                                    <img src="assets/images/footer-insta-icon.png" alt="">
+                                </a>
+                                <a href="#" class="social-icon-circle social-facebook">
+                                    <img src="assets/images/footer-facebook-icon.png" alt="">
+                                </a>
+                                <a href="#" class="social-icon-circle social-linkedin">
+                                    <img src="assets/images/footer-linkdin-icon.png" alt="">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Banner & link directory -->
+                    <div class="col-lg-8">
+                        <!-- Top Banner SVG illustration -->
+                        <div class="footer-banner-box">
+                            <img src="assets/images/footer-rect-img.png" alt="" style="width: 100%;">
+                        </div>
+
+                        <!-- 4 columns directories -->
+                        <div class="row row-cols-2 row-cols-sm-4 g-4">
+                            <!-- Col 1 -->
+                            <div class="col">
+                                <h3 class="footer-link-heading mb-3">
+                                    Universities <span class="footer-heading-line"></span>
+                                </h3>
+                                <ul class="footer-links">
+                                    <li><a href="#">Partner Universities</a></li>
+                                    <li><a href="#">Online Universities</a></li>
+                                    <li><a href="#">Top Ranked Universities</a></li>
+                                    <li><a href="#">University Comparison</a></li>
+                                    <li><a href="#">Trending Programs</a></li>
+                                </ul>
+                            </div>
+                            <!-- Col 2 -->
+                            <div class="col">
+                                <h3 class="footer-link-heading mb-3">
+                                    Student Support <span class="footer-heading-line"></span>
+                                </h3>
+                                <ul class="footer-links">
+                                    <li><a href="#">Partner Universities</a></li>
+                                    <li><a href="#">Online Universities</a></li>
+                                    <li><a href="#">Top Ranked Universities</a></li>
+                                    <li><a href="#">University Comparison</a></li>
+                                    <li><a href="#">Trending Programs</a></li>
+                                </ul>
+                            </div>
+                            <!-- Col 3 -->
+                            <div class="col">
+                                <h3 class="footer-link-heading mb-3">
+                                    Student Support <span class="footer-heading-line"></span>
+                                </h3>
+                                <ul class="footer-links">
+                                    <li><a href="#">Partner Universities</a></li>
+                                    <li><a href="#">Online Universities</a></li>
+                                    <li><a href="#">Top Ranked Universities</a></li>
+                                    <li><a href="#">University Comparison</a></li>
+                                    <li><a href="#">Trending Programs</a></li>
+                                </ul>
+                            </div>
+                            <!-- Col 4 -->
+                            <div class="col">
+                                <h3 class="footer-link-heading mb-3">
+                                    Universities <span class="footer-heading-line"></span>
+                                </h3>
+                                <ul class="footer-links">
+                                    <li><a href="#">Partner Universities</a></li>
+                                    <li><a href="#">Online Universities</a></li>
+                                    <li><a href="#">Top Ranked Universities</a></li>
+                                    <li><a href="#">University Comparison</a></li>
+                                    <li><a href="#">Trending Programs</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Divider -->
+                <div class="footer-divider"></div>
+
+                <!-- Copyright row -->
+                <p class="footer-copyright">
+                    © 2026 Uniband8 Education Technology Pvt. Ltd. <br> All Rights Reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+    <div class="footer-vector">
+        <img src="assets/images/footer-vector.png" alt="">
+    </div>
+    <div class="bottom-gradient-div ptb-70 pt-0"></div>
+    <!-- Bootstrap Bundle JS -->
+    
+
+    <!-- Swiper Slider JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hero Image Swiper
+            const heroSwiper = new Swiper('.hero-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 0,
+                loop: true,
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.carousel-dots',
+                    bulletClass: 'dot',
+                    bulletActiveClass: 'active',
+                    clickable: true,
+                }
+            });
+
+            // Student Insights & Feedback Swiper
+            const feedbackSwiper = new Swiper('.feedback-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 24,
+                loop: true,
+                navigation: {
+                    nextEl: '.feedback-next-btn',
+                    prevEl: '.feedback-prev-btn',
+                },
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                    },
+                    992: {
+                        slidesPerView: 3,
+                    }
+                }
+            });
+        });
+        (function () {
+            const slider = document.getElementById('perfectUnivTabs');
+            if (!slider) return;
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            let moved = false;
+
+            slider.addEventListener('mousedown', (e) => {
+                isDown = true;
+                moved = false;
+                slider.classList.add('dragging');
+                startX = e.pageX - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            });
+
+            slider.addEventListener('mouseleave', () => {
+                isDown = false;
+                slider.classList.remove('dragging');
+            });
+
+            slider.addEventListener('mouseup', () => {
+                isDown = false;
+                slider.classList.remove('dragging');
+            });
+
+            slider.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - slider.offsetLeft;
+                const walk = x - startX;
+                if (Math.abs(walk) > 5) moved = true; // threshold so clicks still register as clicks
+                slider.scrollLeft = scrollLeft - walk;
+            });
+
+            // Prevent tab click from firing right after a drag
+            slider.addEventListener('click', (e) => {
+                if (moved) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, true);
+        })();
+        (function () {
+            const megaMenu = document.querySelector('.mega-menu-wrapper');
+            if (!megaMenu) return;
+
+            const triggerItems = document.querySelectorAll('.nav-item[data-tab-trigger]');
+            let hideTimeout;
+
+            function showMenu(tabId) {
+                clearTimeout(hideTimeout);
+                megaMenu.classList.add('show-mega');
+
+                // Switch tab sidebar and content panel
+                const sidebarItem = megaMenu.querySelector(`.mega-sidebar-item[data-mega-tab="${tabId}"]`);
+                if (sidebarItem) {
+                    // Remove active classes
+                    megaMenu.querySelectorAll('.mega-sidebar-item').forEach(i => i.classList.remove('active'));
+                    megaMenu.querySelectorAll('.mega-tab-content').forEach(pane => pane.classList.remove('active'));
+
+                    // Set active
+                    sidebarItem.classList.add('active');
+                    const targetPane = megaMenu.querySelector('#' + tabId);
+                    if (targetPane) {
+                        targetPane.classList.add('active');
+                    }
+                }
+            }
+
+            function hideMenu() {
+                hideTimeout = setTimeout(() => {
+                    megaMenu.classList.remove('show-mega');
+                }, 150); // delay to allow moving between trigger and menu
+            }
+
+            triggerItems.forEach(item => {
+                item.addEventListener('mouseenter', function () {
+                    const tabId = this.getAttribute('data-tab-trigger');
+                    showMenu(tabId);
+                });
+
+                item.addEventListener('mouseleave', function () {
+                    hideMenu();
+                });
+            });
+
+            megaMenu.addEventListener('mouseenter', function () {
+                clearTimeout(hideTimeout);
+            });
+
+            megaMenu.addEventListener('mouseleave', function () {
+                hideMenu();
+            });
+
+            // Mega Menu inner sidebar tab switching on hover
+            const sidebarItems = megaMenu.querySelectorAll('.mega-sidebar-item');
+            sidebarItems.forEach(item => {
+                item.addEventListener('mouseenter', function () {
+                    // Remove active classes inside menu
+                    megaMenu.querySelectorAll('.mega-sidebar-item').forEach(i => i.classList.remove('active'));
+                    megaMenu.querySelectorAll('.mega-tab-content').forEach(pane => pane.classList.remove('active'));
+
+                    // Set active
+                    this.classList.add('active');
+                    const targetTabId = this.getAttribute('data-mega-tab');
+                    const targetPane = megaMenu.querySelector('#' + targetTabId);
+                    if (targetPane) {
+                        targetPane.classList.add('active');
+                    }
+                });
+            });
+        })();
+    </script>
+
 @endsection

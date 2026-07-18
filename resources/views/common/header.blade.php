@@ -3,15 +3,15 @@
             <div class="container d-block">
                 <!-- Logo -->
                 <div class="d-flex header-d-fl">
-                    <a class="logo navbar-brand d-flex align-items-center text-decoration-none" href="#">
-                        <img src="assets/images/logo.svg" alt="">
+                    <a class="logo navbar-brand d-flex align-items-center text-decoration-none" href="{{ url('/') }}">
+                        <img src="{{ asset('assets/images/logo.svg') }}" alt="">
                     </a>
                     <!-- Navigation Pills (Stacked and Centered) -->
                     <div class="offcanvas-mobile offcanvas offcanvas-start order-lg-2" tabindex="-1" id="enrollzyNavbar"
                         aria-labelledby="enrollzyNavbarLabel">
                         <div class="offcanvas-header d-lg-none">
-                            <a class="logo text-decoration-none" href="#">
-                                <img src="assets/images/logo.svg" alt="Enrollzy Logo" style="width: 140px;">
+                            <a class="logo text-decoration-none" href="{{ url('/') }}">
+                                <img src="{{ asset('assets/images/logo.svg') }}" alt="Enrollzy Logo" style="width: 140px;">
                             </a>
                             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                                 aria-label="Close"></button>
@@ -22,18 +22,21 @@
                                 <div class="nav-card-top w-100 d-none d-lg-block">
                                     <ul class="navbar-nav flex-row flex-wrap justify-content-center align-items-center"
                                         style="gap:16px">
-                                        <li class="nav-item" data-tab-trigger="tab-boarding"><a class="nav-link"
-                                                href="#">BOARDING SCHOOLS</a></li>
-                                        <li class="nav-item" data-tab-trigger="tab-universities"><a class="nav-link"
-                                                href="#">UNIVERSITIES</a></li>
-                                        <li class="nav-item" data-tab-trigger="tab-coaching"><a class="nav-link"
-                                                href="#">INTEGRATED COACHING</a></li>
-                                        <li class="nav-item" data-tab-trigger="tab-roadmap"><a class="nav-link"
-                                                href="#">CAREER ROADMAP</a></li>
-                                        <li class="nav-item" data-tab-trigger="tab-exams"><a class="nav-link"
-                                                href="#">TOP EXAMS</a></li>
-                                        <li class="nav-item" data-tab-trigger="tab-scholarships"><a class="nav-link"
-                                                href="#">SCHOLARSHIPS</a></li>
+                                        @php
+                                            $titleToTab = [
+                                                'BOARDING SCHOOLS' => 'tab-boarding',
+                                                'UNIVERSITIES' => 'tab-universities',
+                                                'INTEGRATED COACHING' => 'tab-coaching',
+                                                'CAREER ROADMAP' => 'tab-roadmap',
+                                                'TOP EXAMS' => 'tab-exams',
+                                                'SCHOLARSHIPS' => 'tab-scholarships'
+                                            ];
+                                        @endphp
+                                        @foreach($headerLinks as $link)
+                                            <li class="nav-item" {!! isset($titleToTab[strtoupper($link->title)]) ? 'data-tab-trigger="'.$titleToTab[strtoupper($link->title)].'"' : '' !!}>
+                                                <a class="nav-link" href="{{ $link->url }}">{{ strtoupper($link->title) }}</a>
+                                            </li>
+                                        @endforeach
                                     </ul>
 
                                     <!-- Mega Menu Wrapper -->
@@ -455,7 +458,7 @@
                                                             <a href="#">Learn more about</a>
                                                         </div>
                                                         <div class="mega-footer-right">
-                                                            <img src="assets/images/logo.svg" alt="Enrollzy"
+                                                            <img src="{{ asset('assets/images/logo.svg') }}" alt="Enrollzy"
                                                                 class="mega-footer-logo">
                                                         </div>
                                                     </div>
@@ -752,12 +755,9 @@
                                 <div class="mobile-secondary-links d-lg-none w-100 mt-4">
                                     <h5>Quick Links</h5>
                                     <ul>
-                                        <li><a href="#">Ask Enrollzy</a></li>
-                                        <li><a href="#">Connect with Expert</a></li>
-                                        <li><a href="#">About Us</a></li>
-                                        <li><a href="#">Blog</a></li>
-                                        <li><a href="#">FAQ's</a></li>
-                                        <li><a href="#">Contact us</a></li>
+                                        @foreach($headerMenus as $menu)
+                                            <li><a href="{{ $menu->url }}">{{ $menu->title }}</a></li>
+                                        @endforeach
                                     </ul>
                                 </div>
                             </div>
@@ -783,12 +783,9 @@
                     <div class="nav-card-bottom d-none d-lg-inline-block">
                         <ul class="navbar-nav flex-row flex-wrap justify-content-center align-items-center"
                             style="gap:45px">
-                            <li class="nav-item"><a class="nav-link" href="#">Ask Enrollzy</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">Connect with Expert</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">FAQ's</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">Contact us</a></li>
+                            @foreach($headerMenus as $menu)
+                                <li class="nav-item"><a class="nav-link" href="{{ $menu->url }}">{{ $menu->title }}</a></li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>

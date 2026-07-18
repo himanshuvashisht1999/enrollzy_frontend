@@ -7,11 +7,11 @@
         </div>
         <div class="container">
             <div class="about-hero-container">
-                <img src="{{ $school->cover_image_url ? str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : env('BACKEND_URL') . '/' . ltrim($school->cover_image_url, '/') : asset('assets/images/school-detail-banner-img.png') }}" alt="{{ $school->name }}" />
+                <img src="{{ $coaching->cover_image_url ? (str_starts_with($coaching->cover_image_url, 'http') ? $coaching->cover_image_url : env('BACKEND_URL') . '/' . ltrim($coaching->cover_image_url, '/')) : asset('assets/images/school-detail-banner-img.png') }}" alt="{{ $coaching->name }}" />
 
                 <!-- Centered Badge (Placed outside card to prevent clipping) -->
                 <div class="about-us-badge-wrapper">
-                    <button class="about-us-badge">{{ mb_strtoupper($school->name) }}</button>
+                    <button class="about-us-badge">{{ mb_strtoupper($coaching->name) }}</button>
                     <p>{{ $location }}</p>
                 </div>
 
@@ -35,7 +35,7 @@
                     <li class="breadcrumb-item">
                         <a href="all-schools.html" class="text-decoration-none active text-primary">Schools</a>
                     </li>
-                    <li class="breadcrumb-item active text-primary" aria-current="page">{{ $school->name }}</li>
+                    <li class="breadcrumb-item active text-primary" aria-current="page">{{ $coaching->name }}</li>
                 </ol>
             </nav>
         </div>
@@ -48,12 +48,10 @@
             <div class="sd-info-card">
                 <div class="sd-title-row">
                     <div class="sd-title-box">
-                        <h1 class="sd-title">{{ $school->name }}</h1>
+                        <h1 class="sd-title">{{ $coaching->name }}</h1>
                         <a href="#" class="sd-location"><i class="fa-solid fa-location-dot me-1"></i> {{ $location }}</a>
                     </div>
-                    <span class="sd-status-badge">
-                        <span class="sd-status-dot"></span> Status: {{ $school->status == 1 ? 'Admission ongoing' : 'Closed' }}
-                    </span>
+                    <span class="sd-status-badge">\n                        <span class="sd-status-dot"></span> Status: {{ $coaching->status == 1 ? 'Admission ongoing' : 'Closed' }}\n                    </span>
                 </div>
 
                 <div class="sd-meta-row">
@@ -64,16 +62,16 @@
                         <i class="fa-solid fa-graduation-cap"></i> {{ implode(', ', $grades) ?: 'N/A' }}
                     </div>
                     <div class="sd-meta-item">
-                        <i class="fa-solid fa-calendar-days"></i> Estd. {{ $school->established_year ?: 'N/A' }}
+                        <i class="fa-solid fa-calendar-days"></i> Estd. {{ $coaching->established_year ?: 'N/A' }}
                     </div>
                 </div>
 
                 <div class="sd-views-row">
-                    <i class="fa-regular fa-eye"></i> {{ $school->total_reviews ?? '0' }} Views
+                    <i class="fa-regular fa-eye"></i> {{ $coaching->total_reviews ?? '0' }} Views
                 </div>
 
                 <h3 class="sd-about-title">About us</h3>
-                <div class="sd-about-desc mb-0">{!! $school->about_organisation !!}</div>
+                <div class="sd-about-desc mb-0">{!! $coaching->about_organisation !!}</div>
             </div>
         </div>
     </div>
@@ -255,20 +253,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($school->admissionRoutes as $route)
+                                    <!-- Row 1 -->
                                     <tr>
-                                        <td>{{ $route->course->name ?? 'Class 6' }}</td>
+                                        <td>Class 6</td>
                                         <td>2026-2027</td>
                                         <td>
                                             <div class="fw-bold" style="color: #0d1b2a; font-size: 14px">
                                                 Last Date
                                             </div>
                                             <div class="text-muted" style="font-size: 11px">
-                                                {{ $route->cutoff_year_wise ?? 'Jul 31, 2025' }}
+                                                Jul 31, 2025
                                             </div>
                                         </td>
-                                        <td><span class="sd-badge-ongoing">{{ $route->status == 1 ? 'Ongoing' : 'Closed' }}</span></td>
-                                        <td class="fw-bold" style="color: #0d1b2a">{{ $route->application_fee ?? '0' }}</td>
+                                        <td><span class="sd-badge-ongoing">Ongoing</span></td>
+                                        <td class="fw-bold" style="color: #0d1b2a">0</td>
                                         <td>
                                             <div class="sd-table-btn-row">
                                                 <button class="btn-sd-apply">Apply</button>
@@ -276,11 +274,69 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    @empty
+                                    <!-- Row 2 -->
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-3">No admission routes available at the moment.</td>
+                                        <td>Class 6</td>
+                                        <td>2026-2027</td>
+                                        <td>
+                                            <div class="fw-bold" style="color: #0d1b2a; font-size: 14px">
+                                                Last Date
+                                            </div>
+                                            <div class="text-muted" style="font-size: 11px">
+                                                Jul 31, 2025
+                                            </div>
+                                        </td>
+                                        <td><span class="sd-badge-ongoing">Ongoing</span></td>
+                                        <td class="fw-bold" style="color: #0d1b2a">0</td>
+                                        <td>
+                                            <div class="sd-table-btn-row">
+                                                <button class="btn-sd-apply">Apply</button>
+                                                <button class="btn-sd-enquire">Enquire</button>
+                                            </div>
+                                        </td>
                                     </tr>
-                                    @endforelse
+                                    <!-- Row 3 -->
+                                    <tr>
+                                        <td>Class 6</td>
+                                        <td>2026-2027</td>
+                                        <td>
+                                            <div class="fw-bold" style="color: #0d1b2a; font-size: 14px">
+                                                Last Date
+                                            </div>
+                                            <div class="text-muted" style="font-size: 11px">
+                                                Jul 31, 2025
+                                            </div>
+                                        </td>
+                                        <td><span class="sd-badge-ongoing">Ongoing</span></td>
+                                        <td class="fw-bold" style="color: #0d1b2a">0</td>
+                                        <td>
+                                            <div class="sd-table-btn-row">
+                                                <button class="btn-sd-apply">Apply</button>
+                                                <button class="btn-sd-enquire">Enquire</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- Row 4 -->
+                                    <tr>
+                                        <td>Class 6</td>
+                                        <td>2026-2027</td>
+                                        <td>
+                                            <div class="fw-bold" style="color: #0d1b2a; font-size: 14px">
+                                                Last Date
+                                            </div>
+                                            <div class="text-muted" style="font-size: 11px">
+                                                Jul 31, 2025
+                                            </div>
+                                        </td>
+                                        <td><span class="sd-badge-ongoing">Ongoing</span></td>
+                                        <td class="fw-bold" style="color: #0d1b2a">0</td>
+                                        <td>
+                                            <div class="sd-table-btn-row">
+                                                <button class="btn-sd-apply">Apply</button>
+                                                <button class="btn-sd-enquire">Enquire</button>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -464,25 +520,22 @@
                         </div>
 
                         <div class="row g-3">
-                            @if($school->cover_image_url)
-                            <div class="col-md-6 col-sm-6">
+                            <div class="col-md-4 col-sm-6">
                                 <div class="sd-gallery-item">
-                                    <img src="{{ str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : env('BACKEND_URL') . '/' . ltrim($school->cover_image_url, '/') }}" alt="{{ $school->name }} Cover" />
+                                    <img src="{{ asset('assets/images/school-img-1.png') }}" alt="Doon School landscape 1" />
                                 </div>
                             </div>
-                            @endif
-                            @if($school->logo_url)
-                            <div class="col-md-6 col-sm-6">
+                            <div class="col-md-4 col-sm-6">
                                 <div class="sd-gallery-item">
-                                    <img src="{{ str_starts_with($school->logo_url, 'http') ? $school->logo_url : env('BACKEND_URL') . '/' . ltrim($school->logo_url, '/') }}" alt="{{ $school->name }} Logo" style="object-fit: contain;" />
+                                    <span class="sd-video-play-btn"><i class="fa-solid fa-play"></i></span>
+                                    <img src="{{ asset('assets/images/school-img-2.png') }}" alt="Doon School landscape 2" />
                                 </div>
                             </div>
-                            @endif
-                            @if(!$school->cover_image_url && !$school->logo_url)
-                            <div class="col-12">
-                                <p class="text-center text-muted py-3">No images available for this school.</p>
+                            <div class="col-md-4 col-sm-12">
+                                <div class="sd-gallery-item">
+                                    <img src="{{ asset('assets/images/school-img-3.png') }}" alt="Doon School landscape 3" />
+                                </div>
                             </div>
-                            @endif
                         </div>
                     </div>
 
@@ -671,7 +724,8 @@
                                         <i class="fa-solid fa-location-dot"></i>
                                     </div>
                                     <p class="sd-contact-text">
-                                        {{ $school->head_office_location ?? $location }}
+                                        Lorem ipsum dummy text free lorem ipsum dummy text imp free
+                                        lorem ipsum dummy text.
                                     </p>
                                 </div>
                             </div>
@@ -679,9 +733,9 @@
                             <div class="col-md-3 col-sm-6">
                                 <div class="sd-contact-card">
                                     <div class="sd-contact-icon">
-                                        <i class="fa-solid fa-globe"></i>
+                                        <i class="fa-solid fa-envelope"></i>
                                     </div>
-                                    <p class="sd-contact-text">{{ $school->official_website ?? 'N/A' }}</p>
+                                    <p class="sd-contact-text">https://enrollzy.com/school</p>
                                 </div>
                             </div>
                             <!-- Col 3 -->
@@ -690,16 +744,16 @@
                                     <div class="sd-contact-icon">
                                         <i class="fa-solid fa-phone"></i>
                                     </div>
-                                    <p class="sd-contact-text">{{ $school->helpdesk_contact_number ?? 'N/A' }}</p>
+                                    <p class="sd-contact-text">+91 9780052489</p>
                                 </div>
                             </div>
                             <!-- Col 4 -->
                             <div class="col-md-3 col-sm-6">
                                 <div class="sd-contact-card">
                                     <div class="sd-contact-icon">
-                                        <i class="fa-solid fa-envelope"></i>
+                                        <i class="fa-solid fa-globe"></i>
                                     </div>
-                                    <p class="sd-contact-text">{{ $school->helpdesk_email ?? 'N/A' }}</p>
+                                    <p class="sd-contact-text">enrollzy@gmail.com</p>
                                 </div>
                             </div>
                         </div>
