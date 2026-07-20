@@ -36,4 +36,5 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/mentors', [PageController::class, 'mentors'])->name('mentors');
     Route::get('/mentor-detail/{id?}', [PageController::class, 'mentorDetail'])->name('mentor.detail');
     Route::get('/ask-enrollzy', [PageController::class, 'askEnrollzy'])->name('ask.enrollzy');
+    Route::get('/global-search', [PageController::class, 'globalSearch'])->name('global.search');
 });
