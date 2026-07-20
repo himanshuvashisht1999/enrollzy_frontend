@@ -2,298 +2,293 @@
 @section('content')
 <main class="about-hero-section ptb-70">
       <div class="bg-square">
-        <img src="assets/images/banner-square-img.svg" alt="" />
+        <img src="{{ asset('assets/images/banner-square-img.svg') }}" alt="" />
       </div>
       <div class="container">
         <div class="about-hero-container">
-          <img src="assets/images/school-banner-img.png" alt="" />
+          <img src="{{ asset('assets/images/school-banner-img.png') }}" alt="All Schools" />
 
-          <!-- Centered Badge (Placed outside card to prevent clipping) -->
+          <!-- Centered Badge -->
           <div class="about-us-badge-wrapper">
             <button class="about-us-badge">All Schools</button>
-            <p>Explore our complete list of schools.</p>
+            <p>Explore our complete list of schools across India.</p>
           </div>
 
           <!-- Green Down Arrow Button -->
           <button class="about-scroll-btn" aria-label="Scroll Down">
-            <img
-              style="width: 49px; height: 62px"
-              src="assets/images/inner-banner-down-arror.png"
-              alt=""
-            />
+            <img style="width: 49px; height: 62px" src="{{ asset('assets/images/inner-banner-down-arror.png') }}" alt="" />
           </button>
         </div>
       </div>
     </main>
 
-    <!-- Breadcrumb path & Explore Button -->
+    <!-- Breadcrumb path -->
     <div class="py-3" style="background-color: #f9ad0b14">
         <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0" style="font-size: 13.5px; font-weight: 500;">
-                    <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-muted"><i class="fa-solid fa-house me-1"></i> Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none text-muted"><i class="fa-solid fa-house me-1"></i> Home</a></li>
                     <li class="breadcrumb-item active text-primary" aria-current="page">Schools</li>
                 </ol>
             </nav>
         </div>
     </div>
-    <div style="background-color: #3771C812;padding: 20px 0px;text-align: center;">
-    <a href="#" class="btn btn-primary rounded-pill px-4" style="background-color: #3771C8; border: none; font-size: 14px; font-weight: bold; height: 34px; display: inline-flex; align-items: center; justify-content: center;">Explore Schools</a>
 
-    </div>
     <!-- Main Content Section -->
     <section class="py-5" style="background-color: #FAFBFD;">
         <div class="container">
+            
             <!-- School Hero Intro Card -->
-            <div class="school-hero-card">
+            <div class="school-hero-card mb-4">
                 <h2 class="school-hero-title">Top Boarding Schools in India 2026-27: Fees, Admissions, Rankings & Reviews</h2>
-                <p class="school-hero-text">We've curated a list of best Boarding Schools in India for 2026-27, sorted by our default Rankings, a trusted system on a holistic evaluation of a school's academic excellence, infrastructure, extracurriculars, teacher quality, and real parent reviews (<a href="#" class="text-primary text-decoration-none">learn more</a>).</p>
-                <p class="school-hero-text text-muted mb-0" style="font-size: 13px;">The top 10 Boarding Schools in India include The Doon School, The Scindia School, Woodstock School, JAIN International Residential School, Aspyreom International Finishing School, Mussoorie International School, Welham Boys' School, The Academic City School - Bangalore, GD Goenka International School, Welham Girls' School. Scroll down to compare fees and admissions, read reviews, and apply to find the perfect school for your child.</p>
+                <p class="school-hero-text">We've curated a list of best Boarding Schools in India, sorted by rankings based on academic excellence, infrastructure, extracurriculars, teacher quality, and real parent reviews.</p>
+            </div>
+
+            <!-- Global Search Bar & Filter Summary Bar -->
+            <div class="bg-white rounded-4 p-4 border shadow-sm mb-4">
+                <form action="{{ route('all-schools') }}" method="GET" class="row g-3 align-items-center">
+                    <div class="col-md-9">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                            <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Search schools by name, city, state, board (e.g. Doon, Dehradun, CBSE)..." value="{{ request('search') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100 fw-bold rounded-pill">
+                            Search Schools
+                        </button>
+                        @if(request()->hasAny(['search', 'region', 'state', 'city', 'board', 'class', 'ownership', 'school_type', 'gender']))
+                        <a href="{{ route('all-schools') }}" class="btn btn-outline-danger text-nowrap rounded-pill px-3" title="Clear All Filters">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </a>
+                        @endif
+                    </div>
+                </form>
+
+                @if(request()->hasAny(['search', 'region', 'state', 'city', 'board', 'class', 'ownership', 'school_type', 'gender']))
+                <div class="d-flex flex-wrap align-items-center gap-2 mt-3 pt-3 border-top" style="font-size: 13px;">
+                    <span class="text-muted fw-bold">Active Filters:</span>
+                    @if(request('search'))
+                        <span class="badge bg-primary-subtle text-primary border rounded-pill px-3 py-1">Search: "{{ request('search') }}"</span>
+                    @endif
+                    @foreach((array)request('region') as $r)
+                        <span class="badge bg-light text-dark border rounded-pill px-3 py-1">Region: {{ $r }}</span>
+                    @endforeach
+                    @foreach((array)request('state') as $s)
+                        <span class="badge bg-light text-dark border rounded-pill px-3 py-1">State: {{ $s }}</span>
+                    @endforeach
+                    @foreach((array)request('city') as $c)
+                        <span class="badge bg-light text-dark border rounded-pill px-3 py-1">City: {{ $c }}</span>
+                    @endforeach
+                    @foreach((array)request('board') as $b)
+                        <span class="badge bg-light text-dark border rounded-pill px-3 py-1">Board: {{ $b }}</span>
+                    @endforeach
+                    @foreach((array)request('class') as $cl)
+                        <span class="badge bg-light text-dark border rounded-pill px-3 py-1">Class: {{ $cl }}</span>
+                    @endforeach
+                    @foreach((array)request('ownership') as $o)
+                        <span class="badge bg-light text-dark border rounded-pill px-3 py-1">Ownership: {{ $o }}</span>
+                    @endforeach
+                    @foreach((array)request('school_type') as $st)
+                        <span class="badge bg-light text-dark border rounded-pill px-3 py-1">Type: {{ $st }}</span>
+                    @endforeach
+                    @foreach((array)request('gender') as $g)
+                        <span class="badge bg-light text-dark border rounded-pill px-3 py-1">Gender: {{ $g }}</span>
+                    @endforeach
+                    <a href="{{ route('all-schools') }}" class="text-danger ms-auto fw-bold text-decoration-none" style="font-size: 12px;">Clear All Filters</a>
+                </div>
+                @endif
             </div>
 
             <div class="row g-4">
-                <!-- Left Sidebar Filters -->
+                <!-- Left Sidebar Filters Form -->
                 <div class="col-lg-3 col-md-4">
-                    <div class="filter-sidebar-wrapper">
-                       
-                        <!-- Regions Accordion -->
-                        <div class="filter-group-card mb-3">
-                            <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterRegions" aria-expanded="true">
-                                <span>Regions</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
-                            <div class="collapse show" id="filterRegions">
-                                <div class="filter-group-body">
-                                    <div class="filter-checklist">
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="reg1"><label class="form-check-label ms-1" for="reg1">North India</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="reg2"><label class="form-check-label ms-1" for="reg2">South India</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="reg3"><label class="form-check-label ms-1" for="reg3">East India</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="reg4"><label class="form-check-label ms-1" for="reg4">West India</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="reg5"><label class="form-check-label ms-1" for="reg5">Central India</label></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <form action="{{ route('all-schools') }}" method="GET" id="schoolsFilterSidebarForm">
+                        @if(request('search'))
+                            <input type="hidden" name="search" value="{{ request('search') }}">
+                        @endif
 
-                        <!-- State Accordion -->
-                        <div class="filter-group-card mb-3">
-                            <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterState" aria-expanded="true">
-                                <span>State</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
-                            <div class="collapse show" id="filterState">
-                                <div class="filter-group-body">
-                                    <div class="filter-search-wrapper mb-3">
-                                        <i class="fa-solid fa-magnifying-glass"></i>
-                                        <input type="text" placeholder="Search by state name" class="form-control">
-                                    </div>
-                                    <div class="filter-checklist" style=" overflow-y: auto;">
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="st1"><label class="form-check-label ms-1" for="st1">Tamil Nadu</label></div><span class="text-muted" style="font-size: 11.5px;">(14)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="st2"><label class="form-check-label ms-1" for="st2">Karnataka</label></div><span class="text-muted" style="font-size: 11.5px;">(14)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="st3"><label class="form-check-label ms-1" for="st3">Andhra Pradesh</label></div><span class="text-muted" style="font-size: 11.5px;">(14)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="st4"><label class="form-check-label ms-1" for="st4">Rajasthan</label></div><span class="text-muted" style="font-size: 11.5px;">(14)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="st5"><label class="form-check-label ms-1" for="st5">Punjab</label></div><span class="text-muted" style="font-size: 11.5px;">(14)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="st6"><label class="form-check-label ms-1" for="st6">Himachal Pradesh</label></div><span class="text-muted" style="font-size: 11.5px;">(14)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="st7"><label class="form-check-label ms-1" for="st7">Haryana</label></div><span class="text-muted" style="font-size: 11.5px;">(14)</span></div>
+                        <div class="filter-sidebar-wrapper">
+                           
+                            <!-- Regions Accordion -->
+                            <div class="filter-group-card mb-3">
+                                <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterRegions" aria-expanded="true">
+                                    <span>Regions</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="collapse show" id="filterRegions">
+                                    <div class="filter-group-body">
+                                        <div class="filter-checklist">
+                                            @foreach(['North India', 'South India', 'East India', 'West India', 'Central India'] as $idx => $reg)
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" name="region[]" value="{{ $reg }}" id="reg{{ $idx }}" onchange="this.form.submit()" {{ in_array($reg, (array)request('region', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label ms-1" for="reg{{ $idx }}">{{ $reg }}</label>
+                                            </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- City Accordion -->
-                        <div class="filter-group-card mb-3">
-                            <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterCity" aria-expanded="false">
-                                <span>City</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
-                            <div class="collapse" id="filterCity">
-                                <div class="filter-group-body">
-                                    <div class="filter-search-wrapper mb-3">
-                                        <i class="fa-solid fa-magnifying-glass"></i>
-                                        <input type="text" placeholder="Search by city name" class="form-control">
-                                    </div>
-                                    <div class="filter-checklist">
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cy1"><label class="form-check-label ms-1" for="cy1">Bangalore</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cy2"><label class="form-check-label ms-1" for="cy2">Dehradun</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cy3"><label class="form-check-label ms-1" for="cy3">Hyderabad</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cy3"><label class="form-check-label ms-1" for="cy3">Panchgani</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cy3"><label class="form-check-label ms-1" for="cy3">Varanasi</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cy3"><label class="form-check-label ms-1" for="cy3">Nainital</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cy3"><label class="form-check-label ms-1" for="cy3">Patna</label></div>
+                            <!-- State Accordion -->
+                            <div class="filter-group-card mb-3">
+                                <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterState" aria-expanded="true">
+                                    <span>State</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="collapse show" id="filterState">
+                                    <div class="filter-group-body">
+                                        <div class="filter-checklist" style="max-height: 200px; overflow-y: auto;">
+                                            @foreach(['Tamil Nadu', 'Karnataka', 'Andhra Pradesh', 'Rajasthan', 'Punjab', 'Himachal Pradesh', 'Haryana', 'Uttarakhand', 'Delhi'] as $idx => $st)
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" name="state[]" value="{{ $st }}" id="st{{ $idx }}" onchange="this.form.submit()" {{ in_array($st, (array)request('state', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label ms-1" for="st{{ $idx }}">{{ $st }}</label>
+                                            </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Area Accordion -->
-                        <div class="filter-group-card mb-3">
-                            <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterArea" aria-expanded="false">
-                                <span>Area</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
-                            <div class="collapse" id="filterArea">
-                                <div class="filter-group-body">
-                                    <div class="filter-search-wrapper mb-3">
-                                        <i class="fa-solid fa-magnifying-glass"></i>
-                                        <input type="text" placeholder="Search by area name" class="form-control">
-                                    </div>
-                                    <div class="filter-checklist">
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="ar1"><label class="form-check-label ms-1" for="ar1">Mansarovar, Jaipur</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="ar2"><label class="form-check-label ms-1" for="ar2">Rohini, Delhi</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="ar2"><label class="form-check-label ms-1" for="ar2">Vaishali Nagar, Jaipur</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="ar2"><label class="form-check-label ms-1" for="ar2">Medchal, Jaipur</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="ar2"><label class="form-check-label ms-1" for="ar2">Chandigarh, Punjab</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="ar2"><label class="form-check-label ms-1" for="ar2">Mansarovar, Jaipur</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="ar2"><label class="form-check-label ms-1" for="ar2">Mansarovar, Jaipur</label></div>
+                            <!-- City Accordion -->
+                            <div class="filter-group-card mb-3">
+                                <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterCity" aria-expanded="true">
+                                    <span>City</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="collapse show" id="filterCity">
+                                    <div class="filter-group-body">
+                                        <div class="filter-checklist" style="max-height: 200px; overflow-y: auto;">
+                                            @foreach(['Bangalore', 'Dehradun', 'Hyderabad', 'Panchgani', 'Varanasi', 'Nainital', 'Patna', 'Jaipur', 'Chandigarh'] as $idx => $cy)
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" name="city[]" value="{{ $cy }}" id="cy{{ $idx }}" onchange="this.form.submit()" {{ in_array($cy, (array)request('city', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label ms-1" for="cy{{ $idx }}">{{ $cy }}</label>
+                                            </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Annual Fees Accordion -->
-                        <div class="filter-group-card mb-3">
-                            <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterFees" aria-expanded="true">
-                                <span>Annual Fees</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
-                            <div class="collapse show" id="filterFees">
-                                <div class="filter-group-body">
-                                    <span class="text-muted fw-bold d-block mb-2" style="font-size: 11px; text-transform: uppercase;">Suggestion</span>
-                                    <div class="filter-checklist mb-3">
-                                        <div class="form-check mb-2"><input class="form-check-input" type="radio" name="fee_sugg" id="fs1"><label class="form-check-label ms-1" for="fs1">Below 1 lakh</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="radio" name="fee_sugg" id="fs2"><label class="form-check-label ms-1" for="fs2">1 lakh to 2 lakhs</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="radio" name="fee_sugg" id="fs3"><label class="form-check-label ms-1" for="fs3">2 lakh to 3 lakhs</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="radio" name="fee_sugg" id="fs4"><label class="form-check-label ms-1" for="fs4">3 lakh to 5 lakhs</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="radio" name="fee_sugg" id="fs4"><label class="form-check-label ms-1" for="fs4">3 lakh to 5 lakhs</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="radio" name="fee_sugg" id="fs4"><label class="form-check-label ms-1" for="fs4">3 lakh to 5 lakhs</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="radio" name="fee_sugg" id="fs4"><label class="form-check-label ms-1" for="fs4">3 lakh to 5 lakhs</label></div>
-                                    </div>
-                                    <span class="text-muted fw-bold d-block mb-2" style="font-size: 11px; text-transform: uppercase;">Enter Manually</span>
-                                    <div class="d-flex gap-2">
-                                        <input type="text" placeholder="From" class="form-control text-center py-1" style="font-size: 12.5px; border-radius: 6px;">
-                                        <input type="text" placeholder="To" class="form-control text-center py-1" style="font-size: 12.5px; border-radius: 6px;">
+                            <!-- Class Accordion -->
+                            <div class="filter-group-card mb-3">
+                                <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterClass" aria-expanded="true">
+                                    <span>Class</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="collapse show" id="filterClass">
+                                    <div class="filter-group-body">
+                                        <div class="filter-checklist" style="max-height: 200px; overflow-y: auto;">
+                                            @foreach(['Toddlers', 'Pre Nursery', 'Nursery', 'LKG', 'UKG', 'Class 1', 'Class 2', 'Class 6', 'Class 10', 'Class 12'] as $idx => $cl)
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" name="class[]" value="{{ $cl }}" id="cl{{ $idx }}" onchange="this.form.submit()" {{ in_array($cl, (array)request('class', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label ms-1" for="cl{{ $idx }}">{{ $cl }}</label>
+                                            </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Class Accordion -->
-                        <div class="filter-group-card mb-3">
-                            <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterClass" aria-expanded="false">
-                                <span>Class</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
-                            <div class="collapse" id="filterClass">
-                                <div class="filter-group-body">
-                                    <div class="filter-checklist">
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cl1"><label class="form-check-label ms-1" for="cl1">Toddlers</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cl2"><label class="form-check-label ms-1" for="cl2">Pre Nursery</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cl3"><label class="form-check-label ms-1" for="cl3">Nursery</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cl3"><label class="form-check-label ms-1" for="cl3">LKG</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cl3"><label class="form-check-label ms-1" for="cl3">UKG</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cl3"><label class="form-check-label ms-1" for="cl3">Class 1</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="cl3"><label class="form-check-label ms-1" for="cl3">Class 2</label></div>
+                            <!-- Board Accordion -->
+                            <div class="filter-group-card mb-3">
+                                <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterBoard" aria-expanded="true">
+                                    <span>Board</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="collapse show" id="filterBoard">
+                                    <div class="filter-group-body">
+                                        <div class="filter-checklist">
+                                            @foreach(['CBSE', 'ICSE/CISE', 'State Board', 'NIOS', 'IB', 'IGCSE'] as $idx => $bd)
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" name="board[]" value="{{ $bd }}" id="bd{{ $idx }}" onchange="this.form.submit()" {{ in_array($bd, (array)request('board', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label ms-1" for="bd{{ $idx }}">{{ $bd }}</label>
+                                            </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Board Accordion -->
-                        <div class="filter-group-card mb-3">
-                            <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterBoard" aria-expanded="false">
-                                <span>Board</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
-                            <div class="collapse" id="filterBoard">
-                                <div class="filter-group-body">
-                                    <div class="filter-checklist">
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="bd1"><label class="form-check-label ms-1" for="bd1">CBSE</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="bd2"><label class="form-check-label ms-1" for="bd2">ICSE/CISE</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="bd3"><label class="form-check-label ms-1" for="bd3">State Board</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="bd3"><label class="form-check-label ms-1" for="bd3">NIOS</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="bd3"><label class="form-check-label ms-1" for="bd3">Finland</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="bd3"><label class="form-check-label ms-1" for="bd3">Finland</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="bd3"><label class="form-check-label ms-1" for="bd3">Finland</label></div>
-                                        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="bd3"><label class="form-check-label ms-1" for="bd3">Finland</label></div>
+                            <!-- Ownership Accordion -->
+                            <div class="filter-group-card mb-3">
+                                <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterOwnership" aria-expanded="true">
+                                    <span>Ownership</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="collapse show" id="filterOwnership">
+                                    <div class="filter-group-body">
+                                        <div class="filter-checklist">
+                                            @foreach(['Government', 'Private'] as $idx => $own)
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" name="ownership[]" value="{{ $own }}" id="own{{ $idx }}" onchange="this.form.submit()" {{ in_array($own, (array)request('ownership', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label ms-1" for="own{{ $idx }}">{{ $own }}</label>
+                                            </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Ownership Accordion -->
-                        <div class="filter-group-card mb-3">
-                            <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterOwnership" aria-expanded="false">
-                                <span>Ownership</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
-                            <div class="collapse show" id="filterOwnership">
-                                <div class="filter-group-body">
-                                    <div class="filter-checklist">
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="sct1"><label class="form-check-label ms-1" for="sct1">Goverment</label></div><span class="text-muted" style="font-size: 11px;">(28)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="sct2" checked><label class="form-check-label ms-1" for="sct2">Private</label></div><span class="text-muted" style="font-size: 11px;">(1427)</span></div>
+                            <!-- School Type Accordion -->
+                            <div class="filter-group-card mb-3">
+                                <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterSchoolType" aria-expanded="true">
+                                    <span>School Type</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="collapse show" id="filterSchoolType">
+                                    <div class="filter-group-body">
+                                        <div class="filter-checklist">
+                                            @foreach(['Weekly Boarding', 'Day Boarding', 'Full Boarding'] as $idx => $st)
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" name="school_type[]" value="{{ $st }}" id="sct{{ $idx }}" onchange="this.form.submit()" {{ in_array($st, (array)request('school_type', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label ms-1" for="sct{{ $idx }}">{{ $st }}</label>
+                                            </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="filter-group-card mb-3">
-                            <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterSchoolType" aria-expanded="true">
-                                <span>School Type</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
-                            <div class="collapse show" id="filterSchoolType">
-                                <div class="filter-group-body">
-                                    <div class="filter-checklist">
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="sct1"><label class="form-check-label ms-1" for="sct1">Weekly Boarding</label></div><span class="text-muted" style="font-size: 11px;">(28)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="sct2" checked><label class="form-check-label ms-1" for="sct2">Day Boarding</label></div><span class="text-muted" style="font-size: 11px;">(1427)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="sct3"><label class="form-check-label ms-1" for="sct3">Full Boarding</label></div><span class="text-muted" style="font-size: 11px;">(714)</span></div>
+
+                            <!-- Gender Accordion -->
+                            <div class="filter-group-card mb-3">
+                                <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterGender" aria-expanded="true">
+                                    <span>Gender</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </div>
+                                <div class="collapse show" id="filterGender">
+                                    <div class="filter-group-body">
+                                        <div class="filter-checklist">
+                                            @foreach(['Coed', 'Boys', 'Girls'] as $idx => $gen)
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" name="gender[]" value="{{ $gen }}" id="gen{{ $idx }}" onchange="this.form.submit()" {{ in_array($gen, (array)request('gender', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label ms-1" for="gen{{ $idx }}">{{ $gen }}</label>
+                                            </div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <button type="submit" class="btn btn-primary w-100 fw-bold rounded-pill mt-3">
+                                Apply Filters
+                            </button>
                         </div>
-                        <div class="filter-group-card mb-3">
-                            <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterSchoolType" aria-expanded="true">
-                                <span>Food Options</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
-                            <div class="collapse show" id="filterSchoolType">
-                                <div class="filter-group-body">
-                                    <div class="filter-checklist">
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="sct1"><label class="form-check-label ms-1" for="sct1">Vegetarian</label></div><span class="text-muted" style="font-size: 11px;">(28)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="sct2" checked><label class="form-check-label ms-1" for="sct2">Non Vegetarian</label></div><span class="text-muted" style="font-size: 11px;">(1427)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="sct3"><label class="form-check-label ms-1" for="sct3">Eggetarian</label></div><span class="text-muted" style="font-size: 11px;">(714)</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="filter-group-card mb-3">
-                            <div class="filter-group-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#filterSchoolType" aria-expanded="true">
-                                <span>Gender</span>
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
-                            <div class="collapse show" id="filterSchoolType">
-                                <div class="filter-group-body">
-                                    <div class="filter-checklist">
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="sct1"><label class="form-check-label ms-1" for="sct1">Coed</label></div><span class="text-muted" style="font-size: 11px;">(28)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="sct2" checked><label class="form-check-label ms-1" for="sct2">Boys</label></div><span class="text-muted" style="font-size: 11px;">(1427)</span></div>
-                                        <div class="form-check d-flex justify-content-between align-items-center mb-2"><div><input class="form-check-input" type="checkbox" id="sct3"><label class="form-check-label ms-1" for="sct3">Girls</label></div><span class="text-muted" style="font-size: 11px;">(714)</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                 </div>
 
                 <!-- Right catalog list grid -->
                 <div class="col-lg-9 col-md-8">
                     <!-- Title header info -->
-                    <div class="catalog-header-bar d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="catalog-header-bar d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
                         <div class="d-flex align-items-center gap-2">
                             <span class="fw-bold" style="font-size: 16px; color: #3771C8;">Boarding Schools in India</span>
-                            <span class="text-muted" style="font-size: 16px;">- {{ $schools->total() }} Schools | Updated at : {{ now()->format('d M Y, h:i a') }}</span>
+                            <span class="text-muted" style="font-size: 14px;">- {{ $schools->total() }} Schools Found</span>
                         </div>
                     </div>
 
                     <!-- Schools Grid row -->
+                    @if($schools->count() > 0)
                     <div class="row row-cols-1 row-cols-md-2 g-4">
                         @foreach($schools as $school)
                         <div class="col">
@@ -302,7 +297,7 @@
                                     <div class="swiper-wrapper">
                                         <div class="swiper-slide">
                                             <a href="{{ route('school.detail', $school->slug) }}">
-                                                <img src="{{ $school->cover_image_url ? env('BACKEND_URL') . '/' . $school->cover_image_url : asset('assets/images/about_team_meeting.png') }}" alt="{{ $school->name }} Cover">
+                                                <img src="{{ $school->cover_image_url ? (str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($school->cover_image_url, '/')) : asset('assets/images/about_team_meeting.png') }}" alt="{{ $school->name }} Cover">
                                             </a>
                                         </div>
                                     </div>
@@ -311,43 +306,43 @@
                                     @if($school->minority_type || $school->brand_type)
                                     <span class="school-gender-badge">{{ $school->minority_type ?? $school->brand_type }}</span>
                                     @endif
-                                    <button class="btn-school-compare">Compare</button>
                                 </div>
                                 <div class="school-info-body">
                                     <div class="school-identity-row">
                                         <div class="school-logo-box" style="width: 48px; height: 48px; flex-shrink: 0;">
-                                            <img src="{{ $school->logo_url ? env('BACKEND_URL') . '/' . $school->logo_url : asset('assets/images/school-card-logo.png') }}" alt="{{ $school->name }} Logo" style="object-fit: contain;">
+                                            <img src="{{ $school->logo_url ? (str_starts_with($school->logo_url, 'http') ? $school->logo_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($school->logo_url, '/')) : asset('assets/images/school-card-logo.png') }}" alt="{{ $school->name }} Logo" style="object-fit: contain;">
                                         </div>
                                         <div class="school-identity-text">
                                             <h3 class="school-name"><a href="{{ route('school.detail', $school->slug) }}" class="text-dark text-decoration-none">{{ $school->name }}</a></h3>
                                             @php
-                                                $locations = array_merge($school->cities_present_in ?? [], $school->states_present_in ?? []);
+                                                $locations = array_merge((array)($school->cities_present_in ?? []), (array)($school->states_present_in ?? []));
+                                                $locationText = !empty($locations) ? implode(', ', array_filter($locations)) : ($school->head_office_location ?? 'India');
                                             @endphp
-                                            <span class="school-location"><i class="fa-solid fa-location-dot me-1 text-muted"></i> {{ implode(', ', $locations) }}</span>
+                                            <span class="school-location"><i class="fa-solid fa-location-dot me-1 text-muted"></i> {{ $locationText }}</span>
                                         </div>
                                     </div>
                                     <div class="school-stats-grid">
                                         <div class="school-stat-col">
                                             <span class="school-stat-lbl">Annual Fees</span>
-                                            <span class="school-stat-val">Ask</span>
+                                            <span class="school-stat-val">Contact School</span>
                                         </div>
                                         <div class="school-stat-col">
                                             <span class="school-stat-lbl">Board</span>
-                                            <a href="#" class="school-stat-val underlined">{{ implode(', ', $school->education_boards_supported ?? []) }}</a>
+                                            <span class="school-stat-val underlined">{{ is_array($school->education_boards_supported) ? implode(', ', $school->education_boards_supported) : ($school->education_boards_supported ?? 'CBSE') }}</span>
                                         </div>
                                         <div class="school-stat-col">
                                             <span class="school-stat-lbl">Classes</span>
-                                            <span class="school-stat-val">{{ implode(', ', $school->education_levels_supported ?? []) }}</span>
+                                            <span class="school-stat-val">{{ is_array($school->education_levels_supported) ? implode(', ', $school->education_levels_supported) : ($school->education_levels_supported ?? 'Nursery to 12') }}</span>
                                         </div>
                                         <div class="school-stat-col">
-                                            <span class="school-stat-lbl">Established in</span>
+                                            <span class="school-stat-lbl">Established</span>
                                             <span class="school-stat-val">{{ $school->established_year ?? 'N/A' }}</span>
                                         </div>
                                     </div>
-                                    <p class="school-card-desc">{{ Str::limit($school->meta_description ?? strip_tags($school->about_organisation ?? ''), 200, '...') }}</p>
+                                    <p class="school-card-desc">{{ Str::limit($school->meta_description ?? strip_tags($school->about_organisation ?? ''), 160, '...') }}</p>
                                     <div class="school-card-actions">
-                                        <button class="btn-school-call"><i class="fa-solid fa-phone"></i> Call School</button>
-                                        <button class="btn-school-callback">Request a Callback <i class="fa-solid fa-chevron-right ms-1" style="font-size: 9px;"></i></button>
+                                        <button type="button" class="btn-school-call" data-bs-toggle="modal" data-bs-target="#callInstituteModal" data-org-name="{{ $school->name }}" data-org-phone="{{ $school->helpdesk_contact_number ?? '+91 1800-123-4567' }}"><i class="fa-solid fa-phone"></i> Call School</button>
+                                        <button type="button" class="btn-school-callback" data-bs-toggle="modal" data-bs-target="#requestCallbackModal" data-org-name="{{ $school->name }}">Request a Callback <i class="fa-solid fa-chevron-right ms-1" style="font-size: 9px;"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -355,8 +350,18 @@
                         @endforeach
                     </div>
                     <div class="mt-4">
-                        {{ $schools->links('pagination::bootstrap-5') }}
+                        {{ $schools->appends(request()->query())->links('pagination::bootstrap-5') }}
                     </div>
+                    @else
+                    <div class="bg-white rounded-4 p-5 text-center border shadow-sm">
+                        <i class="fa-solid fa-school-flag text-muted mb-3" style="font-size: 3rem;"></i>
+                        <h4 class="fw-bold text-dark">No Schools Found</h4>
+                        <p class="text-muted mb-4">No schools matched your search criteria or selected filters.</p>
+                        <a href="{{ route('all-schools') }}" class="btn btn-primary rounded-pill px-4">
+                            <i class="fa-solid fa-rotate-left me-1"></i> Reset Filters
+                        </a>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

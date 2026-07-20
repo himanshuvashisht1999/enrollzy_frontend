@@ -6,11 +6,44 @@
       </div>
       <div class="container">
         <div class="about-hero-container">
-          <img src="assets/images/contact-us-banner-img.png" alt="" />
+          <img src="{{ $contactDetails->hero_image ? (str_starts_with($contactDetails->hero_image, 'http') ? $contactDetails->hero_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($contactDetails->hero_image, '/')) : asset('assets/images/contact-us-banner-img.png') }}" alt="Contact Us" />
 
-          <!-- Centered Badge (Placed outside card to prevent clipping) -->
-          <div class="about-us-badge-wrapper">
-            <button class="about-us-badge">Contact US</button>
+          <!-- Centered Badge / Content Block -->
+          <div class="about-us-badge-wrapper w-100 px-3">
+            <button class="about-us-badge mb-3">{{ $contactDetails->hero_badge ?? 'Contact US' }}</button>
+            
+            @if(!empty($contactDetails->hero_title))
+              <h1 class="text-white fw-bold mb-3" style="font-size: 2.5rem; text-shadow: 0px 4px 10px rgba(0,0,0,0.5);">{{ $contactDetails->hero_title }}</h1>
+            @endif
+            
+            @if(!empty($contactDetails->hero_description))
+              <p class="text-white mx-auto mb-3" style="max-width: 600px; font-size: 1.1rem; font-weight: 500; text-shadow: 0px 2px 5px rgba(0,0,0,0.5);">{{ $contactDetails->hero_description }}</p>
+            @endif
+            
+            @if(!empty($contactDetails->hero_trust_points) && is_array($contactDetails->hero_trust_points))
+              <div class="d-flex flex-wrap justify-content-center gap-2 mb-3 text-white">
+                @foreach($contactDetails->hero_trust_points as $point)
+                  <span class="badge border border-light rounded-pill px-3 py-2" style="background: rgba(13,27,42,0.4); backdrop-filter: blur(5px); font-size: 13px;">
+                    <i class="fa-solid fa-circle-check text-warning me-2"></i>{{ $point }}
+                  </span>
+                @endforeach
+              </div>
+            @endif
+            
+            @if(!empty($contactDetails->btn_hero_primary_text) || !empty($contactDetails->btn_hero_secondary_text))
+              <div class="d-flex justify-content-center gap-3">
+                @if(!empty($contactDetails->btn_hero_primary_text))
+                  <a href="{{ $contactDetails->btn_hero_primary_url ?? '#' }}" class="btn btn-enrollzy text-white px-4 py-2 rounded-pill shadow">
+                    {{ $contactDetails->btn_hero_primary_text }}
+                  </a>
+                @endif
+                @if(!empty($contactDetails->btn_hero_secondary_text))
+                  <a href="{{ $contactDetails->btn_hero_secondary_url ?? '#' }}" class="btn btn-outline-light px-4 py-2 rounded-pill shadow-sm">
+                    {{ $contactDetails->btn_hero_secondary_text }}
+                  </a>
+                @endif
+              </div>
+            @endif
           </div>
 
           <!-- Green Down Arrow Button -->
@@ -45,15 +78,15 @@
                   <table>
                     <tr>
                       <td class="label-text">Call Us</td>
-                      <td class="val-text">+91 85785 43210</td>
+                      <td class="val-text">{{ $contactDetails->phone_general ?? "+91 85785 43210" }}</td>
                     </tr>
                     <tr>
                       <td class="label-text">Support Phone</td>
-                      <td class="val-text">1800-123-4567</td>
+                      <td class="val-text">{{ $contactDetails->phone_toll_free ?? "1800-123-4567" }}</td>
                     </tr>
                     <tr>
                       <td class="label-text">Working Hours</td>
-                      <td class="val-text">10 AM to 7 PM</td>
+                      <td class="val-text">{{ $contactDetails->office_timings ?? "10 AM to 7 PM" }}</td>
                     </tr>
                   </table>
                   <p class="muted-note">
@@ -86,10 +119,7 @@
                           line-height: 1.5;
                         "
                       >
-                        UNIDANCE EDUCATION PVT LTD<br />
-                        Workaholic Work Zone, SCO 354-355-356,<br />
-                        SECOND FLOOR, Sector 34A,<br />
-                        Chandigarh, 160022, INDIA
+                        {!! isset($contactDetails->address_head_office) ? nl2br(e($contactDetails->address_head_office)) : "UNIDANCE EDUCATION PVT LTD<br />Workaholic Work Zone, SCO 354-355-356,<br />SECOND FLOOR, Sector 34A,<br />Chandigarh, 160022, INDIA" !!}
                       </td>
                     </tr>
                   </table>
@@ -105,11 +135,11 @@
                   <table>
                     <tr>
                       <td class="label-text">Email Us</td>
-                      <td class="val-text">{{ $contactDetails->email_support ?? "info@enrollzy.com" }}</td>
+                      <td class="val-text">{{ $contactDetails->email_queries ?? "info@enrollzy.com" }}</td>
                     </tr>
                     <tr>
                       <td class="label-text">Support Email</td>
-                      <td class="val-text">support@enrollzy.com</td>
+                      <td class="val-text">{{ $contactDetails->email_support ?? "support@enrollzy.com" }}</td>
                     </tr>
                   </table>
                 </div>
@@ -138,9 +168,7 @@
                   class="heading-with-lines d-flex align-items-center justify-content-center gap-3 mb-3"
                 >
                   <span class="heading-line d-none d-md-block"></span>
-                  <h2 class="section-title mb-0">
-                    Talk to the person who built this for you
-                  </h2>
+                  <h2 class="section-title mb-0">{{ $contactDetails->founder_heading ?? "Talk to the person who built this for you" }}</h2>
                   <span class="heading-line d-none d-md-block"></span>
                 </div>
                 <p
@@ -156,41 +184,29 @@
             </div>
             <!-- Left: Portrait -->
             <div class="col-lg-5 founder-portrait-wrapper">
-              <img
-                src="assets/images/founder-img-contact.png"
-                alt="Vinay Singh - Founder"
-                class="img-fluid"
-              />
+              <img src="{{ $contactDetails->co_founder_image ? (str_starts_with($contactDetails->co_founder_image, 'http') ? $contactDetails->co_founder_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($contactDetails->co_founder_image, '/')) : asset('assets/images/founder-img-contact.png') }}" alt="{{ $contactDetails->co_founder_name ?? 'Founder' }}" class="img-fluid" />
             </div>
 
             <!-- Right: Text block -->
             <div class="col-lg-7">
               <div class="contact-founder-card">
-                <div class="contact-founder-watermark">FOUNDER</div>
-                <h2 class="contact-founder-title">
-                  Talk to the person who built this for you
-                </h2>
-                <div class="contact-founder-quote">
+                <div class="contact-founder-watermark">{{ $contactDetails->founder_badge ?? "FOUNDER" }}</div>
+                <h2 class="contact-founder-title">{{ $contactDetails->founder_heading ?? "Talk to the person who built this for you" }}</h2>
+                                <div class="contact-founder-quote">
                   <p>
-                    "Every feature on Enrollzy exists because a student
-                    somewhere had a question no one answered. Be that student.
-                    Write to our founder — your feedback, your story, your
-                    doubt. It goes straight to the top."
+                    {{ $contactDetails->co_founder_message ?? '"Every feature on Enrollzy exists because a student somewhere had a question no one answered. Be that student. Write to our founder — your feedback, your story, your doubt. It goes straight to the top."' }}
                   </p>
                 </div>
                 <div class="contact-founder-author">
-                  <h4 class="contact-founder-name">Vinay Singh</h4>
-                  <span class="contact-founder-role">Founder</span>
+                  <h4 class="contact-founder-name">{{ $contactDetails->co_founder_name ?? "Vinay Singh" }}</h4>
+                  <span class="contact-founder-role">{{ $contactDetails->co_founder_title ?? "Founder" }}</span>
                 </div>
                 <div class="contact-founder-buttons">
-                  <a href="mailto:vinay@enrollzy.com" class="btn-founder-email">
+                  <a href="mailto:{{ $contactDetails->co_founder_email ?? "vinay@enrollzy.com" }}" class="btn-founder-email">
                     <i class="fa-solid fa-envelope"></i>
                     Email Founder
                   </a>
-                  <a href="#" class="btn-founder-consult">
-                    Book Consultation
-                    <i class="fa-solid fa-arrow-right"></i>
-                  </a>
+                  <a href="{{ $contactDetails->btn_founder_book_url ?? '#' }}" class="btn-founder-consult">{{ $contactDetails->btn_founder_book_text ?? "Book Consultation" }} <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
               </div>
             </div>
@@ -200,7 +216,7 @@
     </div>
 
     <!-- Section 3: Request Consultation & Map -->
-    <section class="contact-form-section ptb-70">
+    <section class="contact-form-section ptb-70" id="contact-form">
       <div class="container">
         <!-- Section Header -->
         <div class="text-center heading-card mb-5">
@@ -209,7 +225,7 @@
           >
             <span class="heading-line d-none d-md-block"></span>
             <h2 class="section-title mb-0">
-              Talk to the person who built this for you
+              {{ $contactDetails->hero_title ?? 'Request a Free Consultation' }}
             </h2>
             <span class="heading-line d-none d-md-block"></span>
           </div>
@@ -217,9 +233,7 @@
             class="section-subtitle mx-auto text-muted"
             style="max-width: 900px"
           >
-            "Every feature on Enrollzy exists because a student somewhere had a
-            question no one answered. Be that student. Write to our founder —
-            your feedback, your story, your doubt. It goes straight to the top."
+            {{ $contactDetails->hero_subtitle ?? 'Leave us a message and our advisors will get back to you shortly.' }}
           </p>
         </div>
 
@@ -235,8 +249,19 @@
                 shortly.
               </p>
 
+              @php $fromOrg = request('from_org', ''); @endphp
+
               <form action="{{ route('contact.submit') }}" method="POST">
                 @csrf
+                <input type="hidden" name="organisation_name" value="{{ $fromOrg }}">
+
+                @if($fromOrg)
+                    <div class="alert d-flex align-items-center gap-2 mb-3 rounded-3" style="background: #eef3ff; border: 1px solid #b6ccff; color: #1a3a7c; font-size: 14px;">
+                        <i class="fa-solid fa-school"></i>
+                        <span>You're requesting a callback about <strong>{{ $fromOrg }}</strong>. Our team will get back to you shortly.</span>
+                    </div>
+                @endif
+
                 @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
@@ -278,11 +303,13 @@
                     />
                   </div>
                   <div class="col-md-6">
-                    <label class="form-label">Company Name</label>
+                    <label class="form-label">{{ $fromOrg ? 'Institute / School Name' : 'Company Name' }}</label>
                     <input
                       type="text"
                       class="form-control"
-                      name="company" placeholder="Company name"
+                      name="company"
+                      placeholder="{{ $fromOrg ? 'Institute or school name' : 'Company name' }}"
+                      value="{{ $fromOrg }}"
                     />
                   </div>
                   <div class="col-12">
@@ -317,10 +344,21 @@
                 </div>
               </form>
 
-              <div class="text-center">
-                <div class="contact-secure-notice">
-                  <i class="fa-solid fa-lock"></i>
-                  Your personal information is secure with us
+                            <div class="text-center">
+                <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+                  @if(!empty($contactDetails->form_trust_points) && is_array($contactDetails->form_trust_points))
+                    @foreach($contactDetails->form_trust_points as $point)
+                      <div class="contact-secure-notice">
+                        <i class="fa-solid fa-lock text-success me-1"></i>
+                        {{ $point }}
+                      </div>
+                    @endforeach
+                  @else
+                    <div class="contact-secure-notice">
+                      <i class="fa-solid fa-lock"></i>
+                      Your personal information is secure with us
+                    </div>
+                  @endif
                 </div>
               </div>
 
@@ -339,19 +377,14 @@
           <!-- Right: Map -->
           <div class="col-lg-5 px-0">
             <div class="contact-map-wrapper">
-              <!-- Chandigarh Sector 34A Location Google Map Iframe -->
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3430.2223849502847!2d76.76450637684824!3d30.726224385966398!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390fed160a000001%3A0x63334dc2809e53b1!2sSector%2034%2C%20Chandigarh!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-                allowfullscreen=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-              ></iframe>
+              <iframe src="{{ $contactDetails->embed_map_url }}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
           </div>
         </div>
       </div>
     </section>
 
+    @if(!empty($contactDetails->why_contact_cards) && is_array($contactDetails->why_contact_cards) && collect($contactDetails->why_contact_cards)->filter(function($card) { return !empty($card['title']) || !empty($card['description']); })->count() > 0)
     <!-- Section 4: Why Businesses Work With Us -->
     <section class="contact-why-section ptb-70">
       <div class="container">
@@ -361,7 +394,7 @@
             class="heading-with-lines d-flex align-items-center justify-content-center gap-3 mb-3"
           >
             <span class="heading-line d-none d-md-block"></span>
-            <h2 class="section-title mb-0">Why Businesses Work With Us</h2>
+            <h2 class="section-title mb-0">{{ $contactDetails->why_contact_heading ?? 'Why Businesses Work With Us' }}</h2>
             <span class="heading-line d-none d-md-block"></span>
           </div>
           <p
@@ -375,64 +408,29 @@
 
         <!-- Cards Grid -->
         <div class="row g-4 justify-content-center">
-          <!-- Card 1 -->
-          <div class="col-lg-3 col-sm-6">
-            <div class="why-card">
-              <div class="why-card-icon">
-                <img src="assets/images/why-wok-icon-1.png" alt="" />
+          @foreach($contactDetails->why_contact_cards as $card)
+            @if(!empty($card['title']) || !empty($card['description']))
+              <div class="col-lg-3 col-sm-6">
+                <div class="why-card">
+                  <div class="why-card-icon d-flex align-items-center justify-content-center" style="font-size: 2.5rem; color: #3771c8; height: 70px; width: 70px; margin-bottom: 20px;">
+                    @if(empty($card['icon']))
+                      <img src="{{ asset('assets/images/why-wok-icon-1.png') }}" alt="" />
+                    @elseif(str_contains($card['icon'], '.') || str_contains($card['icon'], '/'))
+                      <img src="{{ str_starts_with($card['icon'], 'http') ? $card['icon'] : (str_starts_with($card['icon'], 'assets/') ? asset($card['icon']) : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($card['icon'], '/')) }}" alt="" />
+                    @else
+                      <i class="{{ $card['icon'] }}"></i>
+                    @endif
+                  </div>
+                  <h4 class="why-card-title">{{ $card['title'] ?? '' }}</h4>
+                  <p class="why-card-desc">{{ $card['description'] ?? '' }}</p>
+                </div>
               </div>
-              <h4 class="why-card-title">Process Improvement</h4>
-              <p class="why-card-desc">
-                We analyze your workflows and eliminate bottlenecks to increase
-                efficiency.
-              </p>
-            </div>
-          </div>
-
-          <!-- Card 2 -->
-          <div class="col-lg-3 col-sm-6">
-            <div class="why-card">
-              <div class="why-card-icon">
-                <img src="assets/images/why-wok-icon-2.png" alt="" />
-              </div>
-              <h4 class="why-card-title">Process Improvement</h4>
-              <p class="why-card-desc">
-                We analyze your workflows and eliminate bottlenecks to increase
-                efficiency.
-              </p>
-            </div>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="col-lg-3 col-sm-6">
-            <div class="why-card">
-              <div class="why-card-icon">
-                <img src="assets/images/why-wok-icon-3.png" alt="" />
-              </div>
-              <h4 class="why-card-title">Process Improvement</h4>
-              <p class="why-card-desc">
-                We analyze your workflows and eliminate bottlenecks to increase
-                efficiency.
-              </p>
-            </div>
-          </div>
-
-          <!-- Card 4 -->
-          <div class="col-lg-3 col-sm-6">
-            <div class="why-card">
-              <div class="why-card-icon">
-                <img src="assets/images/why-wok-icon-4.png" alt="" />
-              </div>
-              <h4 class="why-card-title">Process Improvement</h4>
-              <p class="why-card-desc">
-                We analyze your workflows and eliminate bottlenecks to increase
-                efficiency.
-              </p>
-            </div>
-          </div>
+            @endif
+          @endforeach
         </div>
       </div>
     </section>
+    @endif
 
     <!-- Section 5: Partnership -->
     <section class="contact-partnership-section ptb-70">

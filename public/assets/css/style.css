@@ -757,11 +757,11 @@ header {
 }
 
 .journey-icon-wrapper {
-    width: 90px;
-    height: 90px;
+    /* width: 72px; */
+    /* height: 72px; */
     border-radius: 50%;
-    background-color: #ffffff;
-    border: 2px solid #2864C6;
+    /* background-color: var(--bg-white); */
+    /* border: 2px solid var(--primary-blue); */
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -770,11 +770,6 @@ header {
     transition: all 0.3s ease;
 }
 
-.journey-icon-wrapper img {
-    max-width: 45px;
-    max-height: 45px;
-    object-fit: contain;
-}
 .journey-step-col:hover .journey-icon-wrapper {
     /* transform: scale(1.08); */
     /* box-shadow: 0px 6px 18px rgba(15, 89, 199, 0.15); */
@@ -3955,12 +3950,13 @@ header {
     border: 1px solid #DDDDDD;
     border-radius: 10px;
     padding: 15px 19px;
-    text-align: center;
+    text-align: left;
     position: relative;
     transition: all 0.3s ease;
-    /* height: 100%; */
+    height: 100%;
     box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.02);
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .univ-card:hover {
@@ -3991,18 +3987,32 @@ header {
 }
 
 .univ-card-logo {
-
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 10px auto 16px auto;
-    /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.03); */
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #f0f0f0;
+    background: #fff;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.06);
+    flex-shrink: 0;
+}
+
+.univ-card-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 6px;
 }
 
 .univ-card-logo svg {
     width: 38px;
     height: 38px;
 }
+
 
 .univ-card-name {
     font-size: 16px;
@@ -4040,13 +4050,12 @@ header {
 }
 
 .univ-card-stats {
-    /* border-top: 1px solid #F0F0F0; */
-    /* border-bottom: 1px solid #F0F0F0; */
-    /* padding: 12px 0; */
-    /* margin-bottom: 20px; */
-    /* display: flex; */
+    display: flex;
+    margin-bottom: 0;
+    padding-bottom: 12px;
+    flex: 1;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .univ-stat-row {
@@ -4070,6 +4079,8 @@ header {
 .univ-card-actions {
     display: flex;
     gap: 8px;
+    margin-top: auto;
+    padding-top: 16px;
     margin-bottom: 16px;
     justify-content: space-between;
 }

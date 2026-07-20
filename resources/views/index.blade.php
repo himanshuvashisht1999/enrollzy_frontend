@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<!-- Main Content Section -->
+    <!-- Main Content Section -->
     <main class="pb-5 hero-sec">
         @php
             $firstHero = $heroSliders->first();
@@ -14,7 +14,8 @@
                 <div class="col-lg-6 col-12 text-center text-lg-start">
                     <!-- Marketplace Badge -->
                     <div class="mb-4">
-                        <span class="marketplace-badge">{{ $firstHero->badge_text ?? "India's no.1 Education Market place" }}</span>
+                        <span
+                            class="marketplace-badge">{{ $firstHero->badge_text ?? "India's no.1 Education Market place" }}</span>
                     </div>
 
                     <!-- Main Heading -->
@@ -28,18 +29,26 @@
                     @endif
 
                     <!-- Search Capsule -->
-                    <form action="#" method="GET" class="search-bar-container mx-auto mx-lg-0 ">
+                    <form action="{{ route('global.search') }}" method="GET" class="search-bar-container mx-auto mx-lg-0">
                         <div class="dropdown">
                             <button class="search-dropdown" type="button" id="searchFilterDropdown"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                <span>Looking for..</span>
+                                <span id="searchFilterLabel">Looking for..</span>
                                 <i class="fa-solid fa-chevron-down" style="color: rgb(0, 0, 0);"></i>
                             </button>
                             <ul class="dropdown-menu border-0 shadow-sm" aria-labelledby="searchFilterDropdown">
-                                <li><a class="dropdown-item" href="#" onclick="document.getElementById('searchType').value='colleges'; document.getElementById('searchFilterDropdown').firstElementChild.innerText='Colleges';">Colleges</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="document.getElementById('searchType').value='courses'; document.getElementById('searchFilterDropdown').firstElementChild.innerText='Courses';">Courses</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="document.getElementById('searchType').value='mentors'; document.getElementById('searchFilterDropdown').firstElementChild.innerText='Mentors';">Mentors</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="document.getElementById('searchType').value='schools'; document.getElementById('searchFilterDropdown').firstElementChild.innerText='Schools';">Schools</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        onclick="document.getElementById('searchType').value='colleges'; document.getElementById('searchFilterLabel').innerText='Colleges';">Colleges</a>
+                                </li>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        onclick="document.getElementById('searchType').value='courses'; document.getElementById('searchFilterLabel').innerText='Courses';">Courses</a>
+                                </li>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        onclick="document.getElementById('searchType').value='mentors'; document.getElementById('searchFilterLabel').innerText='Mentors';">Mentors</a>
+                                </li>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        onclick="document.getElementById('searchType').value='schools'; document.getElementById('searchFilterLabel').innerText='Schools';">Schools</a>
+                                </li>
                             </ul>
                             <input type="hidden" name="type" id="searchType" value="">
                         </div>
@@ -59,25 +68,31 @@
                     <!-- Search Tags -->
                     <div class=" d-flex flex-wrap justify-content-center justify-content-lg-start"
                         style="margin-bottom:41px">
-                        <a href="#" class="tag-pill">Top University</a>
-                        <a href="#" class="tag-pill">Top Schools</a>
-                        <a href="#" class="tag-pill">Top Exams</a>
-                        <a href="#" class="tag-pill">Top Courses</a>
+                        <a href="{{ route('university') }}" class="tag-pill">Top University</a>
+                        <a href="{{ route('all-schools') }}" class="tag-pill">Top Schools</a>
+                        <a href="{{ route('top-exams') }}" class="tag-pill">Top Exams</a>
+                        <a href="{{ route('all.coaching') }}" class="tag-pill">Top Courses</a>
                     </div>
 
                     <!-- Statistics Cards -->
                     <div class="stats-container mb-4">
                         <div class="stat-card">
-                            <span class="stat-number">{{ $firstHero->stat_1_count ?? '2800+' }}</span>
-                            <span class="stat-label">{{ $firstHero->stat_1_label ?? 'Institution' }}</span>
+                            <span
+                                class="stat-number">{{ isset($firstHero->stat_1_count) && !empty($firstHero->stat_1_count) ? $firstHero->stat_1_count : ($totalInstitutionsCount > 0 ? $totalInstitutionsCount . '+' : '2800+') }}</span>
+                            <span
+                                class="stat-label">{{ isset($firstHero->stat_1_label) && !empty($firstHero->stat_1_label) ? $firstHero->stat_1_label : 'Institution' }}</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-number">{{ $firstHero->stat_2_count ?? '1.2L+' }}</span>
-                            <span class="stat-label">{{ $firstHero->stat_2_label ?? 'Student Enrolled' }}</span>
+                            <span
+                                class="stat-number">{{ isset($firstHero->stat_2_count) && !empty($firstHero->stat_2_count) ? $firstHero->stat_2_count : ($totalLeadsCount > 0 ? $totalLeadsCount . '+' : '1.2L+') }}</span>
+                            <span
+                                class="stat-label">{{ isset($firstHero->stat_2_label) && !empty($firstHero->stat_2_label) ? $firstHero->stat_2_label : 'Student Enrolled' }}</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-number">{{ $firstHero->stat_3_count ?? '4500+' }}</span>
-                            <span class="stat-label">{{ $firstHero->stat_3_label ?? "Scholarship's" }}</span>
+                            <span
+                                class="stat-number">{{ isset($firstHero->stat_3_count) && !empty($firstHero->stat_3_count) ? $firstHero->stat_3_count : ($totalExamsCount > 0 ? $totalExamsCount . '+' : '4500+') }}</span>
+                            <span
+                                class="stat-label">{{ isset($firstHero->stat_3_label) && !empty($firstHero->stat_3_label) ? $firstHero->stat_3_label : "Scholarship's" }}</span>
                         </div>
                     </div>
                 </div>
@@ -89,7 +104,7 @@
                             @if($heroSliders->count() > 0)
                                 @foreach($heroSliders as $slider)
                                     <div class="swiper-slide d-flex align-items-center justify-content-center">
-                                        <img src="{{ env('BACKEND_URL') . '/' . $slider->image_path }}" alt="{{ $slider->heading }}"
+                                        <img src="{{ str_starts_with($slider->image_path, 'http') ? $slider->image_path : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($slider->image_path, '/') }}" alt="{{ $slider->heading }}"
                                             class="img-fluid hero-slide-img"
                                             style="border-radius: 20px; object-fit: cover; width: 100%; height: 100%;">
                                     </div>
@@ -120,7 +135,7 @@
         </div>
     </main>
 
-    
+
 
 
     <!-- Categories Section -->
@@ -324,23 +339,34 @@
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-4 mb-5 justify-content-center">
                     @if(isset($boardingSchools) && $boardingSchools->count() > 0)
                         @foreach($boardingSchools as $school)
-                        <div class="col">
-                            <div class="institution-card position-relative h-100 d-flex flex-column">
-                                <span class="rating-badge position-absolute">
-                                    <span>{{ $school->average_rating ?? '4.5' }} <span class="star-icon">★</span></span>
-                                </span>
-                                <div class="institution-logo-wrapper mx-auto mb-3" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #fff; border: 1px solid #eee;">
-                                    <img src="{{ $school->logo_url ? env('BACKEND_URL') . '/' . $school->logo_url : asset('assets/images/boarding-school-logo.png') }}" alt="{{ $school->brand_name ?? $school->name }}" style="max-width: 100%; max-height: 100%;">
+                            <div class="col">
+                                <div class="institution-card position-relative h-100 d-flex flex-column">
+                                    <span class="rating-badge position-absolute">
+                                        <span>{{ $school->average_rating ?? '4.5' }} <span class="star-icon">★</span></span>
+                                    </span>
+                                    <div class="institution-logo-wrapper mx-auto mb-3"
+                                        style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #fff; border: 1px solid #eee;">
+                                        <img src="{{ $school->logo_url ? (str_starts_with($school->logo_url, 'http') ? $school->logo_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($school->logo_url, '/')) : asset('assets/images/boarding-school-logo.png') }}"
+                                            alt="{{ $school->brand_name ?? $school->name }}"
+                                            style="max-width: 100%; max-height: 100%;">
+                                    </div>
+                                    <span
+                                        class="badge-capsule mb-2 mx-auto">{{ Str::limit($school->brand_name ?? $school->name, 20) }}</span>
+                                    <div class="card-info-text text-center">
+                                        {{ is_array($school->cities_present_in) ? ($school->cities_present_in[0] ?? 'Location') : ($school->cities_present_in ?? 'Location') }}
+                                        &nbsp;
+                                        {{ is_array($school->education_boards_supported) ? ($school->education_boards_supported[0] ?? 'CBSE') : ($school->education_boards_supported ?? 'CBSE') }}
+                                    </div>
+                                    <div class="card-info-text mb-3 fw-bold text-center">
+                                        {{ is_array($school->education_levels_supported) ? ($school->education_levels_supported[0] ?? '3rd - 12th') : ($school->education_levels_supported ?? '3rd - 12th') }}
+                                    </div>
+                                    <a href="{{ route('school.detail', $school->slug ?? $school->id) }}"
+                                        class="btn btn-enrollzy btn-enrollzy-sm w-100 mt-auto">
+                                        APPLY NOW
+                                        <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
+                                    </a>
                                 </div>
-                                <span class="badge-capsule mb-2 mx-auto">{{ Str::limit($school->brand_name ?? $school->name, 20) }}</span>
-                                <div class="card-info-text text-center">{{ is_array($school->cities_present_in) ? ($school->cities_present_in[0] ?? 'Location') : ($school->cities_present_in ?? 'Location') }} &nbsp; {{ is_array($school->education_boards_supported) ? ($school->education_boards_supported[0] ?? 'CBSE') : ($school->education_boards_supported ?? 'CBSE') }}</div>
-                                <div class="card-info-text mb-3 fw-bold text-center">{{ is_array($school->education_levels_supported) ? ($school->education_levels_supported[0] ?? '3rd - 12th') : ($school->education_levels_supported ?? '3rd - 12th') }}</div>
-                                <a href="{{ route('school.detail', $school->slug ?? $school->id) }}" class="btn btn-enrollzy btn-enrollzy-sm w-100 mt-auto">
-                                    APPLY NOW
-                                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                                </a>
                             </div>
-                        </div>
                         @endforeach
                     @else
                         <div class="col-12 text-center py-5">
@@ -351,7 +377,9 @@
 
                 <!-- View More Button -->
                 <div class="text-center">
-                    <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
+                    <a href="{{ route('blogs') }}"
+                        class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i
+                            class="fa-solid fa-arrow-right-long"></i></a>
                 </div>
             </div>
         </section>
@@ -375,30 +403,41 @@
                 <!-- Coaching Cards Grid -->
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-4 mb-5 justify-content-center">
                     @foreach($coachingInstitutes as $coaching)
-                    <div class="col">
-                        <div class="institution-card position-relative h-100 d-flex flex-column">
-                            <span class="rating-badge position-absolute">
-                                <span>{{ $coaching->average_rating ?? '4.5' }} <span class="star-icon">★</span></span>
-                            </span>
-                            <div class="institution-logo-wrapper mx-auto mb-3" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #fff; border: 1px solid #eee;">
-                                <img src="{{ $coaching->logo_url ? env('BACKEND_URL') . '/' . $coaching->logo_url : asset('assets/images/boarding-school-logo.png') }}" alt="{{ $coaching->brand_name ?? $coaching->name }}" style="max-width: 100%; max-height: 100%;">
+                        <div class="col">
+                            <div class="institution-card position-relative h-100 d-flex flex-column">
+                                <span class="rating-badge position-absolute">
+                                    <span>{{ $coaching->average_rating ?? '4.5' }} <span class="star-icon">★</span></span>
+                                </span>
+                                <div class="institution-logo-wrapper mx-auto mb-3"
+                                    style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #fff; border: 1px solid #eee;">
+                                    <img src="{{ $coaching->logo_url ? (str_starts_with($coaching->logo_url, 'http') ? $coaching->logo_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($coaching->logo_url, '/')) : asset('assets/images/boarding-school-logo.png') }}"
+                                        alt="{{ $coaching->brand_name ?? $coaching->name }}"
+                                        style="max-width: 100%; max-height: 100%;">
+                                </div>
+                                <span
+                                    class="badge-capsule mb-2 mx-auto">{{ Str::limit($coaching->brand_name ?? $coaching->name, 20) }}</span>
+                                <div class="card-info-text text-center">
+                                    {{ is_array($coaching->cities_present_in) ? ($coaching->cities_present_in[0] ?? 'City') : ($coaching->cities_present_in ?? 'City') }},
+                                    {{ is_array($coaching->states_present_in) ? ($coaching->states_present_in[0] ?? 'State') : ($coaching->states_present_in ?? 'State') }}
+                                </div>
+                                <div class="card-info-text text-center"
+                                    style="font-size: 10px; font-weight: 700; color: #000000;margin-bottom: 13px;">
+                                    {{ is_array($coaching->education_boards_supported) ? implode(' | ', $coaching->education_boards_supported) : ($coaching->education_boards_supported ?? 'NEET | IIT-JEE | NDA') }}
+                                </div>
+                                <a href="{{ route('coaching.detail', $coaching->slug ?? $coaching->id) }}"
+                                    class="btn btn-enrollzy btn-enrollzy-sm w-100 mt-auto">
+                                    APPLY NOW
+                                    <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
+                                </a>
                             </div>
-                            <span class="badge-capsule mb-2 mx-auto">{{ Str::limit($coaching->brand_name ?? $coaching->name, 20) }}</span>
-                            <div class="card-info-text text-center">{{ is_array($coaching->cities_present_in) ? ($coaching->cities_present_in[0] ?? 'City') : ($coaching->cities_present_in ?? 'City') }}, {{ is_array($coaching->states_present_in) ? ($coaching->states_present_in[0] ?? 'State') : ($coaching->states_present_in ?? 'State') }}</div>
-                            <div class="card-info-text text-center" style="font-size: 10px; font-weight: 700; color: #000000;margin-bottom: 13px;">
-                                {{ is_array($coaching->education_boards_supported) ? implode(' | ', $coaching->education_boards_supported) : ($coaching->education_boards_supported ?? 'NEET | IIT-JEE | NDA') }}
-                            </div>
-                            <a href="{{ route('coaching.detail', $coaching->slug ?? $coaching->id) }}" class="btn btn-enrollzy btn-enrollzy-sm w-100 mt-auto">
-                                APPLY NOW
-                                <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                            </a>
                         </div>
-                    </div>
                     @endforeach
                 </div>
                 <!-- View More Button -->
                 <div class="text-center">
-                    <a href="{{ route('all.coaching') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
+                    <a href="{{ route('all.coaching') }}"
+                        class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i
+                            class="fa-solid fa-arrow-right-long"></i></a>
                 </div>
             </div>
         </section>
@@ -631,7 +670,8 @@
 
             <!-- View More Button -->
             <div class="text-center">
-                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
+                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
+                    More <i class="fa-solid fa-arrow-right-long"></i></a>
             </div>
         </div>
     </section>
@@ -653,54 +693,57 @@
 
             <!-- Outer 3 Columns Grid -->
             @if(isset($noteworthy_categories) && $noteworthy_categories->count() > 0)
-            <div class="row row-cols-1 row-cols-lg-3 g-4">
-                @php
-                    $borderClasses = ['trending-border-blue', 'trending-border-yellow', 'trending-border-black'];
-                    $textClasses = ['text-primary', 'text-warning', 'text-dark'];
-                @endphp
-                @foreach ($noteworthy_categories->take(3) as $cIndex => $category)
+                <div class="row row-cols-1 row-cols-lg-3 g-4">
                     @php
-                        $borderClass = $borderClasses[$cIndex % 3];
-                        $textClass = $textClasses[$cIndex % 3];
+                        $borderClasses = ['trending-border-blue', 'trending-border-yellow', 'trending-border-black'];
+                        $textClasses = ['text-primary', 'text-warning', 'text-dark'];
                     @endphp
-                    <div class="col">
-                        <div class="trending-column-container {{ $borderClass }}">
-                            <div class="trending-column-header {{ $textClass }}">
-                                <h3 class="trending-header-title mb-0">{{ $category->name }}</h3>
-                                <span class="trending-header-arrow"><i class="fa-solid fa-arrow-right-long"></i></span>
-                            </div>
-                            <div class="row row-cols-2" style="gap: 15px 0px;">
-                                @foreach ($category->mentions->take(6) as $mention)
-                                <div class="col">
-                                    <div class="skill-list-card">
-                                        <div class="skill-card-icon-wrapper" style="width: 44px; height: 44px; background-color: #0f172a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                                            @if ($mention->image)
-                                                <img src="{{ env('BACKEND_URL') . '/' . $mention->image }}" alt="" style="width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1);">
-                                            @else
-                                                <span class="text-white fw-bold" style="font-size: 12px;">AI</span>
-                                            @endif
-                                        </div>
-                                        <h4 class="skill-card-title" style="min-height: 48px;">{{ $mention->title }}</h4>
-                                        <ul class="skill-list">
-                                            @if($mention->subtitle)
-                                                @foreach(explode("\n", str_replace("\r", "", $mention->subtitle)) as $item)
-                                                    @if(trim($item) != '')
-                                                        <li class="skill-list-item">{{ trim($item) }}</li>
-                                                    @endif
-                                                @endforeach
-                                            @endif
-                                        </ul>
-                                    </div>
+                    @foreach ($noteworthy_categories->take(3) as $cIndex => $category)
+                        @php
+                            $borderClass = $borderClasses[$cIndex % 3];
+                            $textClass = $textClasses[$cIndex % 3];
+                        @endphp
+                        <div class="col">
+                            <div class="trending-column-container {{ $borderClass }}">
+                                <div class="trending-column-header {{ $textClass }}">
+                                    <h3 class="trending-header-title mb-0">{{ $category->name }}</h3>
+                                    <span class="trending-header-arrow"><i class="fa-solid fa-arrow-right-long"></i></span>
                                 </div>
-                                @endforeach
+                                <div class="row row-cols-2" style="gap: 15px 0px;">
+                                    @foreach ($category->mentions->take(6) as $mention)
+                                        <div class="col">
+                                            <div class="skill-list-card">
+                                                <div class="skill-card-icon-wrapper"
+                                                    style="width: 44px; height: 44px; background-color: #0f172a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                                                    @if ($mention->image)
+                                                        <img src="{{ str_starts_with($mention->image, 'http') ? $mention->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($mention->image, '/') }}" alt=""
+                                                            style="width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1);">
+                                                    @else
+                                                        <span class="text-white fw-bold" style="font-size: 12px;">AI</span>
+                                                    @endif
+                                                </div>
+                                                <h4 class="skill-card-title" style="min-height: 48px;">{{ $mention->title }}</h4>
+                                                <ul class="skill-list">
+                                                    @if($mention->subtitle)
+                                                        @foreach(explode("\n", str_replace("\r", "", $mention->subtitle)) as $item)
+                                                            @if(trim($item) != '')
+                                                                <li class="skill-list-item">{{ trim($item) }}</li>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
+                    @endforeach
+                </div>
             @endif
             <div class="text-center" style="margin-top: 57px;">
-                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
+                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
+                    More <i class="fa-solid fa-arrow-right-long"></i></a>
             </div>
         </div>
     </section>
@@ -724,47 +767,52 @@
             <!-- Mentors Grid -->
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
                 @foreach($mentors as $mentor)
-                <div class="col">
-                    <div class="mentor-card h-100 d-flex flex-column">
-                        <div class="mentor-img-wrapper" style="height: 250px; overflow: hidden;">
-                            <img src="{{ $mentor->profile_photo ? env('BACKEND_URL') . '/' . $mentor->profile_photo : asset('assets/images/mentor1.png') }}" alt="{{ $mentor->first_name }} {{ $mentor->last_name }}" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                        <div class="mentor-card-body text-center d-flex flex-column flex-grow-1">
-                            <h3 class="mentor-name">{{ $mentor->first_name }} {{ $mentor->last_name }}</h3>
-                            <p class="mentor-title">{{ $mentor->professional_headline ?? 'Expert Mentor' }}</p>
-
-                            <div class="mentor-badges d-flex flex-wrap justify-content-center gap-2 mb-3">
-                                <span class="badge-tag tag-blue">MBA Prep</span>
-                                <span class="badge-tag tag-yellow">Product</span>
-                                <span class="badge-tag tag-green">Startups</span>
+                    <div class="col">
+                        <div class="mentor-card h-100 d-flex flex-column">
+                            <div class="mentor-img-wrapper" style="height: 250px; overflow: hidden;">
+                                <img src="{{ $mentor->profile_photo ? (str_starts_with($mentor->profile_photo, 'http') ? $mentor->profile_photo : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($mentor->profile_photo, '/')) : asset('assets/images/mentor1.png') }}"
+                                    alt="{{ $mentor->first_name }} {{ $mentor->last_name }}"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
+                            <div class="mentor-card-body text-center d-flex flex-column flex-grow-1">
+                                <h3 class="mentor-name">{{ $mentor->first_name }} {{ $mentor->last_name }}</h3>
+                                <p class="mentor-title">{{ $mentor->professional_headline ?? 'Expert Mentor' }}</p>
 
-                            <div class="d-flex justify-content-between align-items-center mb-3 mentor-stats">
-                                <div class="rating-badge-plain">
-                                    <div class="stars">
-                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star text-muted"></i>
+                                <div class="mentor-badges d-flex flex-wrap justify-content-center gap-2 mb-3">
+                                    <span class="badge-tag tag-blue">MBA Prep</span>
+                                    <span class="badge-tag tag-yellow">Product</span>
+                                    <span class="badge-tag tag-green">Startups</span>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-3 mentor-stats">
+                                    <div class="rating-badge-plain">
+                                        <div class="stars">
+                                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                                class="fa-solid fa-star text-muted"></i>
+                                        </div>
+                                        <span class="ms-1 fw-bold">4.9</span>
                                     </div>
-                                    <span class="ms-1 fw-bold">4.9</span>
+                                    <span class="sessions-count text-muted">280 sessions</span>
                                 </div>
-                                <span class="sessions-count text-muted">280 sessions</span>
-                            </div>
 
-                            <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
-                                <div class="mentor-price">
-                                    <span class="price-amount">₹500</span><span class="price-unit">/min</span>
+                                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
+                                    <div class="mentor-price">
+                                        <span class="price-amount">₹500</span><span class="price-unit">/min</span>
+                                    </div>
+                                    <a href="#" class="btn btn-enrollzy btn-enrollzy-sm px-3 rounded-pill">Book session <i
+                                            class="fa-solid fa-arrow-right-long ms-1"
+                                            style="color: #fff; font-size: 10px;"></i></a>
                                 </div>
-                                <a href="#" class="btn btn-enrollzy btn-enrollzy-sm px-3 rounded-pill">Book session <i class="fa-solid fa-arrow-right-long ms-1" style="color: #fff; font-size: 10px;"></i></a>
                             </div>
                         </div>
                     </div>
-                </div>
                 @endforeach
             </div>
             <!-- View More Button -->
             <div class="text-center">
-                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
+                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
+                    More <i class="fa-solid fa-arrow-right-long"></i></a>
             </div>
         </div>
     </section>
@@ -790,13 +838,14 @@
                     @foreach($faqs as $index => $faq)
                         <div class="accordion-item">
                             <h3 class="accordion-header" id="heading{{ $index }}">
-                                <button class="accordion-button {{ $index === 0 ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapse{{ $index }}" aria-expanded="{{ $index === 0 ? 'true' : 'false' }}" aria-controls="collapse{{ $index }}">
+                                <button class="accordion-button {{ $index === 0 ? '' : 'collapsed' }}" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapse{{ $index }}"
+                                    aria-expanded="{{ $index === 0 ? 'true' : 'false' }}" aria-controls="collapse{{ $index }}">
                                     {{ $faq->question }}
                                 </button>
                             </h3>
-                            <div id="collapse{{ $index }}" class="accordion-collapse collapse {{ $index === 0 ? 'show' : '' }}" aria-labelledby="heading{{ $index }}"
-                                data-bs-parent="#faqZoneAccordion">
+                            <div id="collapse{{ $index }}" class="accordion-collapse collapse {{ $index === 0 ? 'show' : '' }}"
+                                aria-labelledby="heading{{ $index }}" data-bs-parent="#faqZoneAccordion">
                                 <div class="accordion-body">
                                     {{ strip_tags($faq->answer) }}
                                 </div>
@@ -811,7 +860,7 @@
             <!-- View More Button -->
             <div class="text-center">
                 <a href="{{ url('faq') }}" class="btn btn-enrollzy btn-enrollzy-lg">
-                        View More
+                    View More
                     <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
                 </a>
             </div>
@@ -835,29 +884,30 @@
 
             <!-- Exams Grid -->
             @if(isset($top_exams) && $top_exams->count() > 0)
-            <div class="row row-cols-1 row-cols-md-3 g-5 mb-5 justify-content-center">
-                @foreach($top_exams as $exam)
-                <div class="col text-center">
-                    <div class="exam-icon-wrapper">
-                        @if($exam->logo)
-                            <img src="{{ env('BACKEND_URL') . '/' . $exam->logo }}" alt="{{ $exam->name }}" style="max-width:45px;max-height:45px;object-fit:contain;">
-                        @else
-                            <img src="{{ asset('assets/images/top-exam-icon-1.png') }}" alt="{{ $exam->name }}">
-                        @endif
-                    </div>
-                    <a href="{{ route('exam.detail', $exam->slug) }}" style="text-decoration: none;">
-                        <h3 class="exam-title">{{ $exam->name }}</h3>
-                    </a>
-                    <p class="exam-desc">{{ Str::limit(strip_tags($exam->about_exam), 80) }}</p>
+                <div class="row row-cols-1 row-cols-md-3 g-5 mb-5 justify-content-center">
+                    @foreach($top_exams as $exam)
+                        <div class="col text-center">
+                            <div class="exam-icon-wrapper">
+                                @if($exam->logo)
+                                    <img src="{{ str_starts_with($exam->logo, 'http') ? $exam->logo : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($exam->logo, '/') }}" alt="{{ $exam->name }}"
+                                        style="max-width:45px;max-height:45px;object-fit:contain;">
+                                @else
+                                    <img src="{{ asset('assets/images/top-exam-icon-1.png') }}" alt="{{ $exam->name }}">
+                                @endif
+                            </div>
+                            <a href="{{ route('exam.detail', $exam->slug) }}" style="text-decoration: none;">
+                                <h3 class="exam-title">{{ $exam->name }}</h3>
+                            </a>
+                            <p class="exam-desc">{{ Str::limit(strip_tags($exam->about_exam), 80) }}</p>
+                        </div>
+                    @endforeach
                 </div>
-                @endforeach
-            </div>
             @endif
 
             <!-- View More Button -->
             <div class="text-center" style="margin-top: 57px;">
                 <a href="{{ route('top-exams') }}" class="btn btn-enrollzy btn-enrollzy-lg">
-                        View More
+                    View More
                     <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
                 </a>
             </div>
@@ -873,11 +923,11 @@
                 <div class="text-center mb-5">
                     <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3 mb-3">
                         <span class="heading-line d-none d-md-block"></span>
-                        <h2 class="section-title mb-0">Questions & Answers</h2>
+                        <h2 class="section-title mb-0">{!! $quesAnsSection->title ?? 'Questions & Answers' !!}</h2>
                         <span class="heading-line d-none d-md-block"></span>
                     </div>
                     <p class="section-subtitle mx-auto text-muted" style="max-width: 900px;">
-                        Here are some of the most commonly asked questions by our prospective students.
+                        {!! $quesAnsSection->subtitle ?? 'Here are some of the most commonly asked questions by our prospective students.' !!}
                     </p>
                 </div>
 
@@ -885,7 +935,23 @@
                 <div class="row g-5 align-items-center">
                     <!-- Left Column: Image with Badges -->
                     <div class="col-lg-5">
-                        <img src="assets/images/qa-img.png" alt="">
+                        @if(isset($quesAnsSection) && !empty($quesAnsSection->image))
+                            @php
+                                if (\Illuminate\Support\Str::startsWith($quesAnsSection->image, ['http://', 'https://'])) {
+                                    $imgUrl = $quesAnsSection->image;
+                                } elseif (\Illuminate\Support\Str::startsWith($quesAnsSection->image, 'uploads/')) {
+                                    $backendUrl = env('BACKEND_URL', 'http://127.0.0.1:8001');
+                                    $imgUrl = rtrim($backendUrl, '/') . '/' . ltrim($quesAnsSection->image, '/');
+                                } else {
+                                    $imgUrl = asset($quesAnsSection->image);
+                                }
+                            @endphp
+                            <img src="{{ $imgUrl }}" alt="{{ strip_tags($quesAnsSection->title ?? 'Questions & Answers') }}"
+                                class="img-fluid"
+                                style="border-radius: 20px; max-height: 480px; width: 100%; object-fit: cover;">
+                        @else
+                            <img src="{{ asset('assets/images/qa-img.png') }}" alt="Questions & Answers" class="img-fluid">
+                        @endif
                     </div>
 
                     <!-- Right Column: Question Cards -->
@@ -902,9 +968,9 @@
                                     </div>
                             @endforeach
 
-                            @foreach($faqs as $faq)
-                                </div>
-                            @endforeach
+                                @foreach($faqs as $faq)
+                                    </div>
+                                @endforeach
                         @else
                             <div class="qa-right-card-box-main">
                                 <div class="qa-question-card">
@@ -913,68 +979,72 @@
                             </div>
                         @endif
 
-                            <!-- Book Now Button -->
-                        </div>
+                        <!-- Book Now Button -->
+                    </div>
 
-                    </div>
-                    <div class="col-md-12"></div>
-                    <div class="text-center mt-5">
-                        <a href="#" class="btn btn-enrollzy btn-enrollzy-lg">
-                            Book Now
-                            <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
-                        </a>
-                    </div>
+                </div>
+                <div class="col-md-12"></div>
+                <div class="text-center mt-5">
+                    <a href="#" class="btn btn-enrollzy btn-enrollzy-lg">
+                        Book Now
+                        <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
+                    </a>
                 </div>
             </div>
-        </section>
+    </div>
+    </section>
 
-        <!-- Our Latest Blog Section -->
-        <section class="blog-section ptb-70">
-            <div class="container">
-                <!-- Section Header -->
-                <div class="text-center mb-5">
-                    <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3 mb-3">
-                        <span class="heading-line d-none d-md-block"></span>
-                        <h2 class="section-title mb-0">Our Latest Blog</h2>
-                        <span class="heading-line d-none d-md-block"></span>
-                    </div>
-                    <p class="section-subtitle mx-auto text-muted" style="max-width: 900px;">
-                        What our students and parents have to say about their experience with us.
-                    </p>
+    <!-- Our Latest Blog Section -->
+    <section class="blog-section ptb-70">
+        <div class="container">
+            <!-- Section Header -->
+            <div class="text-center mb-5">
+                <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3 mb-3">
+                    <span class="heading-line d-none d-md-block"></span>
+                    <h2 class="section-title mb-0">Our Latest Blog</h2>
+                    <span class="heading-line d-none d-md-block"></span>
                 </div>
+                <p class="section-subtitle mx-auto text-muted" style="max-width: 900px;">
+                    What our students and parents have to say about their experience with us.
+                </p>
+            </div>
 
-                <!-- Blog Grid -->
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
-                    @if(isset($blogs) && $blogs->count() > 0)
-                        @foreach($blogs as $blog)
+            <!-- Blog Grid -->
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
+                @if(isset($blogs) && $blogs->count() > 0)
+                    @foreach($blogs as $blog)
                         <div class="col">
                             <div class="blog-card">
                                 <div class="blog-img-wrapper">
-                                    <img src="{{ $blog->image ? env('BACKEND_URL') . '/' . $blog->image : asset('assets/images/blog-img-1.png') }}" alt="{{ $blog->title }}" class="blog-img">
+                                    <img src="{{ $blog->image ? (str_starts_with($blog->image, 'http') ? $blog->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($blog->image, '/')) : asset('assets/images/blog-img-1.png') }}"
+                                        alt="{{ $blog->title }}" class="blog-img">
                                 </div>
                                 <div class="blog-card-body">
                                     <div>
-                                        <span class="blog-tag">{{ $blog->category ? $blog->category->name : 'Uncategorized' }}</span>
+                                        <span
+                                            class="blog-tag">{{ $blog->category ? $blog->category->name : 'Uncategorized' }}</span>
                                         <h3 class="blog-title">{{ Str::limit($blog->title, 50) }}</h3>
                                     </div>
-                                    <a href="{{ route('blog.detail', $blog->slug) }}" class="btn btn-enrollzy btn-enrollzy-md w-100">
+                                    <a href="{{ route('blog.detail', $blog->slug) }}"
+                                        class="btn btn-enrollzy btn-enrollzy-md w-100">
                                         Read more
                                         <i class="fa-solid fa-arrow-right-long" style="color: #fff;"></i>
                                     </a>
                                 </div>
                             </div>
                         </div>
-                        @endforeach
-                    @else
-                        <p class="text-center text-muted">No blogs found.</p>
-                    @endif
-                </div>
-            <!-- View More Button -->
-                <div class="text-center">
-                    <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
-                </div>
+                    @endforeach
+                @else
+                    <p class="text-center text-muted">No blogs found.</p>
+                @endif
             </div>
-        </section>
+            <!-- View More Button -->
+            <div class="text-center">
+                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
+                    More <i class="fa-solid fa-arrow-right-long"></i></a>
+            </div>
+        </div>
+    </section>
     </div>
 
     <!-- Testimonials Section -->
@@ -996,37 +1066,40 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
                 @if(isset($video_testimonials) && $video_testimonials->count() > 0)
                     @foreach($video_testimonials as $video)
-                    <div class="col">
-                        <div class="testimonial-card" style="background-image: url('{{ $video->thumbnail ? env('BACKEND_URL') . '/' . $video->thumbnail : asset('assets/images/mentor_1.png') }}');">
-                            <div class="testimonial-overlay"></div>
-                            @if($video->video_url)
-                            <a href="{{ $video->video_url }}" target="_blank" style="text-decoration: none;">
-                            @endif
-                                <button class="play-icon-btn" type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                        class="bi bi-play-fill" viewBox="0 0 16 16">
-                                        <path
-                                            d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
-                                    </svg>
-                                </button>
-                            @if($video->video_url)
-                            </a>
-                            @endif
-                            <div class="testimonial-card-body">
-                                <h3 class="testimonial-name">{{ $video->name }}</h3>
-                                <p class="testimonial-sub">{{ $video->course }}</p>
-                                <div class="testimonial-rating">★ ★ ★ ★ ★</div>
+                        <div class="col">
+                            <div class="testimonial-card"
+                                style="background-image: url('{{ $video->thumbnail ? (str_starts_with($video->thumbnail, 'http') ? $video->thumbnail : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($video->thumbnail, '/')) : asset('assets/images/mentor_1.png') }}');">
+                                <div class="testimonial-overlay"></div>
+                                @if($video->video_url)
+                                    <a href="{{ $video->video_url }}" target="_blank" style="text-decoration: none;">
+                                @endif
+                                    <button class="play-icon-btn" type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                            class="bi bi-play-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                                        </svg>
+                                    </button>
+                                    @if($video->video_url)
+                                        </a>
+                                    @endif
+                                <div class="testimonial-card-body">
+                                    <h3 class="testimonial-name">{{ $video->name }}</h3>
+                                    <p class="testimonial-sub">{{ $video->course }}</p>
+                                    <div class="testimonial-rating">★ ★ ★ ★ ★</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     @endforeach
                 @else
                     <p class="text-center text-muted">No testimonials found.</p>
-                @endif            </div>
+                @endif
+            </div>
 
             <!-- View More Button -->
             <div class="text-center">
-                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
+                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
+                    More <i class="fa-solid fa-arrow-right-long"></i></a>
             </div>
         </div>
     </section>
@@ -1072,31 +1145,32 @@
                 <div class="swiper-wrapper">
                     @if(isset($testimonials) && $testimonials->count() > 0)
                         @foreach($testimonials as $testimonial)
-                        <div class="swiper-slide h-auto">
-                            <div class="feedback-card h-100 d-flex flex-column">
-                                <div class="mb-auto">
-                                    <div class="feedback-rating">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            @if($i <= $testimonial->rating)
-                                                ★
-                                            @else
-                                                ☆
-                                            @endif
-                                        @endfor
+                            <div class="swiper-slide h-auto">
+                                <div class="feedback-card h-100 d-flex flex-column">
+                                    <div class="mb-auto">
+                                        <div class="feedback-rating">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                @if($i <= $testimonial->rating)
+                                                    ★
+                                                @else
+                                                    ☆
+                                                @endif
+                                            @endfor
+                                        </div>
+                                        <p class="feedback-text">
+                                            {{ $testimonial->content }}
+                                        </p>
                                     </div>
-                                    <p class="feedback-text">
-                                        {{ $testimonial->content }}
-                                    </p>
-                                </div>
-                                <div class="feedback-author-row mt-4">
-                                    <img src="{{ $testimonial->image ? env('BACKEND_URL') . '/' . $testimonial->image : asset('assets/images/mentor_2.png') }}" alt="{{ $testimonial->name }}" class="feedback-avatar">
-                                    <div>
-                                        <h4 class="feedback-author-name">{{ $testimonial->name }}</h4>
-                                        <span class="feedback-author-title">{{ $testimonial->role }}</span>
+                                    <div class="feedback-author-row mt-4">
+                                        <img src="{{ $testimonial->image ? (str_starts_with($testimonial->image, 'http') ? $testimonial->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($testimonial->image, '/')) : asset('assets/images/mentor_2.png') }}"
+                                            alt="{{ $testimonial->name }}" class="feedback-avatar">
+                                        <div>
+                                            <h4 class="feedback-author-name">{{ $testimonial->name }}</h4>
+                                            <span class="feedback-author-title">{{ $testimonial->role }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         @endforeach
                     @else
                         <p class="text-center w-100">No testimonials found.</p>
@@ -1106,7 +1180,7 @@
         </div>
     </section>
 
-    
+
 
     <!-- Find The Perfect University For You Section -->
     <section class="perfect-university-section ptb-70" style="padding-bottom: 27px;">
@@ -1128,10 +1202,10 @@
                 <ul class="perfect-univ-tabs nav  m-auto" role="tablist" id="perfectUnivTabs">
                     <li role="presentation"><a href="#tab-medical" class="perfect-univ-tab active" data-bs-toggle="tab"
                             role="tab" aria-selected="true">&lt; Medical</a></li>
-                    <li role="presentation"><a href="#tab-science" class="perfect-univ-tab" data-bs-toggle="tab"
-                            role="tab" aria-selected="false">Science</a></li>
-                    <li role="presentation"><a href="#tab-hotel" class="perfect-univ-tab" data-bs-toggle="tab"
-                            role="tab" aria-selected="false">Hotel Management</a></li>
+                    <li role="presentation"><a href="#tab-science" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
+                            aria-selected="false">Science</a></li>
+                    <li role="presentation"><a href="#tab-hotel" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
+                            aria-selected="false">Hotel Management</a></li>
                     <li role="presentation"><a href="#tab-it" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
                             aria-selected="false">Information Technology</a></li>
                     <li role="presentation"><a href="#tab-arts" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
@@ -1140,8 +1214,8 @@
                             aria-selected="false">Agriculture</a></li>
                     <li role="presentation"><a href="#tab-law" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
                             aria-selected="false">Law</a></li>
-                    <li role="presentation"><a href="#tab-pharmacy" class="perfect-univ-tab" data-bs-toggle="tab"
-                            role="tab" aria-selected="false">Pharmacy</a></li>
+                    <li role="presentation"><a href="#tab-pharmacy" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
+                            aria-selected="false">Pharmacy</a></li>
                     <li role="presentation"><a href="#tab-education" class="perfect-univ-tab" data-bs-toggle="tab"
                             role="tab" aria-selected="false">Education &gt;</a></li>
                 </ul>
@@ -2008,7 +2082,8 @@
 
             <!-- View More Button -->
             <div class="text-center">
-                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View More <i class="fa-solid fa-arrow-right-long"></i></a>
+                <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
+                    More <i class="fa-solid fa-arrow-right-long"></i></a>
             </div>
         </div>
     </section>
@@ -2016,7 +2091,7 @@
 
     <!-- Let's Get in Touch Section -->
 
-    <section class="contact-section ptb-70">
+    <section id="contact-section" class="contact-section ptb-70">
         <div class="container">
             <div class="row g-5 align-items-center">
                 <!-- Left Column: Sliced Photo + Overlays -->
@@ -2030,45 +2105,79 @@
                 <div class="col-lg-7">
                     <div class="contact-form-wrapper p-4 p-md-5 rounded-4 shadow-sm border">
                         <h2 class="section-title mb-2 text-start" style="font-size: 2.2rem;">Let’s Get in Touch</h2>
-                        <p class="text-muted mb-4">Leave us a message and our advisors will get back to you shortly.
-                        </p>
+                        <p class="text-muted mb-4">Leave us a message and our advisors will get back to you shortly.</p>
 
-                        <form>
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show mb-4 p-3 shadow-sm border-0 bg-success text-white rounded-3" role="alert">
+                                <h5 class="alert-heading fw-bold mb-1"><i class="fa-solid fa-circle-check me-2"></i> Request Received!</h5>
+                                <span>{{ session('success') }}</span>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    const el = document.getElementById("contact-section");
+                                    if(el) el.scrollIntoView({ behavior: "smooth" });
+                                });
+                            </script>
+                        @endif
+
+                        @if($errors->any())
+                            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                                <ul class="mb-0 ps-3">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    const el = document.getElementById("contact-section");
+                                    if(el) el.scrollIntoView({ behavior: "smooth" });
+                                });
+                            </script>
+                        @endif
+
+                        <form action="{{ route('contact.submit') }}" method="POST">
+                            @csrf
                             <div class="row g-3 mb-3">
                                 <div class="col-md-6">
-                                    <label for="studentName" class="form-label">Student Name</label>
-                                    <input type="text" class="form-control" id="studentName"
-                                        placeholder="Enter your name">
+                                    <label for="fullName" class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="fullName" placeholder="Enter your name" value="{{ old('name') }}" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="studentPhone" class="form-label">Student Phone Number</label>
-                                    <input type="tel" class="form-control" id="studentPhone"
-                                        placeholder="Enter your Phone Number">
+                                    <label for="phoneNumber" class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
+                                    <input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror" id="phoneNumber" placeholder="Enter your Phone Number" value="{{ old('phone') }}" required>
                                 </div>
                             </div>
-                            <div class="row g-3 mb-4">
+                            <div class="row g-3 mb-3">
                                 <div class="col-md-6">
-                                    <label for="lookingFor" class="form-label">I'm looking for</label>
-                                    <select class="form-select" id="lookingFor">
-                                        <option selected>School Admission</option>
-                                        <option value="1">Coaching Institutes</option>
-                                        <option value="2">Scholarships Info</option>
-                                        <option value="3">1:1 Mentorship</option>
-                                    </select>
+                                    <label for="emailAddress" class="form-label fw-semibold">Email Address</label>
+                                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="emailAddress" placeholder="Email address" value="{{ old('email') }}">
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="sessionTime" class="form-label">Preferred session time</label>
-                                    <select class="form-select" id="sessionTime">
-                                        <option selected>Today, 3PM - 5PM</option>
-                                        <option value="1">Tomorrow, 10AM - 12PM</option>
-                                        <option value="2">Tomorrow, 3PM - 5PM</option>
-                                        <option value="3">Saturday, 11AM - 1PM</option>
+                                    <label for="companyName" class="form-label fw-semibold">Company Name</label>
+                                    <input type="text" name="company" class="form-control @error('company') is-invalid @enderror" id="companyName" placeholder="Company name" value="{{ old('company') }}">
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-12">
+                                    <label for="businessType" class="form-label fw-semibold">Business Type</label>
+                                    <select name="type" class="form-select" id="businessType">
+                                        <option value="School Admission" selected>School Admission</option>
+                                        <option value="Coaching Institutes">Coaching Institutes</option>
+                                        <option value="University Partner">University Partner</option>
+                                        <option value="EdTech Partner">EdTech Partner</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class=" text-center">
+                            <div class="mb-4">
+                                <label for="businessHelp" class="form-label fw-semibold">How can we help your business</label>
+                                <textarea name="message" class="form-control @error('message') is-invalid @enderror" id="businessHelp" rows="3" placeholder="How can we help your business">{{ old('message') }}</textarea>
+                            </div>
+                            <div class="text-center">
                                 <button type="submit" class="btn btn-enrollzy btn-enrollzy-lg">
-                                    Book my free session
+                                    Submit Request
                                     <i class="fa-solid fa-arrow-right-long"></i>
                                 </button>
                             </div>

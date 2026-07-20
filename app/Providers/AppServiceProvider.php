@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Illuminate\Pagination\Paginator;
 use App\Models\HeaderLink;
 use App\Models\HeaderMenu;
 
@@ -22,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::useBootstrapFive();
+
         View::composer('common.header', function ($view) {
             $view->with('headerLinks', HeaderLink::where('status', 1)->orderBy('sort_order')->get());
             $view->with('headerMenus', HeaderMenu::where('status', 1)->whereNull('parent_id')->orderBy('sort_order')->get());
