@@ -216,7 +216,7 @@
     </div>
 
     <!-- Section 3: Request Consultation & Map -->
-    <section class="contact-form-section ptb-70">
+    <section class="contact-form-section ptb-70" id="contact-form">
       <div class="container">
         <!-- Section Header -->
         <div class="text-center heading-card mb-5">
@@ -249,8 +249,19 @@
                 shortly.
               </p>
 
+              @php $fromOrg = request('from_org', ''); @endphp
+
               <form action="{{ route('contact.submit') }}" method="POST">
                 @csrf
+                <input type="hidden" name="organisation_name" value="{{ $fromOrg }}">
+
+                @if($fromOrg)
+                    <div class="alert d-flex align-items-center gap-2 mb-3 rounded-3" style="background: #eef3ff; border: 1px solid #b6ccff; color: #1a3a7c; font-size: 14px;">
+                        <i class="fa-solid fa-school"></i>
+                        <span>You're requesting a callback about <strong>{{ $fromOrg }}</strong>. Our team will get back to you shortly.</span>
+                    </div>
+                @endif
+
                 @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
@@ -292,11 +303,13 @@
                     />
                   </div>
                   <div class="col-md-6">
-                    <label class="form-label">Company Name</label>
+                    <label class="form-label">{{ $fromOrg ? 'Institute / School Name' : 'Company Name' }}</label>
                     <input
                       type="text"
                       class="form-control"
-                      name="company" placeholder="Company name"
+                      name="company"
+                      placeholder="{{ $fromOrg ? 'Institute or school name' : 'Company name' }}"
+                      value="{{ $fromOrg }}"
                     />
                   </div>
                   <div class="col-12">
