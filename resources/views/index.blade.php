@@ -29,25 +29,25 @@
                     @endif
 
                     <!-- Search Capsule -->
-                    <form action="#" method="GET" class="search-bar-container mx-auto mx-lg-0 ">
+                    <form action="{{ route('global.search') }}" method="GET" class="search-bar-container mx-auto mx-lg-0">
                         <div class="dropdown">
                             <button class="search-dropdown" type="button" id="searchFilterDropdown"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                <span>Looking for..</span>
+                                <span id="searchFilterLabel">Looking for..</span>
                                 <i class="fa-solid fa-chevron-down" style="color: rgb(0, 0, 0);"></i>
                             </button>
                             <ul class="dropdown-menu border-0 shadow-sm" aria-labelledby="searchFilterDropdown">
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="document.getElementById('searchType').value='colleges'; document.getElementById('searchFilterDropdown').firstElementChild.innerText='Colleges';">Colleges</a>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        onclick="document.getElementById('searchType').value='colleges'; document.getElementById('searchFilterLabel').innerText='Colleges';">Colleges</a>
                                 </li>
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="document.getElementById('searchType').value='courses'; document.getElementById('searchFilterDropdown').firstElementChild.innerText='Courses';">Courses</a>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        onclick="document.getElementById('searchType').value='courses'; document.getElementById('searchFilterLabel').innerText='Courses';">Courses</a>
                                 </li>
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="document.getElementById('searchType').value='mentors'; document.getElementById('searchFilterDropdown').firstElementChild.innerText='Mentors';">Mentors</a>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        onclick="document.getElementById('searchType').value='mentors'; document.getElementById('searchFilterLabel').innerText='Mentors';">Mentors</a>
                                 </li>
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="document.getElementById('searchType').value='schools'; document.getElementById('searchFilterDropdown').firstElementChild.innerText='Schools';">Schools</a>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        onclick="document.getElementById('searchType').value='schools'; document.getElementById('searchFilterLabel').innerText='Schools';">Schools</a>
                                 </li>
                             </ul>
                             <input type="hidden" name="type" id="searchType" value="">
@@ -2091,7 +2091,7 @@
 
     <!-- Let's Get in Touch Section -->
 
-    <section class="contact-section ptb-70">
+    <section id="contact-section" class="contact-section ptb-70">
         <div class="container">
             <div class="row g-5 align-items-center">
                 <!-- Left Column: Sliced Photo + Overlays -->
@@ -2108,10 +2108,17 @@
                         <p class="text-muted mb-4">Leave us a message and our advisors will get back to you shortly.</p>
 
                         @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-                                <i class="fa-solid fa-circle-check me-2"></i> {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <div class="alert alert-success alert-dismissible fade show mb-4 p-3 shadow-sm border-0 bg-success text-white rounded-3" role="alert">
+                                <h5 class="alert-heading fw-bold mb-1"><i class="fa-solid fa-circle-check me-2"></i> Request Received!</h5>
+                                <span>{{ session('success') }}</span>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    const el = document.getElementById("contact-section");
+                                    if(el) el.scrollIntoView({ behavior: "smooth" });
+                                });
+                            </script>
                         @endif
 
                         @if($errors->any())
@@ -2123,43 +2130,54 @@
                                 </ul>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    const el = document.getElementById("contact-section");
+                                    if(el) el.scrollIntoView({ behavior: "smooth" });
+                                });
+                            </script>
                         @endif
 
                         <form action="{{ route('contact.submit') }}" method="POST">
                             @csrf
                             <div class="row g-3 mb-3">
                                 <div class="col-md-6">
-                                    <label for="studentName" class="form-label">Student Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="studentName" placeholder="Enter your name" value="{{ old('name') }}" required>
+                                    <label for="fullName" class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="fullName" placeholder="Enter your name" value="{{ old('name') }}" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="studentPhone" class="form-label">Student Phone Number <span class="text-danger">*</span></label>
-                                    <input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror" id="studentPhone" placeholder="Enter your Phone Number" value="{{ old('phone') }}" required>
+                                    <label for="phoneNumber" class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
+                                    <input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror" id="phoneNumber" placeholder="Enter your Phone Number" value="{{ old('phone') }}" required>
                                 </div>
                             </div>
-                            <div class="row g-3 mb-4">
+                            <div class="row g-3 mb-3">
                                 <div class="col-md-6">
-                                    <label for="lookingFor" class="form-label">I'm looking for</label>
-                                    <select name="looking_for" class="form-select" id="lookingFor">
+                                    <label for="emailAddress" class="form-label fw-semibold">Email Address</label>
+                                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="emailAddress" placeholder="Email address" value="{{ old('email') }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="companyName" class="form-label fw-semibold">Company Name</label>
+                                    <input type="text" name="company" class="form-control @error('company') is-invalid @enderror" id="companyName" placeholder="Company name" value="{{ old('company') }}">
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-12">
+                                    <label for="businessType" class="form-label fw-semibold">Business Type</label>
+                                    <select name="type" class="form-select" id="businessType">
                                         <option value="School Admission" selected>School Admission</option>
                                         <option value="Coaching Institutes">Coaching Institutes</option>
-                                        <option value="Scholarships Info">Scholarships Info</option>
-                                        <option value="1:1 Mentorship">1:1 Mentorship</option>
+                                        <option value="University Partner">University Partner</option>
+                                        <option value="EdTech Partner">EdTech Partner</option>
                                     </select>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="sessionTime" class="form-label">Preferred session time</label>
-                                    <select name="session_time" class="form-select" id="sessionTime">
-                                        <option value="Today, 3PM - 5PM" selected>Today, 3PM - 5PM</option>
-                                        <option value="Tomorrow, 10AM - 12PM">Tomorrow, 10AM - 12PM</option>
-                                        <option value="Tomorrow, 3PM - 5PM">Tomorrow, 3PM - 5PM</option>
-                                        <option value="Saturday, 11AM - 1PM">Saturday, 11AM - 1PM</option>
-                                    </select>
-                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="businessHelp" class="form-label fw-semibold">How can we help your business</label>
+                                <textarea name="message" class="form-control @error('message') is-invalid @enderror" id="businessHelp" rows="3" placeholder="How can we help your business">{{ old('message') }}</textarea>
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-enrollzy btn-enrollzy-lg">
-                                    Book my free session
+                                    Submit Request
                                     <i class="fa-solid fa-arrow-right-long"></i>
                                 </button>
                             </div>

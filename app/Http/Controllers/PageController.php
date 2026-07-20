@@ -60,11 +60,108 @@ class PageController extends Controller
         return view('blog-detail', compact('blog', 'recent_blogs'));
     }
 
-    public function allSchools() {
-        $schools = \App\Models\Organisation::where('organisation_type_id', 4)
-            ->where('status', 1)
-            ->orderBy('id', 'desc')
-            ->paginate(10);
+    public function allSchools(\Illuminate\Http\Request $request) {
+        $query = \App\Models\Organisation::where('organisation_type_id', 4)
+            ->where('status', 1);
+
+        // 1. Search Query Filter
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('about_organisation', 'like', "%{$search}%")
+                  ->orWhere('meta_title', 'like', "%{$search}%")
+                  ->orWhere('head_office_location', 'like', "%{$search}%")
+                  ->orWhere('states_present_in', 'like', "%{$search}%")
+                  ->orWhere('cities_present_in', 'like', "%{$search}%")
+                  ->orWhere('education_boards_supported', 'like', "%{$search}%")
+                  ->orWhere('education_levels_supported', 'like', "%{$search}%");
+            });
+        }
+
+        // 2. Region Filter
+        if ($request->filled('region')) {
+            $regions = (array) $request->region;
+            $query->where(function($q) use ($regions) {
+                foreach ($regions as $reg) {
+                    $q->orWhere('states_present_in', 'like', "%{$reg}%")
+                      ->orWhere('head_office_location', 'like', "%{$reg}%");
+                }
+            });
+        }
+
+        // 3. State Filter
+        if ($request->filled('state')) {
+            $states = (array) $request->state;
+            $query->where(function($q) use ($states) {
+                foreach ($states as $st) {
+                    $q->orWhere('states_present_in', 'like', "%{$st}%")
+                      ->orWhere('head_office_location', 'like', "%{$st}%");
+                }
+            });
+        }
+
+        // 4. City Filter
+        if ($request->filled('city')) {
+            $cities = (array) $request->city;
+            $query->where(function($q) use ($cities) {
+                foreach ($cities as $ct) {
+                    $q->orWhere('cities_present_in', 'like', "%{$ct}%")
+                      ->orWhere('head_office_location', 'like', "%{$ct}%");
+                }
+            });
+        }
+
+        // 5. Board Filter (CBSE, ICSE, State Board, etc.)
+        if ($request->filled('board')) {
+            $boards = (array) $request->board;
+            $query->where(function($q) use ($boards) {
+                foreach ($boards as $bd) {
+                    $q->orWhere('education_boards_supported', 'like', "%{$bd}%");
+                }
+            });
+        }
+
+        // 6. Class / Level Filter
+        if ($request->filled('class')) {
+            $classes = (array) $request->class;
+            $query->where(function($q) use ($classes) {
+                foreach ($classes as $cl) {
+                    $q->orWhere('education_levels_supported', 'like', "%{$cl}%");
+                }
+            });
+        }
+
+        // 7. Ownership Filter (Government / Private)
+        if ($request->filled('ownership')) {
+            $ownerships = (array) $request->ownership;
+            $query->whereIn('ownership_type', $ownerships);
+        }
+
+        // 8. School Type Filter (Day Boarding, Full Boarding, Weekly Boarding)
+        if ($request->filled('school_type')) {
+            $types = (array) $request->school_type;
+            $query->where(function($q) use ($types) {
+                foreach ($types as $tp) {
+                    $q->orWhere('minority_type', 'like', "%{$tp}%")
+                      ->orWhere('brand_type', 'like', "%{$tp}%")
+                      ->orWhere('about_organisation', 'like', "%{$tp}%");
+                }
+            });
+        }
+
+        // 9. Gender Filter (Coed, Boys, Girls)
+        if ($request->filled('gender')) {
+            $genders = (array) $request->gender;
+            $query->where(function($q) use ($genders) {
+                foreach ($genders as $gen) {
+                    $q->orWhere('minority_type', 'like', "%{$gen}%")
+                      ->orWhere('about_organisation', 'like', "%{$gen}%");
+                }
+            });
+        }
+
+        $schools = $query->orderBy('id', 'desc')->paginate(10);
             
         return view('all-schools', compact('schools'));
     }
@@ -165,14 +262,16 @@ class PageController extends Controller
             'email' => 'nullable|email|max:255',
             'company' => 'nullable|string|max:255',
             'type' => 'nullable|string|max:100',
+            'business_type' => 'nullable|string|max:100',
             'looking_for' => 'nullable|string|max:255',
             'session_time' => 'nullable|string|max:255',
             'message' => 'nullable|string',
         ]);
 
+        $businessType = $request->type ?? $request->business_type ?? $request->looking_for;
+
         $subjectParts = ['Contact Inquiry'];
-        if ($request->looking_for) $subjectParts[] = 'Looking For: ' . $request->looking_for;
-        if ($request->type) $subjectParts[] = 'Type: ' . $request->type;
+        if ($businessType) $subjectParts[] = 'Type: ' . $businessType;
         if ($request->company) $subjectParts[] = 'Company: ' . $request->company;
         
         $subject = implode(' | ', $subjectParts);
@@ -180,15 +279,16 @@ class PageController extends Controller
         $messageContent = $request->message;
         if (empty($messageContent)) {
             $details = [];
-            if ($request->looking_for) $details[] = 'Looking for: ' . $request->looking_for;
+            if ($businessType) $details[] = 'Business/Type: ' . $businessType;
+            if ($request->company) $details[] = 'Company: ' . $request->company;
             if ($request->session_time) $details[] = 'Preferred Session Time: ' . $request->session_time;
-            $messageContent = !empty($details) ? implode("\n", $details) : 'Free session booking inquiry from website.';
+            $messageContent = !empty($details) ? implode("\n", $details) : 'Inquiry from website.';
         }
 
         \Illuminate\Support\Facades\DB::table('leads')->insert([
             'name' => $request->name,
             'phone' => $request->phone,
-            'email' => $request->email ?? null,
+            'email' => $request->email ?? '',
             'subject' => $subject,
             'type' => 'Student', // ENUM only accepts 'Student','Expert','Alumni'
             'message' => $messageContent,
@@ -197,7 +297,7 @@ class PageController extends Controller
             'updated_at' => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Your request has been submitted successfully! Our advisors will get back to you shortly.');
+        return redirect()->to(url()->previous() . '#contact-section')->with('success', 'Your request has been submitted successfully! Our team will get back to you shortly.');
     }
 
     public function faq() {
@@ -289,4 +389,25 @@ class PageController extends Controller
     public function mentors() { return view('mentors'); }
     public function mentorDetail($id = null) { return view('mentor-detail'); }
     public function askEnrollzy() { return view('ask-enrollzy'); }
+
+    public function globalSearch(\Illuminate\Http\Request $request) {
+        $type = strtolower(trim($request->input('type', '')));
+        $q = trim($request->input('q', ''));
+
+        if ($type === 'colleges') {
+            return redirect()->route('university', array_filter(['search' => $q]));
+        } elseif ($type === 'courses') {
+            return redirect()->route('all.coaching', array_filter(['search' => $q]));
+        } elseif ($type === 'mentors') {
+            return redirect()->route('mentors', array_filter(['q' => $q]));
+        } elseif ($type === 'schools') {
+            return redirect()->route('all-schools', array_filter(['search' => $q]));
+        }
+
+        if (!empty($q)) {
+            return redirect()->route('university', ['search' => $q]);
+        }
+
+        return redirect()->route('home');
+    }
 }

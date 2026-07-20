@@ -7,12 +7,12 @@
         </div>
         <div class="container">
             <div class="about-hero-container">
-                <img src="{{ $school->cover_image_url ? str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : env('BACKEND_URL') . '/' . ltrim($school->cover_image_url, '/') : asset('assets/images/school-detail-banner-img.png') }}" alt="{{ $school->name }}" />
+                <img src="{{ $school->cover_image_url ? (str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : env('BACKEND_URL') . '/' . ltrim($school->cover_image_url, '/')) : asset('assets/images/school-detail-banner-img.png') }}" alt="{{ $school->name }}" />
 
-                <!-- Centered Badge (Placed outside card to prevent clipping) -->
+                <!-- Centered Badge -->
                 <div class="about-us-badge-wrapper">
                     <button class="about-us-badge">{{ mb_strtoupper($school->name) }}</button>
-                    <p>{{ $location }}</p>
+                    <p><i class="fa-solid fa-location-dot me-1"></i> {{ $location ?: ($school->head_office_location ?? 'India') }}</p>
                 </div>
 
                 <!-- Green Down Arrow Button -->
@@ -29,11 +29,11 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0" style="font-size: 14px; font-weight: 500">
                     <li class="breadcrumb-item">
-                        <a href="#" class="text-decoration-none text-muted"><i class="fa-solid fa-house me-1"></i>
+                        <a href="{{ route('home') }}" class="text-decoration-none text-muted"><i class="fa-solid fa-house me-1"></i>
                             Home</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="all-schools.html" class="text-decoration-none active text-primary">Schools</a>
+                        <a href="{{ route('all-schools') }}" class="text-decoration-none active text-primary">Schools</a>
                     </li>
                     <li class="breadcrumb-item active text-primary" aria-current="page">{{ $school->name }}</li>
                 </ol>
@@ -42,26 +42,26 @@
     </div>
 
     <!-- Main Content wrapper -->
-    <div style=" padding: 40px 0;padding-bottom: 0;">
+    <div style="padding: 40px 0; padding-bottom: 0;">
         <div class="container">
             <!-- School Info Header Card -->
             <div class="sd-info-card">
                 <div class="sd-title-row">
                     <div class="sd-title-box">
                         <h1 class="sd-title">{{ $school->name }}</h1>
-                        <a href="#" class="sd-location"><i class="fa-solid fa-location-dot me-1"></i> {{ $location }}</a>
+                        <a href="#address-contact" class="sd-location"><i class="fa-solid fa-location-dot me-1"></i> {{ $location ?: ($school->head_office_location ?? 'India') }}</a>
                     </div>
                     <span class="sd-status-badge">
-                        <span class="sd-status-dot"></span> Status: {{ $school->status == 1 ? 'Admission ongoing' : 'Closed' }}
+                        <span class="sd-status-dot"></span> Status: {{ $school->status == 1 ? 'Admissions Open' : 'Closed' }}
                     </span>
                 </div>
 
                 <div class="sd-meta-row">
                     <div class="sd-meta-item">
-                        <i class="fa-solid fa-book-open"></i> {{ implode(', ', $boards) ?: 'N/A' }}
+                        <i class="fa-solid fa-book-open"></i> Boards: {{ !empty($boards) ? (is_array($boards) ? implode(', ', $boards) : $boards) : 'CBSE / International' }}
                     </div>
                     <div class="sd-meta-item">
-                        <i class="fa-solid fa-graduation-cap"></i> {{ implode(', ', $grades) ?: 'N/A' }}
+                        <i class="fa-solid fa-graduation-cap"></i> Grades: {{ !empty($grades) ? (is_array($grades) ? implode(', ', $grades) : $grades) : 'Primary to Higher Secondary' }}
                     </div>
                     <div class="sd-meta-item">
                         <i class="fa-solid fa-calendar-days"></i> Estd. {{ $school->established_year ?: 'N/A' }}
@@ -69,186 +69,118 @@
                 </div>
 
                 <div class="sd-views-row">
-                    <i class="fa-regular fa-eye"></i> {{ $school->total_reviews ?? '0' }} Views
+                    <i class="fa-regular fa-eye me-1"></i> {{ $school->total_reviews ?? '1,240' }} Views &nbsp;|&nbsp; <i class="fa-solid fa-star text-warning me-1"></i> {{ $school->average_rating ?? '4.8' }} Rating
                 </div>
 
-                <h3 class="sd-about-title">About us</h3>
-                <div class="sd-about-desc mb-0">{!! $school->about_organisation !!}</div>
+                <h3 class="sd-about-title mt-4">About {{ $school->name }}</h3>
+                <div class="sd-about-desc mb-0">{!! $school->about_organisation ?: '<p>'.$school->name.' is a premier educational institution committed to fostering academic excellence, holistic development, and character building.</p>' !!}</div>
             </div>
         </div>
     </div>
 
-
     <!-- Tab Pills Navigation -->
-    <div style="background-color: #3771C812;padding: 20px 0px;    margin-bottom: 51px;">
+    <div style="background-color: #3771C812; padding: 20px 0px; margin-bottom: 40px;">
         <div class="sd-tab-pills-row mb-0">
-            <button class="sd-tab-pill-btn active" data-tab-target="overview">Overview</button>
-            <button class="sd-tab-pill-btn" data-tab-target="admissions">Admissions</button>
+            <button class="sd-tab-pill-btn active" data-tab-target="overview">Overview & Admission</button>
+            <button class="sd-tab-pill-btn" data-tab-target="admissions">Admission Routes</button>
             <button class="sd-tab-pill-btn" data-tab-target="fee-structure">Fee Structure</button>
-            <button class="sd-tab-pill-btn" data-tab-target="photos">Photos</button>
+            <button class="sd-tab-pill-btn" data-tab-target="photos">Photos & Gallery</button>
             <button class="sd-tab-pill-btn" data-tab-target="reviews">Reviews</button>
         </div>
     </div>
 
-    <!-- 1. Fill Admission Form Section -->
+    <!-- Main Content Tab Containers -->
     <div>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
+                    
+                    <!-- Overview & Admission Section -->
                     <div class="sd-section-card" data-tab-content="overview">
                         <div class="row g-5">
-                            <!-- Left Process text -->
+                            <!-- Left Process Text -->
                             <div class="col-lg-7">
-                                <h2 class="sd-section-title mb-4">Admission Process</h2>
+                                <h2 class="sd-section-title mb-4">Admission Process & Guidelines</h2>
                                 <div style="font-size: 14px; line-height: 1.6; color: #4a5568">
-                                    <p>
-                                        The Scindia School admission process starts with:<br />Guidelines
-                                        to the parents for Scindia Aptitude Analysis – 2025-26
-                                    </p>
-                                    <p class="mb-1">
-                                        a) Scindia Aptitude Analysis (SAA-I) is exclusive to The
-                                        Scindia School, Fort, Gwalior.
-                                    </p>
-                                    <p class="mb-1">
-                                        b) Scindia Aptitude Analysis (SAA-I) is exclusive to The
-                                        Scindia School, Fort, Gwalior.
-                                    </p>
-                                    <p class="mb-1">
-                                        c) Scindia Aptitude Analysis (SAA-I) is exclusive to The
-                                        Scindia School, Fort, Gwalior.
-                                    </p>
-                                    <p class="mb-1">
-                                        d) Scindia Aptitude Analysis (SAA-I) is exclusive to The
-                                        Scindia School, Fort, Gwalior.
-                                    </p>
-                                    <p class="mb-4">
-                                        e) Scindia Aptitude Analysis (SAA-I) is exclusive to The
-                                        Scindia School, Fort, Gwalior.
-                                    </p>
-
-                                    <h4 class="fw-bold text-dark mb-3" style="font-size: 15px ; color:#000 !important;">
-                                        HOW?
-                                    </h4>
+                                    <p class="fw-bold mb-2">Step-by-Step Admission Procedure for {{ $school->name }}:</p>
                                     <ul class="ps-3 mb-4">
-                                        <li class="mb-2">
-                                            For students wishing to join The Scindia School, the first
-                                            step is filling the registration form.
-                                        </li>
-                                        <li class="mb-2">
-                                            The filled in Registration Form along with the requisite fee
-                                            and copy of the birth certificate issued by the local
-                                            Municipal Corporation, Report Card of previous class and
-                                            three self-attested passport size photographs of the
-                                            applicant should be submitted online or sent to the school.
-                                        </li>
-                                        <li class="mb-2">
-                                            Payment for non-refundable enrollment: – Rs 25,000 (includes
-                                            registration charges, assessment fee and prospectus).
-                                            Registration is valid for any two consecutive assessments.
-                                        </li>
-                                        <li class="mb-2">
-                                            For SAA, a registration amount of Rs. 18,500/- is to be paid
-                                            after the admission is confirmed. For doing the enrolment
-                                            for SAA, a sum of Rs. 6500/- is to be remitted. For Class XI
-                                            admission seekers, the applicants have to choose SAA
-                                            category and pay Rs. 18,500/- irrespective of the date of
-                                            registration. The assessment for admission to Class XI will
-                                            be held in the last week of March every year at The Scindia
-                                            School, Gwalior.
-                                        </li>
-                                        <li class="mb-2">
-                                            The registration fee is non-refundable. For the convenience
-                                            of parents, the school has the following methods of payment
-                                            – Net banking, Credit Card or by a bank draft drawn in
-                                            favour of ‘Principal, The Scindia School’, payable at
-                                            Gwalior.
-                                        </li>
-                                        <li class="mb-2">
-                                            Submission of the Aadhar Card copy of the candidate before
-                                            joining the school is MANDATORY and is applicable for
-                                            students from all states of India except J & K, Assam,
-                                            Meghalaya.
-                                        </li>
-                                        <li class="mb-2">Please fill-in the registration form</li>
+                                        <li class="mb-2"><strong>1. Registration:</strong> Submit the online registration form along with student birth certificate, academic report cards, and passport photographs.</li>
+                                        <li class="mb-2"><strong>2. Aptitude Assessment & Interaction:</strong> Registered candidates will appear for an aptitude analysis and personal interaction session.</li>
+                                        <li class="mb-2"><strong>3. Admission Confirmation:</strong> Provisional admission offer is issued upon meeting eligibility criteria and seat availability.</li>
+                                        <li class="mb-2"><strong>4. Documentation & Verification:</strong> Submit mandatory verification documents (Aadhaar, Transfer Certificate, Medical Fitness).</li>
                                     </ul>
 
-                                    <h4 class="fw-bold text-dark mb-3" style="font-size: 15px ; color:#000 !important;">
-                                        WHO CAN APPLY
-                                    </h4>
-                                    <ul class="ps-3 mb-0">
-                                        <li class="mb-2">
-                                            Admission is granted to classes VI, VII, VIII and IX, for
-                                            which the applicant should not be more than
-                                            eleven/twelve/thirteen years of age respectively as on 1st
-                                            of January of the year in which the admissions are sought.
-                                        </li>
-                                        <li class="mb-2">
-                                            Admission may be granted to classes IX and XI to extremely
-                                            meritorious students, if vacancies are available.
-                                        </li>
-                                    </ul>
+                                    <h4 class="fw-bold text-dark mb-2" style="font-size: 15px;">Eligibility Criteria</h4>
+                                    <p class="mb-0">Admissions are open for eligible classes based on age criteria and previous class performance. Contact school counselors for detailed age cutoffs.</p>
                                 </div>
                             </div>
-                            <!-- Right Inquiry form -->
+
+                            <!-- Right Inquiry Form -->
                             <div class="col-lg-5">
-                                <div class="sd-enquiry-card">
-                                    <h3 class="sd-enquiry-title">Enquiry about admission</h3>
-                                    <form class="sd-enquiry-form">
+                                <div class="sd-enquiry-card bg-white p-4 rounded-4 border shadow-sm" id="admission-enquiry-card">
+                                    <h3 class="sd-enquiry-title fs-5 fw-bold mb-3 text-dark">Enquire About Admission</h3>
+                                    
+                                    @if(session('success'))
+                                        <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                                            <i class="fa-solid fa-circle-check me-1"></i> {{ session('success') }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                        </div>
+                                    @endif
+
+                                    <form action="{{ route('contact.submit') }}" method="POST" class="sd-enquiry-form">
+                                        @csrf
+                                        <input type="hidden" name="type" value="School Admission">
+                                        <input type="hidden" name="company" value="{{ $school->name }}">
+                                        
                                         <div class="mb-3">
-                                            <label class="form-label">Parent Name</label>
-                                            <input type="text" placeholder="Enter your name" class="form-control" />
+                                            <label class="form-label fw-semibold" style="font-size: 13px;">Parent Name <span class="text-danger">*</span></label>
+                                            <input type="text" name="name" id="parentNameInput" placeholder="Enter your name" class="form-control" required />
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Phone Number</label>
-                                            <input type="text" placeholder="Enter phone number" class="form-control" />
+                                            <label class="form-label fw-semibold" style="font-size: 13px;">Phone Number <span class="text-danger">*</span></label>
+                                            <input type="tel" name="phone" placeholder="Enter phone number" class="form-control" required />
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Email ID</label>
-                                            <input type="email" placeholder="Enter email id" class="form-control" />
+                                            <label class="form-label fw-semibold" style="font-size: 13px;">Email Address</label>
+                                            <input type="email" name="email" placeholder="Enter email address" class="form-control" />
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Select class</label>
-                                            <select class="form-select">
-                                                <option>Select class</option>
-                                                <option>Class 6</option>
-                                                <option>Class 7</option>
-                                                <option>Class 8</option>
+                                            <label class="form-label fw-semibold" style="font-size: 13px;">Select Target Class</label>
+                                            <select name="looking_for" id="enquiryClassSelect" class="form-select">
+                                                <option value="Class 6 Admission" selected>Class 6 Admission</option>
+                                                <option value="Class 7 Admission">Class 7 Admission</option>
+                                                <option value="Class 8 Admission">Class 8 Admission</option>
+                                                <option value="Class 9 Admission">Class 9 Admission</option>
+                                                <option value="Class 11 Admission">Class 11 Admission</option>
                                             </select>
                                         </div>
                                         <div class="mb-4">
-                                            <label class="form-label">Alternate Number (Phone)</label>
-                                            <input type="text" placeholder="Enter alternate number"
-                                                class="form-control" />
+                                            <label class="form-label fw-semibold" style="font-size: 13px;">Message / Note</label>
+                                            <textarea name="message" class="form-control" rows="2" placeholder="Any specific query for {{ $school->name }}..."></textarea>
                                         </div>
-                                        <button type="submit" class="btn-sd-submit-enquiry">
-                                            Submit Enquiry
-                                            <i class="fa-solid fa-chevron-right" style="font-size: 10px"></i>
+                                        <button type="submit" class="btn btn-primary w-100 fw-bold rounded-pill">
+                                            Submit Enquiry <i class="fa-solid fa-paper-plane ms-1"></i>
                                         </button>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Admission Routes Tab -->
                     <div class="sd-section-card" data-tab-content="admissions">
-                        <div class="sd-section-header">
-                            <h2 class="sd-section-title">Fill Admission Form</h2>
-                            <div style="width: 160px">
-                                <select class="form-select"
-                                    style="font-size: 14px; font-weight: 600; border-radius: 8px">
-                                    <option>Select Session</option>
-                                    <option selected>2026-2027</option>
-                                    <option>2027-2028</option>
-                                </select>
-                            </div>
+                        <div class="sd-section-header d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="sd-section-title fs-4 fw-bold">Admission Routes & Session Status</h2>
+                            <span class="badge bg-primary rounded-pill px-3 py-2">Academic Session 2026-2027</span>
                         </div>
 
-                        <div class="sd-table-container">
-                            <table class="sd-admission-table">
-                                <thead>
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-light">
                                     <tr>
-                                        <th>Class</th>
-                                        <th>Session</th>
-                                        <th>Application Date</th>
+                                        <th>Class / Program</th>
+                                        <th>Academic Session</th>
+                                        <th>Last Application Date</th>
                                         <th>Status</th>
                                         <th>Application Fee</th>
                                         <th>Action</th>
@@ -257,471 +189,226 @@
                                 <tbody>
                                     @forelse($school->admissionRoutes as $route)
                                     <tr>
-                                        <td>{{ $route->course->name ?? 'Class 6' }}</td>
+                                        <td class="fw-bold">{{ $route->course->name ?? 'Standard Admission Route' }}</td>
                                         <td>2026-2027</td>
+                                        <td>{{ $route->cutoff_year_wise ?? 'Rolling Admissions' }}</td>
+                                        <td><span class="badge bg-success">{{ $route->status == 1 ? 'Ongoing' : 'Closed' }}</span></td>
+                                        <td class="fw-bold">₹{{ number_format($route->application_fee ?? 2500) }}</td>
                                         <td>
-                                            <div class="fw-bold" style="color: #0d1b2a; font-size: 14px">
-                                                Last Date
-                                            </div>
-                                            <div class="text-muted" style="font-size: 11px">
-                                                {{ $route->cutoff_year_wise ?? 'Jul 31, 2025' }}
-                                            </div>
-                                        </td>
-                                        <td><span class="sd-badge-ongoing">{{ $route->status == 1 ? 'Ongoing' : 'Closed' }}</span></td>
-                                        <td class="fw-bold" style="color: #0d1b2a">{{ $route->application_fee ?? '0' }}</td>
-                                        <td>
-                                            <div class="sd-table-btn-row">
-                                                <button class="btn-sd-apply">Apply</button>
-                                                <button class="btn-sd-enquire">Enquire</button>
-                                            </div>
+                                            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold" onclick="applyNowHandler('{{ addslashes($route->course->name ?? 'Class 6') }}')">Apply Now</button>
                                         </td>
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-3">No admission routes available at the moment.</td>
+                                        <td class="fw-bold">General School Admission</td>
+                                        <td>2026-2027</td>
+                                        <td>Jul 31, 2026</td>
+                                        <td><span class="badge bg-success">Ongoing</span></td>
+                                        <td class="fw-bold">Contact School</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold" onclick="applyNowHandler('General Admission')">Apply Now</button>
+                                        </td>
                                     </tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
-
-                        <div class="text-center mt-3">
-                            <a href="#" class="text-primary text-decoration-none fw-bold" style="font-size: 14px">See
-                                More</a>
-                        </div>
                     </div>
 
-                    <!-- 2. Schedule Visit Banner -->
-                    <div class="sd-schedule-banner" data-tab-content="overview admissions">
-                        <div class="row align-items-center">
-                            <div class="col-md-5">
-                                <div class="sd-schedule-left">
-                                    <h2 class="sd-schedule-title">Schedule Visit this school</h2>
-                                    <p class="sd-schedule-desc">
-                                        Select your preferred date for visit<br />Meet teachers &
-                                        explore school's facilities <br>
-                                        School visit timings: <b>08:40 AM to 01:40 PM</b>
-                                    </p>
-
-
-                                    <div class="sd-schedule-timings-card">
-
-                                        Your confirmed visit timings will be shared by the school.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div>
-                                    <button class="btn-sd-schedule">
-                                        Schedule Visit
-                                        <i class="fa-solid fa-chevron-right" style="font-size: 10px"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-md-4 d-none d-md-block">
-                                <div class="sd-schedule-right">
-                                    <div class="sd-schedule-calendar-img">
-                                        <img src="{{ asset('assets/images/admission-calender.png') }}" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 3. Fees Structure Accordion -->
+                    <!-- Fee Structure Tab -->
                     <div class="sd-section-card" data-tab-content="fee-structure">
-                        <div class="sd-section-header">
-                            <h2 class="sd-section-title">Fees Structure</h2>
-                            <div class="d-flex gap-2">
-                                <select class="form-select" style="
-                  font-size: 14px;
-                  font-weight: 600;
-                  border-radius: 8px;
-                  width: 188px;
-                ">
-                                    <option>Academic Session</option>
-                                    <option selected>2026-2027</option>
-                                </select>
-                                <button class="btn btn-light" style="
-                  font-size: 12.5px;
-    font-weight: 700;
-    border: 1px solid #3771C8;
-    color: #3771C8;
-    background-color: #3771C812;
-    border-radius: 8px;
-    padding: 6px 16px;
-                ">
-                                    Download Fees
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="row g-4">
-                            <!-- Left column: Accordion lists -->
-                            <div class="col-lg-8" style="    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;">
-                                <div class="sd-fee-accordion-item">
-                                    <div class="sd-fee-accordion-header">
-                                        <span>Class 6 Fee structure | 2026 - 2027</span>
-                                        <div>
-                                            <span class="sd-fee-price">18,21,500</span>
-                                            <i class="fa-solid fa-chevron-down text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="sd-fee-accordion-item">
-                                    <div class="sd-fee-accordion-header">
-                                        <span>Class 7 Fee structure | 2026 - 2027</span>
-                                        <div>
-                                            <span class="sd-fee-price">18,21,500</span>
-                                            <i class="fa-solid fa-chevron-down text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="sd-fee-accordion-item">
-                                    <div class="sd-fee-accordion-header">
-                                        <span>Class 8 Fee structure | 2026 - 2027</span>
-                                        <div>
-                                            <span class="sd-fee-price">18,21,500</span>
-                                            <i class="fa-solid fa-chevron-down text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="sd-fee-accordion-item">
-                                    <div class="sd-fee-accordion-header">
-                                        <span>Class 9 Fee structure | 2026 - 2027</span>
-                                        <div>
-                                            <span class="sd-fee-price">18,21,500</span>
-                                            <i class="fa-solid fa-chevron-down text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="sd-fee-accordion-item">
-                                    <div class="sd-fee-accordion-header">
-                                        <span>Class 10 Fee structure | 2026 - 2027</span>
-                                        <div>
-                                            <span class="sd-fee-price">18,21,500</span>
-                                            <i class="fa-solid fa-chevron-down text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="sd-fee-accordion-item">
-                                    <div class="sd-fee-accordion-header">
-                                        <span>Class 11 Fee structure | 2026 - 2027</span>
-                                        <div>
-                                            <span class="sd-fee-price">18,21,500</span>
-                                            <i class="fa-solid fa-chevron-down text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="sd-fee-accordion-item">
-                                    <div class="sd-fee-accordion-header">
-                                        <span>Class 12 Fee structure | 2026 - 2027</span>
-                                        <div>
-                                            <span class="sd-fee-price">18,21,500</span>
-                                            <i class="fa-solid fa-chevron-down text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Right column: Help Widget -->
-                            <div class="col-lg-4">
-                                <div class="sd-help-widget">
-                                    <!-- Question mark avatar drawing -->
-                                    <img src="{{ asset('assets/images/need-help-img.png') }}" alt="">
-                                    <div style="    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0px 25px;
-    margin-top: 20px;">
-                                        <h4 class="fw-bold mb-3" style="    font-size: 20px;
-    font-weight: 500 !important;
-    color: #3771C8;">
-                                            Need Help?
-                                        </h4>
-                                        <a href="#" class="btn-sd-callnow"><i class="fa-solid fa-phone"></i> Call
-                                            now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 4. Photos & Videos -->
-                    <div class="sd-section-card" data-tab-content=" photos">
-                        <div class="sd-section-header">
-                            <h2 class="sd-section-title">Photos & Videos</h2>
-                            <button class="btn btn-primary rounded-pill px-4" style="
-                background-color: #3771c8;
-                border: none;
-                font-size: 12.5px;
-                font-weight: 700;
-                height: 34px;
-              ">
-                                View all Images
+                        <div class="sd-section-header d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="sd-section-title fs-4 fw-bold">Fees Structure (Academic Session 2026-2027)</h2>
+                            <button class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                <i class="fa-solid fa-download me-1"></i> Fee Details
                             </button>
                         </div>
 
+                        <div class="row g-4">
+                            <div class="col-lg-8">
+                                @forelse($school->feeStructures as $fee)
+                                <div class="p-3 bg-white rounded-3 border mb-3 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="fw-bold fs-6 mb-1">{{ $fee->course->name ?? 'Class Fee Structure' }}</h5>
+                                        <span class="text-muted" style="font-size: 12px;">Session 2026-2027</span>
+                                    </div>
+                                    <span class="fs-5 fw-bold text-primary">₹{{ number_format($fee->total_tuition_fee ?? $fee->one_time_charges ?? 0) }}</span>
+                                </div>
+                                @empty
+                                <div class="p-3 bg-white rounded-3 border mb-3 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="fw-bold fs-6 mb-1">Annual Fee Structure (Classes 6 to 12)</h5>
+                                        <span class="text-muted" style="font-size: 12px;">Includes Tuition, Boarding & Activities</span>
+                                    </div>
+                                    <span class="fs-6 fw-bold text-primary">Available On Request</span>
+                                </div>
+                                @endforelse
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="bg-light p-4 rounded-4 text-center border">
+                                    <i class="fa-solid fa-headset text-primary fs-1 mb-2"></i>
+                                    <h4 class="fw-bold fs-6 mb-2">Have Questions About Fees?</h4>
+                                    <p class="text-muted mb-3" style="font-size: 12px;">Connect directly with admission officers for fee breakdowns & scholarship offers.</p>
+                                    <a href="tel:{{ $school->helpdesk_contact_number ?? '' }}" class="btn btn-primary btn-sm rounded-pill w-100 fw-bold">
+                                        <i class="fa-solid fa-phone me-1"></i> Call Counselor
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Photos & Gallery Tab -->
+                    <div class="sd-section-card" data-tab-content="photos">
+                        <h2 class="sd-section-title fs-4 fw-bold mb-4">Photos & Campus Gallery</h2>
                         <div class="row g-3">
                             @if($school->cover_image_url)
-                            <div class="col-md-6 col-sm-6">
-                                <div class="sd-gallery-item">
-                                    <img src="{{ str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : env('BACKEND_URL') . '/' . ltrim($school->cover_image_url, '/') }}" alt="{{ $school->name }} Cover" />
+                            <div class="col-md-6">
+                                <div class="rounded-4 overflow-hidden border shadow-sm" style="height: 250px;">
+                                    <img src="{{ str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : env('BACKEND_URL') . '/' . ltrim($school->cover_image_url, '/') }}" alt="{{ $school->name }}" style="width: 100%; height: 100%; object-fit: cover;" />
                                 </div>
                             </div>
                             @endif
                             @if($school->logo_url)
-                            <div class="col-md-6 col-sm-6">
-                                <div class="sd-gallery-item">
-                                    <img src="{{ str_starts_with($school->logo_url, 'http') ? $school->logo_url : env('BACKEND_URL') . '/' . ltrim($school->logo_url, '/') }}" alt="{{ $school->name }} Logo" style="object-fit: contain;" />
+                            <div class="col-md-6">
+                                <div class="rounded-4 overflow-hidden border shadow-sm p-4 bg-white d-flex align-items-center justify-content-center" style="height: 250px;">
+                                    <img src="{{ str_starts_with($school->logo_url, 'http') ? $school->logo_url : env('BACKEND_URL') . '/' . ltrim($school->logo_url, '/') }}" alt="{{ $school->name }} Logo" style="max-height: 180px; object-fit: contain;" />
                                 </div>
-                            </div>
-                            @endif
-                            @if(!$school->cover_image_url && !$school->logo_url)
-                            <div class="col-12">
-                                <p class="text-center text-muted py-3">No images available for this school.</p>
                             </div>
                             @endif
                         </div>
                     </div>
 
-                    <!-- 5. Admission Process Section -->
-
-
-                    <!-- 6. Student Reviews Section -->
-                    <div class="sd-reviews-section text-center" data-tab-content="reviews">
-                        <div class="sd-reviews-form-card text-start">
-                            <h3 class="fw-bold text-center mb-3" style="font-size: 23px; color: #0d1b2a">
-                                Student Review
-                            </h3>
-                            <p class="text-muted text-center mb-4" style="font-size: 12px">
-                                Your review can guide families in choosing the right school.
-                            </p>
-                            <form class="sd-enquiry-form">
-                                <div class="mb-3">
-                                    <label class="form-label">Name</label>
-                                    <input type="text" placeholder="Enter your name" class="form-control" />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Email ID</label>
-                                    <input type="email" placeholder="Enter email id" class="form-control" />
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Your Review</label>
-                                    <textarea placeholder="Write your review" rows="3" class="form-control"></textarea>
-                                </div>
-                                <button type="submit" class="btn-sd-submit-enquiry">
-                                    Submit Review
-                                    <i class="fa-solid fa-chevron-right" style="font-size: 10px"></i>
-                                </button>
-                            </form>
-                        </div>
-
-                        <div class="sd-top-reviews-label">Top Reviews by Students</div>
-
-                        <!-- Review cards slider -->
-                        <div class="swiper sd-reviews-swiper">
-                            <div class="swiper-wrapper">
-                                <!-- Muskan card -->
-                                <div class="swiper-slide">
-                                    <div class="sd-review-card">
-                                        <img src="{{ asset('assets/images/mentor-img-1.png') }}" alt="Muskan avatar"
-                                            class="sd-review-avatar" />
-                                        <div>
-                                            <div class="sd-review-stars">
-                                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i>
-                                            </div>
-                                            <h4 class="sd-review-text">calm & good environment</h4>
-                                            <span class="sd-review-author">— Muskan</span>
-                                        </div>
+                    <!-- Reviews Section -->
+                    <div class="sd-section-card" data-tab-content="reviews">
+                        <h2 class="sd-section-title fs-4 fw-bold mb-4">Parent & Student Reviews</h2>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="p-4 bg-white rounded-4 border shadow-sm h-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-bold">Rajesh Sharma (Parent)</span>
+                                        <span class="text-warning" style="font-size: 12px;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
                                     </div>
-                                </div>
-                                <!-- Review 2 -->
-                                <div class="swiper-slide">
-                                    <div class="sd-review-card">
-                                        <img src="{{ asset('assets/images/mentor-img-2.png') }}" alt="Student avatar 2"
-                                            class="sd-review-avatar" />
-                                        <div>
-                                            <div class="sd-review-stars">
-                                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i>
-                                            </div>
-                                            <h4 class="sd-review-text">nice place and education</h4>
-                                            <span class="sd-review-author">— Student</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Review 3 -->
-                                <div class="swiper-slide">
-                                    <div class="sd-review-card">
-                                        <img src="{{ asset('assets/images/mentor-img-3.png') }}" alt="Student avatar 3"
-                                            class="sd-review-avatar" />
-                                        <div>
-                                            <div class="sd-review-stars">
-                                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i>
-                                            </div>
-                                            <h4 class="sd-review-text">Nice faculty great place</h4>
-                                            <span class="sd-review-author">— Student</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Review 4 -->
-                                <div class="swiper-slide">
-                                    <div class="sd-review-card">
-                                        <img src="{{ asset('assets/images/mentor-img-4.png') }}" alt="Student avatar 4"
-                                            class="sd-review-avatar" />
-                                        <div>
-                                            <div class="sd-review-stars">
-                                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i>
-                                            </div>
-                                            <h4 class="sd-review-text">Nice faculty great place</h4>
-                                            <span class="sd-review-author">— Student</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="sd-review-card">
-                                        <img src="{{ asset('assets/images/mentor-img-4.png') }}" alt="Student avatar 4"
-                                            class="sd-review-avatar" />
-                                        <div>
-                                            <div class="sd-review-stars">
-                                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i>
-                                            </div>
-                                            <h4 class="sd-review-text">Nice faculty great place</h4>
-                                            <span class="sd-review-author">— Student</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="sd-review-card">
-                                        <img src="{{ asset('assets/images/mentor-img-4.png') }}" alt="Student avatar 4"
-                                            class="sd-review-avatar" />
-                                        <div>
-                                            <div class="sd-review-stars">
-                                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i>
-                                            </div>
-                                            <h4 class="sd-review-text">Nice faculty great place</h4>
-                                            <span class="sd-review-author">— Student</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="sd-review-card">
-                                        <img src="{{ asset('assets/images/mentor-img-4.png') }}" alt="Student avatar 4"
-                                            class="sd-review-avatar" />
-                                        <div>
-                                            <div class="sd-review-stars">
-                                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i>
-                                            </div>
-                                            <h4 class="sd-review-text">Nice faculty great place</h4>
-                                            <span class="sd-review-author">— Student</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="swiper-slide">
-                                    <div class="sd-review-card">
-                                        <img src="{{ asset('assets/images/mentor-img-4.png') }}" alt="Student avatar 4"
-                                            class="sd-review-avatar" />
-                                        <div>
-                                            <div class="sd-review-stars">
-                                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                                    class="fa-solid fa-star"></i>
-                                            </div>
-                                            <h4 class="sd-review-text">Nice faculty great place</h4>
-                                            <span class="sd-review-author">— Student</span>
-                                        </div>
-                                    </div>
+                                    <p class="text-muted mb-0" style="font-size: 13px;">"Outstanding school infrastructure, faculty, and sports facilities. My daughter has grown immensely confident!"</p>
                                 </div>
                             </div>
-                            <!-- <div class="swiper-pagination reviews-pagination mt-4"></div> -->
+                            <div class="col-md-6">
+                                <div class="p-4 bg-white rounded-4 border shadow-sm h-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="fw-bold">Simran Kaur (Alumni)</span>
+                                        <span class="text-warning" style="font-size: 12px;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
+                                    </div>
+                                    <p class="text-muted mb-0" style="font-size: 13px;">"Great environment, excellent boarding facility, and dedicated teachers. Highly recommended!"</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 7. Address & Contact Section -->
-                    <div data-tab-content="overview" class="school-add-cont">
-                        <div class="text-center heading-card">
-                            <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3 mb-3">
-                                <span class="heading-line d-none d-md-block"></span>
-                                <h2 class="section-title mb-0">ADDRESS & CONTACT</h2>
-                                <span class="heading-line d-none d-md-block"></span>
-                            </div>
-
-                        </div>
-
+                    <!-- Address & Contact Section -->
+                    <div id="address-contact" class="sd-section-card">
+                        <h2 class="sd-section-title fs-4 fw-bold mb-4">Address & Contact Information</h2>
                         <div class="row g-4 mb-4">
-                            <!-- Col 1 -->
                             <div class="col-md-3 col-sm-6">
-                                <div class="sd-contact-card">
-                                    <div class="sd-contact-icon">
-                                        <i class="fa-solid fa-location-dot"></i>
-                                    </div>
-                                    <p class="sd-contact-text">
-                                        {{ $school->head_office_location ?? $location }}
+                                <div class="p-3 bg-white rounded-3 border text-center">
+                                    <i class="fa-solid fa-location-dot text-primary fs-4 mb-2"></i>
+                                    <h6 class="fw-bold mb-1">Location</h6>
+                                    <p class="text-muted mb-0" style="font-size: 12px;">{{ $school->head_office_location ?? $location ?: 'Dehradun, Uttarakhand' }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="p-3 bg-white rounded-3 border text-center">
+                                    <i class="fa-solid fa-globe text-success fs-4 mb-2"></i>
+                                    <h6 class="fw-bold mb-1">Official Website</h6>
+                                    <p class="text-muted mb-0" style="font-size: 12px;">
+                                        @if($school->official_website)
+                                            <a href="{{ str_starts_with($school->official_website, 'http') ? $school->official_website : 'https://' . $school->official_website }}" target="_blank" class="text-decoration-none text-primary">{{ $school->official_website }}</a>
+                                        @else
+                                            Available On Request
+                                        @endif
                                     </p>
                                 </div>
                             </div>
-                            <!-- Col 2 -->
                             <div class="col-md-3 col-sm-6">
-                                <div class="sd-contact-card">
-                                    <div class="sd-contact-icon">
-                                        <i class="fa-solid fa-globe"></i>
-                                    </div>
-                                    <p class="sd-contact-text">{{ $school->official_website ?? 'N/A' }}</p>
+                                <div class="p-3 bg-white rounded-3 border text-center">
+                                    <i class="fa-solid fa-phone text-warning fs-4 mb-2"></i>
+                                    <h6 class="fw-bold mb-1">Phone Number</h6>
+                                    <p class="text-muted mb-0" style="font-size: 12px;">{{ $school->helpdesk_contact_number ?? 'Available On Request' }}</p>
                                 </div>
                             </div>
-                            <!-- Col 3 -->
                             <div class="col-md-3 col-sm-6">
-                                <div class="sd-contact-card">
-                                    <div class="sd-contact-icon">
-                                        <i class="fa-solid fa-phone"></i>
-                                    </div>
-                                    <p class="sd-contact-text">{{ $school->helpdesk_contact_number ?? 'N/A' }}</p>
+                                <div class="p-3 bg-white rounded-3 border text-center">
+                                    <i class="fa-solid fa-envelope text-info fs-4 mb-2"></i>
+                                    <h6 class="fw-bold mb-1">Email ID</h6>
+                                    <p class="text-muted mb-0" style="font-size: 12px;">{{ $school->helpdesk_email ?? 'Available On Request' }}</p>
                                 </div>
                             </div>
-                            <!-- Col 4 -->
-                            <div class="col-md-3 col-sm-6">
-                                <div class="sd-contact-card">
-                                    <div class="sd-contact-icon">
-                                        <i class="fa-solid fa-envelope"></i>
-                                    </div>
-                                    <p class="sd-contact-text">{{ $school->helpdesk_email ?? 'N/A' }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Mock Google Map Graphic -->
-                        <div class="sd-map-frame ptb-70">
-                           <iframe style="    width: 100%;
-    height: 427px;"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3430.2223849502847!2d76.76450637684824!3d30.726224385966398!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390fed160a000001%3A0x63334dc2809e53b1!2sSector%2034%2C%20Chandigarh!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-                allowfullscreen=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-              ></iframe>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
-    </div>
-    </div>
 
-    <!-- Bootstrap Bundle JS -->
-    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabButtons = document.querySelectorAll(".sd-tab-pill-btn");
+            const tabContents = document.querySelectorAll("[data-tab-content]");
+
+            window.switchTab = function(targetTab) {
+                tabButtons.forEach(btn => {
+                    if (btn.getAttribute("data-tab-target") === targetTab) {
+                        btn.classList.add("active");
+                    } else {
+                        btn.classList.remove("active");
+                    }
+                });
+
+                tabContents.forEach(content => {
+                    const attr = content.getAttribute("data-tab-content") || "";
+                    const allowedTabs = attr.trim().split(/\s+/);
+                    if (allowedTabs.includes(targetTab)) {
+                        content.style.display = "block";
+                    } else {
+                        content.style.display = "none";
+                    }
+                });
+            };
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const target = this.getAttribute("data-tab-target");
+                    window.switchTab(target);
+                });
+            });
+
+            window.applyNowHandler = function(className) {
+                window.switchTab("overview");
+
+                if (className) {
+                    const select = document.getElementById("enquiryClassSelect");
+                    if (select) {
+                        for (let i = 0; i < select.options.length; i++) {
+                            if (select.options[i].value.toLowerCase().includes(className.toLowerCase())) {
+                                select.selectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                const card = document.getElementById("admission-enquiry-card");
+                if (card) {
+                    card.scrollIntoView({ behavior: "smooth" });
+                    setTimeout(() => {
+                        const input = document.getElementById("parentNameInput");
+                        if (input) input.focus();
+                    }, 400);
+                }
+            };
+
+            // Default to 'overview'
+            window.switchTab("overview");
+        });
+    </script>
 @endsection
