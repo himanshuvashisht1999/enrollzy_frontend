@@ -286,4 +286,7 @@ class PageController extends Controller
     }
 
     public function university() { return view('university'); }
+    public function mentors() { return view('mentors'); }
+    public function mentorDetail($id = null) { return view('mentor-detail'); }
+    public function askEnrollzy() { return view('ask-enrollzy'); }
 }

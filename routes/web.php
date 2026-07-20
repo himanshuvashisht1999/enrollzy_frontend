@@ -33,4 +33,7 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/all-coaching', [PageController::class, 'allCoaching'])->name('all.coaching');
     Route::get('/coaching-detail/{slug}', [PageController::class, 'coachingDetail'])->name('coaching.detail');
     Route::get('/university', [PageController::class, 'university'])->name('university');
+    Route::get('/mentors', [PageController::class, 'mentors'])->name('mentors');
+    Route::get('/mentor-detail/{id?}', [PageController::class, 'mentorDetail'])->name('mentor.detail');
+    Route::get('/ask-enrollzy', [PageController::class, 'askEnrollzy'])->name('ask.enrollzy');
 });
