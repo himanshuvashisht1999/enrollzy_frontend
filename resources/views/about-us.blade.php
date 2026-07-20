@@ -17,7 +17,7 @@
             </div>
           <div class="container">
             <div class="about-hero-container">
-              <img src="{{ $about_page->hero_image ? env('BACKEND_URL') . '/' . $about_page->hero_image : asset('assets/images/about-banner-img.png') }}" alt="" />
+              <img src="{{ $about_page->hero_image ? (str_starts_with($about_page->hero_image, 'http') ? $about_page->hero_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($about_page->hero_image, '/')) : asset('assets/images/about-banner-img.png') }}" alt="" />
 
               <!-- Centered Badge -->
               <div class="about-us-badge-wrapper">
@@ -57,7 +57,7 @@
               <div class="row g-5">
                 <div class="col-lg-5 about-split-img-col">
                   <img
-                    src="{{ $about_page->simplify_decisions_image ? env('BACKEND_URL') . '/' . $about_page->simplify_decisions_image : asset('assets/images/inner-about-img.png') }}"
+                    src="{{ $about_page->simplify_decisions_image ? (str_starts_with($about_page->simplify_decisions_image, 'http') ? $about_page->simplify_decisions_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($about_page->simplify_decisions_image, '/')) : asset('assets/images/inner-about-img.png') }}"
                     alt="Tablet Checkout App Usage"
                     class="img-fluid"
                   />
@@ -106,7 +106,7 @@
               <div class="row g-5 flex-lg-row-reverse">
                 <div class="col-lg-5 about-split-img-col">
                   <img
-                    src="{{ $about_page->story_image ? env('BACKEND_URL') . '/' . $about_page->story_image : asset('assets/images/about-our-story-img.png') }}"
+                    src="{{ $about_page->story_image ? (str_starts_with($about_page->story_image, 'http') ? $about_page->story_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($about_page->story_image, '/')) : asset('assets/images/about-our-story-img.png') }}"
                     alt="Enrollzy Founder Portrait"
                     class="img-fluid"
                   />
@@ -131,7 +131,7 @@
                 <div class="about-mvp-card border-blue">
                   <div class="about-mvp-card-avatar">
                     <img
-                      src="{{ $about_page->mission_image ? env('BACKEND_URL') . '/' . $about_page->mission_image : asset('assets/images/mentor-img-1.png') }}"
+                      src="{{ $about_page->mission_image ? (str_starts_with($about_page->mission_image, 'http') ? $about_page->mission_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($about_page->mission_image, '/')) : asset('assets/images/mentor-img-1.png') }}"
                       alt="Our Mission Mentor"
                     />
                   </div>
@@ -145,7 +145,7 @@
                 <div class="about-mvp-card border-orange">
                   <div class="about-mvp-card-avatar">
                     <img
-                      src="{{ $about_page->vision_image ? env('BACKEND_URL') . '/' . $about_page->vision_image : asset('assets/images/mentor-img-1.png') }}"
+                      src="{{ $about_page->vision_image ? (str_starts_with($about_page->vision_image, 'http') ? $about_page->vision_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($about_page->vision_image, '/')) : asset('assets/images/mentor-img-1.png') }}"
                       alt="Our Vision Mentor"
                     />
                   </div>
@@ -159,7 +159,7 @@
                 <div class="about-mvp-card border-green">
                   <div class="about-mvp-card-avatar">
                     <img
-                      src="{{ $about_page->philosophy_image ? env('BACKEND_URL') . '/' . $about_page->philosophy_image : asset('assets/images/mentor-img-1.png') }}"
+                      src="{{ $about_page->philosophy_image ? (str_starts_with($about_page->philosophy_image, 'http') ? $about_page->philosophy_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($about_page->philosophy_image, '/')) : asset('assets/images/mentor-img-1.png') }}"
                       alt="Our Philosophy Mentor"
                     />
                   </div>
@@ -206,7 +206,7 @@
                         <div class="about-dark-card">
                           <div class="about-dark-card-icon">
                             @if($offer->icon_image)
-                              <img src="{{ env('BACKEND_URL') . '/' . $offer->icon_image }}" alt="" />
+                              <img src="{{ str_starts_with($offer->icon_image, 'http') ? $offer->icon_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($offer->icon_image, '/') }}" alt="" />
                             @else
                               <img src="{{ asset('assets/images/offer-icon.png') }}" alt="" />
                             @endif
@@ -251,7 +251,7 @@
                   <div class="about-mvp-card h-100" style="border: 1px solid #e3e6ef; border-radius: 12px; padding: 30px; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
                     <div class="about-dark-card-icon mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: rgba(55, 113, 200, 0.1); border-radius: 50%;">
                       @if($feature->icon_image)
-                        <img src="{{ env('BACKEND_URL') . '/' . $feature->icon_image }}" alt="" style="width: 32px; height: 32px; object-fit: contain;" />
+                        <img src="{{ str_starts_with($feature->icon_image, 'http') ? $feature->icon_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($feature->icon_image, '/') }}" alt="" style="width: 32px; height: 32px; object-fit: contain;" />
                       @else
                         <img src="{{ asset('assets/images/offer-icon.png') }}" alt="" style="width: 32px; height: 32px; object-fit: contain;" />
                       @endif
@@ -289,7 +289,7 @@
                 <div class="about-impact-item">
                   <div class="about-impact-circle">
                     @if($impact->icon_image)
-                      <img src="{{ env('BACKEND_URL') . '/' . $impact->icon_image }}" alt="" />
+                      <img src="{{ str_starts_with($impact->icon_image, 'http') ? $impact->icon_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($impact->icon_image, '/') }}" alt="" />
                     @else
                       <img src="{{ asset('assets/images/step-img-' . (($key % 4) + 1) . '.png') }}" alt="" />
                     @endif
@@ -331,7 +331,7 @@
                   <div class="founder-card-top">
                     <div class="founder-img-wrapper">
                       <img
-                        src="{{ $about_page->founder_1_image ? env('BACKEND_URL') . '/' . $about_page->founder_1_image : asset('assets/images/mentor-img-1.png') }}"
+                        src="{{ $about_page->founder_1_image ? (str_starts_with($about_page->founder_1_image, 'http') ? $about_page->founder_1_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($about_page->founder_1_image, '/')) : asset('assets/images/mentor-img-1.png') }}"
                         alt="{{ $about_page->founder_1_name }}"
                       />
                     </div>
@@ -363,7 +363,7 @@
                   <div class="founder-card-top">
                     <div class="founder-img-wrapper">
                       <img
-                        src="{{ $about_page->founder_2_image ? env('BACKEND_URL') . '/' . $about_page->founder_2_image : asset('assets/images/mentor-img-1.png') }}"
+                        src="{{ $about_page->founder_2_image ? (str_starts_with($about_page->founder_2_image, 'http') ? $about_page->founder_2_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($about_page->founder_2_image, '/')) : asset('assets/images/mentor-img-1.png') }}"
                         alt="{{ $about_page->founder_2_name }}"
                       />
                     </div>
@@ -415,7 +415,7 @@
                 <div class="col">
                   <div class="team-card">
                     <img
-                      src="{{ $team->image ? env('BACKEND_URL') . '/' . $team->image : asset('assets/images/mentor-img-1.png') }}"
+                      src="{{ $team->image ? (str_starts_with($team->image, 'http') ? $team->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($team->image, '/')) : asset('assets/images/mentor-img-1.png') }}"
                       alt="{{ $team->name }}"
                       class="team-card-img"
                     />
@@ -452,7 +452,7 @@
                 <div class="col">
                   <div class="team-card">
                     <img
-                      src="{{ $board->image ? env('BACKEND_URL') . '/' . $board->image : asset('assets/images/mentor-img-1.png') }}"
+                      src="{{ $board->image ? (str_starts_with($board->image, 'http') ? $board->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($board->image, '/')) : asset('assets/images/mentor-img-1.png') }}"
                       alt="{{ $board->name }}"
                       class="team-card-img"
                     />
@@ -494,7 +494,7 @@
                 </div>
                 @if($about_page->cta_image)
                   <div class="col-lg-5 text-center text-lg-end">
-                    <img src="{{ env('BACKEND_URL') . '/' . $about_page->cta_image }}" alt="CTA Image" class="img-fluid rounded-3" style="max-height: 250px; object-fit: cover;" />
+                    <img src="{{ str_starts_with($about_page->cta_image, 'http') ? $about_page->cta_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($about_page->cta_image, '/') }}" alt="CTA Image" class="img-fluid rounded-3" style="max-height: 250px; object-fit: cover;" />
                   </div>
                 @endif
               </div>

@@ -144,7 +144,7 @@
                                     <span class="sb-badge-deadline">Deadline: 20 Jul 2026</span>
                                 @endif
                                 
-                                <img src="{{ $benefit->icon ? env('BACKEND_URL') . '/' . $benefit->icon : asset('assets/images/scholarship-card-img.png') }}" alt="{{ $benefit->title }}">
+                                <img src="{{ $benefit->icon ? (str_starts_with($benefit->icon, 'http') ? $benefit->icon : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($benefit->icon, '/')) : asset('assets/images/scholarship-card-img.png') }}" alt="{{ $benefit->title }}">
                             </div>
                             <div class="sb-card-body d-flex flex-column">
                                 <h3 class="sb-card-title">{{ $benefit->title }}</h3>

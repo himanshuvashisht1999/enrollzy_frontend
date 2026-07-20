@@ -6,7 +6,7 @@
       </div>
       <div class="container">
         <div class="about-hero-container">
-          <img src="{{ $contactDetails->hero_image ? env('BACKEND_URL') . '/' . $contactDetails->hero_image : asset('assets/images/contact-us-banner-img.png') }}" alt="Contact Us" />
+          <img src="{{ $contactDetails->hero_image ? (str_starts_with($contactDetails->hero_image, 'http') ? $contactDetails->hero_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($contactDetails->hero_image, '/')) : asset('assets/images/contact-us-banner-img.png') }}" alt="Contact Us" />
 
           <!-- Centered Badge / Content Block -->
           <div class="about-us-badge-wrapper w-100 px-3">
@@ -184,7 +184,7 @@
             </div>
             <!-- Left: Portrait -->
             <div class="col-lg-5 founder-portrait-wrapper">
-              <img src="{{ $contactDetails->co_founder_image ? env('BACKEND_URL') . '/' . $contactDetails->co_founder_image : asset('assets/images/founder-img-contact.png') }}" alt="{{ $contactDetails->co_founder_name ?? 'Founder' }}" class="img-fluid" />
+              <img src="{{ $contactDetails->co_founder_image ? (str_starts_with($contactDetails->co_founder_image, 'http') ? $contactDetails->co_founder_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($contactDetails->co_founder_image, '/')) : asset('assets/images/founder-img-contact.png') }}" alt="{{ $contactDetails->co_founder_name ?? 'Founder' }}" class="img-fluid" />
             </div>
 
             <!-- Right: Text block -->
@@ -403,7 +403,7 @@
                     @if(empty($card['icon']))
                       <img src="{{ asset('assets/images/why-wok-icon-1.png') }}" alt="" />
                     @elseif(str_contains($card['icon'], '.') || str_contains($card['icon'], '/'))
-                      <img src="{{ str_starts_with($card['icon'], 'http') ? $card['icon'] : (str_starts_with($card['icon'], 'assets/') ? asset($card['icon']) : env('BACKEND_URL') . '/' . $card['icon']) }}" alt="" />
+                      <img src="{{ str_starts_with($card['icon'], 'http') ? $card['icon'] : (str_starts_with($card['icon'], 'assets/') ? asset($card['icon']) : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($card['icon'], '/')) }}" alt="" />
                     @else
                       <i class="{{ $card['icon'] }}"></i>
                     @endif

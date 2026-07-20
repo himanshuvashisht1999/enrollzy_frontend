@@ -104,7 +104,7 @@
                             @if($heroSliders->count() > 0)
                                 @foreach($heroSliders as $slider)
                                     <div class="swiper-slide d-flex align-items-center justify-content-center">
-                                        <img src="{{ env('BACKEND_URL') . '/' . $slider->image_path }}" alt="{{ $slider->heading }}"
+                                        <img src="{{ str_starts_with($slider->image_path, 'http') ? $slider->image_path : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($slider->image_path, '/') }}" alt="{{ $slider->heading }}"
                                             class="img-fluid hero-slide-img"
                                             style="border-radius: 20px; object-fit: cover; width: 100%; height: 100%;">
                                     </div>
@@ -346,7 +346,7 @@
                                     </span>
                                     <div class="institution-logo-wrapper mx-auto mb-3"
                                         style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #fff; border: 1px solid #eee;">
-                                        <img src="{{ $school->logo_url ? env('BACKEND_URL') . '/' . $school->logo_url : asset('assets/images/boarding-school-logo.png') }}"
+                                        <img src="{{ $school->logo_url ? (str_starts_with($school->logo_url, 'http') ? $school->logo_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($school->logo_url, '/')) : asset('assets/images/boarding-school-logo.png') }}"
                                             alt="{{ $school->brand_name ?? $school->name }}"
                                             style="max-width: 100%; max-height: 100%;">
                                     </div>
@@ -410,7 +410,7 @@
                                 </span>
                                 <div class="institution-logo-wrapper mx-auto mb-3"
                                     style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #fff; border: 1px solid #eee;">
-                                    <img src="{{ $coaching->logo_url ? env('BACKEND_URL') . '/' . $coaching->logo_url : asset('assets/images/boarding-school-logo.png') }}"
+                                    <img src="{{ $coaching->logo_url ? (str_starts_with($coaching->logo_url, 'http') ? $coaching->logo_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($coaching->logo_url, '/')) : asset('assets/images/boarding-school-logo.png') }}"
                                         alt="{{ $coaching->brand_name ?? $coaching->name }}"
                                         style="max-width: 100%; max-height: 100%;">
                                 </div>
@@ -716,7 +716,7 @@
                                                 <div class="skill-card-icon-wrapper"
                                                     style="width: 44px; height: 44px; background-color: #0f172a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                                                     @if ($mention->image)
-                                                        <img src="{{ env('BACKEND_URL') . '/' . $mention->image }}" alt=""
+                                                        <img src="{{ str_starts_with($mention->image, 'http') ? $mention->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($mention->image, '/') }}" alt=""
                                                             style="width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1);">
                                                     @else
                                                         <span class="text-white fw-bold" style="font-size: 12px;">AI</span>
@@ -770,7 +770,7 @@
                     <div class="col">
                         <div class="mentor-card h-100 d-flex flex-column">
                             <div class="mentor-img-wrapper" style="height: 250px; overflow: hidden;">
-                                <img src="{{ $mentor->profile_photo ? env('BACKEND_URL') . '/' . $mentor->profile_photo : asset('assets/images/mentor1.png') }}"
+                                <img src="{{ $mentor->profile_photo ? (str_starts_with($mentor->profile_photo, 'http') ? $mentor->profile_photo : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($mentor->profile_photo, '/')) : asset('assets/images/mentor1.png') }}"
                                     alt="{{ $mentor->first_name }} {{ $mentor->last_name }}"
                                     style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
@@ -889,7 +889,7 @@
                         <div class="col text-center">
                             <div class="exam-icon-wrapper">
                                 @if($exam->logo)
-                                    <img src="{{ env('BACKEND_URL') . '/' . $exam->logo }}" alt="{{ $exam->name }}"
+                                    <img src="{{ str_starts_with($exam->logo, 'http') ? $exam->logo : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($exam->logo, '/') }}" alt="{{ $exam->name }}"
                                         style="max-width:45px;max-height:45px;object-fit:contain;">
                                 @else
                                     <img src="{{ asset('assets/images/top-exam-icon-1.png') }}" alt="{{ $exam->name }}">
@@ -1016,7 +1016,7 @@
                         <div class="col">
                             <div class="blog-card">
                                 <div class="blog-img-wrapper">
-                                    <img src="{{ $blog->image ? env('BACKEND_URL') . '/' . $blog->image : asset('assets/images/blog-img-1.png') }}"
+                                    <img src="{{ $blog->image ? (str_starts_with($blog->image, 'http') ? $blog->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($blog->image, '/')) : asset('assets/images/blog-img-1.png') }}"
                                         alt="{{ $blog->title }}" class="blog-img">
                                 </div>
                                 <div class="blog-card-body">
@@ -1068,7 +1068,7 @@
                     @foreach($video_testimonials as $video)
                         <div class="col">
                             <div class="testimonial-card"
-                                style="background-image: url('{{ $video->thumbnail ? env('BACKEND_URL') . '/' . $video->thumbnail : asset('assets/images/mentor_1.png') }}');">
+                                style="background-image: url('{{ $video->thumbnail ? (str_starts_with($video->thumbnail, 'http') ? $video->thumbnail : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($video->thumbnail, '/')) : asset('assets/images/mentor_1.png') }}');">
                                 <div class="testimonial-overlay"></div>
                                 @if($video->video_url)
                                     <a href="{{ $video->video_url }}" target="_blank" style="text-decoration: none;">
@@ -1162,7 +1162,7 @@
                                         </p>
                                     </div>
                                     <div class="feedback-author-row mt-4">
-                                        <img src="{{ $testimonial->image ? env('BACKEND_URL') . '/' . $testimonial->image : asset('assets/images/mentor_2.png') }}"
+                                        <img src="{{ $testimonial->image ? (str_starts_with($testimonial->image, 'http') ? $testimonial->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($testimonial->image, '/')) : asset('assets/images/mentor_2.png') }}"
                                             alt="{{ $testimonial->name }}" class="feedback-avatar">
                                         <div>
                                             <h4 class="feedback-author-name">{{ $testimonial->name }}</h4>

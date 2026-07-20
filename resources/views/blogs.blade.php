@@ -80,7 +80,7 @@
             <div class="col">
               <div class="blog-card">
                 <div class="blog-card-banner">
-                  <img src="{{ $blog->image ? env('BACKEND_URL') . '/' . $blog->image : asset('assets/images/blog-img-1.png') }}" alt="{{ $blog->title }}" />
+                  <img src="{{ $blog->image ? (str_starts_with($blog->image, 'http') ? $blog->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($blog->image, '/')) : asset('assets/images/blog-img-1.png') }}" alt="{{ $blog->title }}" />
                 </div>
                 <div class="blog-card-body">
                   <span class="blog-badge">{{ $blog->category ? $blog->category->name : 'Uncategorized' }}</span>

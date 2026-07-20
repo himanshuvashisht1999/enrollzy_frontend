@@ -294,7 +294,7 @@
 
                                 <div class="exam-card-logo">
                                     @if($exam->logo)
-                                        <img src="{{ env('BACKEND_URL') . '/' . $exam->logo }}" alt="{{ $exam->name }}" style="max-height: 45px; max-width: 130px; object-fit: contain;">
+                                        <img src="{{ str_starts_with($exam->logo, 'http') ? $exam->logo : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($exam->logo, '/') }}" alt="{{ $exam->name }}" style="max-height: 45px; max-width: 130px; object-fit: contain;">
                                     @else
                                         <img src="{{ asset('assets/images/jee-main-logo.png') }}" alt="{{ $exam->name }}" style="max-height: 45px; max-width: 130px; object-fit: contain;">
                                     @endif
