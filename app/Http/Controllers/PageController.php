@@ -60,10 +60,7 @@ class PageController extends Controller
         return view('blog-detail', compact('blog', 'recent_blogs'));
     }
 
-    public function allSchools(\Illuminate\Http\Request $request) {
-        $query = \App\Models\Organisation::where('organisation_type_id', 4)
-            ->where('status', 1);
-
+    private function applyOrganisationFilters(\Illuminate\Database\Eloquent\Builder $query, \Illuminate\Http\Request $request) {
         // 1. Search Query Filter
         if ($request->filled('search')) {
             $search = trim($request->search);
@@ -82,10 +79,29 @@ class PageController extends Controller
         // 2. Region Filter
         if ($request->filled('region')) {
             $regions = (array) $request->region;
-            $query->where(function($q) use ($regions) {
-                foreach ($regions as $reg) {
-                    $q->orWhere('states_present_in', 'like', "%{$reg}%")
-                      ->orWhere('head_office_location', 'like', "%{$reg}%");
+            $regionMap = [
+                'North India' => ['Uttarakhand', 'Rajasthan', 'Uttar Pradesh', 'Punjab', 'Haryana', 'Himachal Pradesh', 'Jammu', 'Kashmir', 'Delhi', 'Chandigarh', 'Noida', 'Dehradun', 'Jaipur', 'Ajmer', 'Mussoorie', 'Gurgaon', 'Gurugram', 'Lucknow', 'Nainital', 'Shimla', 'Solan', 'Selaqui'],
+                'South India' => ['Tamil Nadu', 'Karnataka', 'Andhra Pradesh', 'Telangana', 'Kerala', 'Bengaluru', 'Bangalore', 'Hyderabad', 'Chennai', 'Ooty', 'Kodaikanal', 'Madanapalle', 'Lovedale'],
+                'East India' => ['West Bengal', 'Bihar', 'Jharkhand', 'Odisha', 'Assam', 'Kolkata', 'Patna', 'Guwahati', 'Tezpur'],
+                'West India' => ['Maharashtra', 'Gujarat', 'Goa', 'Mumbai', 'Pune', 'Panchgani', 'Ahmedabad'],
+                'Central India' => ['Madhya Pradesh', 'Chhattisgarh', 'Bhopal', 'Indore', 'Gwalior'],
+            ];
+
+            $keywords = [];
+            foreach ($regions as $reg) {
+                if (isset($regionMap[$reg])) {
+                    $keywords = array_merge($keywords, $regionMap[$reg]);
+                } else {
+                    $keywords[] = $reg;
+                }
+            }
+            $keywords = array_unique($keywords);
+
+            $query->where(function($q) use ($keywords) {
+                foreach ($keywords as $kw) {
+                    $q->orWhere('states_present_in', 'like', "%{$kw}%")
+                      ->orWhere('cities_present_in', 'like', "%{$kw}%")
+                      ->orWhere('head_office_location', 'like', "%{$kw}%");
                 }
             });
         }
@@ -112,33 +128,94 @@ class PageController extends Controller
             });
         }
 
-        // 5. Board Filter (CBSE, ICSE, State Board, etc.)
+        // 5. Area Filter
+        if ($request->filled('area')) {
+            $areas = (array) $request->area;
+            $query->where(function($q) use ($areas) {
+                foreach ($areas as $ar) {
+                    $q->orWhere('head_office_location', 'like', "%{$ar}%")
+                      ->orWhere('about_organisation', 'like', "%{$ar}%");
+                }
+            });
+        }
+
+        // 6. Board Filter
         if ($request->filled('board')) {
             $boards = (array) $request->board;
-            $query->where(function($q) use ($boards) {
-                foreach ($boards as $bd) {
-                    $q->orWhere('education_boards_supported', 'like', "%{$bd}%");
+            $keywords = [];
+            foreach ($boards as $bd) {
+                if ($bd === 'ICSE/CISE') {
+                    $keywords[] = 'ICSE';
+                    $keywords[] = 'CISE';
+                    $keywords[] = 'CISCE';
+                } elseif (str_contains($bd, 'JEE')) {
+                    $keywords[] = 'JEE';
+                    $keywords[] = 'Engineering';
+                    $keywords[] = 'IIT';
+                } elseif (str_contains($bd, 'NEET')) {
+                    $keywords[] = 'NEET';
+                    $keywords[] = 'Medical';
+                } else {
+                    $keywords[] = $bd;
+                }
+            }
+            $keywords = array_unique($keywords);
+
+            $query->where(function($q) use ($keywords) {
+                foreach ($keywords as $kw) {
+                    $q->orWhere('education_boards_supported', 'like', "%{$kw}%")
+                      ->orWhere('streams_supported', 'like', "%{$kw}%")
+                      ->orWhere('about_organisation', 'like', "%{$kw}%");
                 }
             });
         }
 
-        // 6. Class / Level Filter
+        // 7. Class / Level Filter
         if ($request->filled('class')) {
             $classes = (array) $request->class;
-            $query->where(function($q) use ($classes) {
-                foreach ($classes as $cl) {
-                    $q->orWhere('education_levels_supported', 'like', "%{$cl}%");
+            $keywords = [];
+            foreach ($classes as $cl) {
+                $clLower = strtolower($cl);
+                if (in_array($clLower, ['toddlers', 'pre nursery', 'nursery', 'lkg', 'ukg', 'class 1', 'class 2', 'class 3', 'class 4', 'class 5'])) {
+                    $keywords[] = 'Primary';
+                    $keywords[] = $cl;
+                } elseif (in_array($clLower, ['class 6', 'class 7', 'class 8'])) {
+                    $keywords[] = 'Middle';
+                    $keywords[] = 'Primary';
+                    $keywords[] = $cl;
+                } elseif (in_array($clLower, ['class 9', 'class 10'])) {
+                    $keywords[] = 'Secondary';
+                    $keywords[] = $cl;
+                } elseif (in_array($clLower, ['class 11', 'class 12', 'target / dropper', 'target', 'dropper'])) {
+                    $keywords[] = 'Senior Secondary';
+                    $keywords[] = 'Target';
+                    $keywords[] = 'Dropper';
+                    $keywords[] = $cl;
+                } else {
+                    $keywords[] = $cl;
+                }
+            }
+            $keywords = array_unique($keywords);
+
+            $query->where(function($q) use ($keywords) {
+                foreach ($keywords as $kw) {
+                    $q->orWhere('education_levels_supported', 'like', "%{$kw}%")
+                      ->orWhere('about_organisation', 'like', "%{$kw}%");
                 }
             });
         }
 
-        // 7. Ownership Filter (Government / Private)
+        // 8. Ownership Filter
         if ($request->filled('ownership')) {
             $ownerships = (array) $request->ownership;
-            $query->whereIn('ownership_type', $ownerships);
+            $query->where(function($q) use ($ownerships) {
+                foreach ($ownerships as $own) {
+                    $q->orWhere('ownership_type', 'like', "%{$own}%");
+                }
+            });
         }
 
-        // 8. School Type Filter (Day Boarding, Full Boarding, Weekly Boarding)
+        // 9. School / Coaching Type Filter
         if ($request->filled('school_type')) {
             $types = (array) $request->school_type;
             $query->where(function($q) use ($types) {
@@ -150,7 +227,7 @@ class PageController extends Controller
             });
         }
 
-        // 9. Gender Filter (Coed, Boys, Girls)
+        // 10. Gender Filter
         if ($request->filled('gender')) {
             $genders = (array) $request->gender;
             $query->where(function($q) use ($genders) {
@@ -160,8 +237,15 @@ class PageController extends Controller
                 }
             });
         }
+    }
 
-        $schools = $query->orderBy('id', 'desc')->paginate(10);
+    public function allSchools(\Illuminate\Http\Request $request) {
+        $query = \App\Models\Organisation::where('organisation_type_id', 4)
+            ->where('status', 1);
+
+        $this->applyOrganisationFilters($query, $request);
+
+        $schools = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
             
         return view('all-schools', compact('schools'));
     }
@@ -261,6 +345,7 @@ class PageController extends Controller
             'phone' => 'required|string|max:20',
             'email' => 'nullable|email|max:255',
             'company' => 'nullable|string|max:255',
+            'organisation_name' => 'nullable|string|max:255',
             'type' => 'nullable|string|max:100',
             'business_type' => 'nullable|string|max:100',
             'looking_for' => 'nullable|string|max:255',
@@ -269,20 +354,20 @@ class PageController extends Controller
         ]);
 
         $businessType = $request->type ?? $request->business_type ?? $request->looking_for;
+        $orgName = $request->organisation_name ?? $request->company;
 
-        $subjectParts = ['Contact Inquiry'];
+        $subjectParts = ['Callback Inquiry'];
+        if ($orgName) $subjectParts[] = 'Institute/School: ' . $orgName;
         if ($businessType) $subjectParts[] = 'Type: ' . $businessType;
-        if ($request->company) $subjectParts[] = 'Company: ' . $request->company;
         
         $subject = implode(' | ', $subjectParts);
 
         $messageContent = $request->message;
         if (empty($messageContent)) {
             $details = [];
-            if ($businessType) $details[] = 'Business/Type: ' . $businessType;
-            if ($request->company) $details[] = 'Company: ' . $request->company;
+            if ($orgName) $details[] = 'Institute/School Name: ' . $orgName;
             if ($request->session_time) $details[] = 'Preferred Session Time: ' . $request->session_time;
-            $messageContent = !empty($details) ? implode("\n", $details) : 'Inquiry from website.';
+            $messageContent = !empty($details) ? implode("\n", $details) : 'Request a callback from website.';
         }
 
         \Illuminate\Support\Facades\DB::table('leads')->insert([
@@ -296,6 +381,13 @@ class PageController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Your callback request has been submitted successfully! Our team will get back to you shortly.'
+            ]);
+        }
 
         return redirect()->to(url()->previous() . '#contact-section')->with('success', 'Your request has been submitted successfully! Our team will get back to you shortly.');
     }
@@ -348,11 +440,13 @@ class PageController extends Controller
         return view('school-detail', compact('school', 'location', 'boards', 'grades'));
     }
     
-    public function allCoaching() {
-        $coachings = \App\Models\Organisation::where('organisation_type_id', 3)
-            ->where('status', 1)
-            ->orderBy('id', 'desc')
-            ->paginate(10);
+    public function allCoaching(\Illuminate\Http\Request $request) {
+        $query = \App\Models\Organisation::where('organisation_type_id', 3)
+            ->where('status', 1);
+
+        $this->applyOrganisationFilters($query, $request);
+
+        $coachings = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
             
         return view('all-coaching', compact('coachings'));
     }

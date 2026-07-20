@@ -341,8 +341,8 @@
                                     </div>
                                     <p class="school-card-desc">{{ Str::limit($school->meta_description ?? strip_tags($school->about_organisation ?? ''), 160, '...') }}</p>
                                     <div class="school-card-actions">
-                                        <a href="{{ route('school.detail', $school->slug) }}" class="btn-school-call text-decoration-none text-center"><i class="fa-solid fa-eye me-1"></i> View Details</a>
-                                        <a href="{{ route('school.detail', $school->slug) }}" class="btn-school-callback text-decoration-none text-center">Apply Now <i class="fa-solid fa-chevron-right ms-1" style="font-size: 9px;"></i></a>
+                                        <button type="button" class="btn-school-call" data-bs-toggle="modal" data-bs-target="#callInstituteModal" data-org-name="{{ $school->name }}" data-org-phone="{{ $school->helpdesk_contact_number ?? '+91 1800-123-4567' }}"><i class="fa-solid fa-phone"></i> Call School</button>
+                                        <button type="button" class="btn-school-callback" data-bs-toggle="modal" data-bs-target="#requestCallbackModal" data-org-name="{{ $school->name }}">Request a Callback <i class="fa-solid fa-chevron-right ms-1" style="font-size: 9px;"></i></button>
                                     </div>
                                 </div>
                             </div>
