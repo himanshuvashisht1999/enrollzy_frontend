@@ -297,7 +297,7 @@
                                     <div class="swiper-wrapper">
                                         <div class="swiper-slide">
                                             <a href="{{ route('school.detail', $school->slug) }}">
-                                                <img src="{{ $school->cover_image_url ? env('BACKEND_URL') . '/' . $school->cover_image_url : asset('assets/images/about_team_meeting.png') }}" alt="{{ $school->name }} Cover">
+                                                <img src="{{ $school->cover_image_url ? (str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($school->cover_image_url, '/')) : asset('assets/images/about_team_meeting.png') }}" alt="{{ $school->name }} Cover">
                                             </a>
                                         </div>
                                     </div>
@@ -310,7 +310,7 @@
                                 <div class="school-info-body">
                                     <div class="school-identity-row">
                                         <div class="school-logo-box" style="width: 48px; height: 48px; flex-shrink: 0;">
-                                            <img src="{{ $school->logo_url ? env('BACKEND_URL') . '/' . $school->logo_url : asset('assets/images/school-card-logo.png') }}" alt="{{ $school->name }} Logo" style="object-fit: contain;">
+                                            <img src="{{ $school->logo_url ? (str_starts_with($school->logo_url, 'http') ? $school->logo_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($school->logo_url, '/')) : asset('assets/images/school-card-logo.png') }}" alt="{{ $school->name }} Logo" style="object-fit: contain;">
                                         </div>
                                         <div class="school-identity-text">
                                             <h3 class="school-name"><a href="{{ route('school.detail', $school->slug) }}" class="text-dark text-decoration-none">{{ $school->name }}</a></h3>

@@ -25,7 +25,7 @@
                 <div class="col-lg-8">
                     @if($blog->image)
                     <div class="blog-featured-image mb-5">
-                        <img src="{{ env('BACKEND_URL') . '/' . $blog->image }}" alt="{{ $blog->title }}" class="img-fluid rounded shadow-sm w-100" style="max-height: 500px; object-fit: cover;">
+                        <img src="{{ str_starts_with($blog->image, 'http') ? $blog->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($blog->image, '/') }}" alt="{{ $blog->title }}" class="img-fluid rounded shadow-sm w-100" style="max-height: 500px; object-fit: cover;">
                     </div>
                     @endif
 
@@ -60,7 +60,7 @@
                 <div class="col">
                     <div class="blog-card h-100 bg-white rounded shadow-sm" style="border: 1px solid #eee;">
                         <div class="blog-img-wrapper" style="height: 200px; overflow: hidden; border-radius: 5px 5px 0 0;">
-                            <img src="{{ $recent->image ? env('BACKEND_URL') . '/' . $recent->image : asset('assets/images/blog-img-1.png') }}" alt="{{ $recent->title }}" class="img-fluid w-100 h-100" style="object-fit: cover;">
+                            <img src="{{ $recent->image ? (str_starts_with($recent->image, 'http') ? $recent->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($recent->image, '/')) : asset('assets/images/blog-img-1.png') }}" alt="{{ $recent->title }}" class="img-fluid w-100 h-100" style="object-fit: cover;">
                         </div>
                         <div class="blog-card-body p-4 d-flex flex-column h-100">
                             <div class="mb-auto">

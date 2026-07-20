@@ -7,7 +7,7 @@
         </div>
         <div class="container">
             <div class="about-hero-container">
-                <img src="{{ $school->cover_image_url ? (str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : env('BACKEND_URL') . '/' . ltrim($school->cover_image_url, '/')) : asset('assets/images/school-detail-banner-img.png') }}" alt="{{ $school->name }}" />
+                <img src="{{ $school->cover_image_url ? (str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($school->cover_image_url, '/')) : asset('assets/images/school-detail-banner-img.png') }}" alt="{{ $school->name }}" />
 
                 <!-- Centered Badge -->
                 <div class="about-us-badge-wrapper">
@@ -265,14 +265,14 @@
                             @if($school->cover_image_url)
                             <div class="col-md-6">
                                 <div class="rounded-4 overflow-hidden border shadow-sm" style="height: 250px;">
-                                    <img src="{{ str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : env('BACKEND_URL') . '/' . ltrim($school->cover_image_url, '/') }}" alt="{{ $school->name }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                                    <img src="{{ str_starts_with($school->cover_image_url, 'http') ? $school->cover_image_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($school->cover_image_url, '/') }}" alt="{{ $school->name }}" style="width: 100%; height: 100%; object-fit: cover;" />
                                 </div>
                             </div>
                             @endif
                             @if($school->logo_url)
                             <div class="col-md-6">
                                 <div class="rounded-4 overflow-hidden border shadow-sm p-4 bg-white d-flex align-items-center justify-content-center" style="height: 250px;">
-                                    <img src="{{ str_starts_with($school->logo_url, 'http') ? $school->logo_url : env('BACKEND_URL') . '/' . ltrim($school->logo_url, '/') }}" alt="{{ $school->name }} Logo" style="max-height: 180px; object-fit: contain;" />
+                                    <img src="{{ str_starts_with($school->logo_url, 'http') ? $school->logo_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($school->logo_url, '/') }}" alt="{{ $school->name }} Logo" style="max-height: 180px; object-fit: contain;" />
                                 </div>
                             </div>
                             @endif

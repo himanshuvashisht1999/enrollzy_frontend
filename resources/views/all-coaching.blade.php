@@ -295,14 +295,14 @@
 
                     <!-- Coaching Institutes Grid row -->
                     <div class="row row-cols-1 row-cols-md-2 g-4">
-                        @foreach($coachings as $school)
+                        @foreach($coachings as $coaching)
                         <div class="col">
                             <div class="school-card">
                                 <div class="swiper school-image-swiper">
                                     <div class="swiper-wrapper">
                                         <div class="swiper-slide">
                                             <a href="{{ route('coaching.detail', $coaching->slug) }}">
-                                                <img src="{{ $coaching->cover_image_url ? env('BACKEND_URL') . '/' . $coaching->cover_image_url : asset('assets/images/about_team_meeting.png') }}" alt="{{ $coaching->name }} Cover">
+                                                <img src="{{ $coaching->cover_image_url ? (str_starts_with($coaching->cover_image_url, 'http') ? $coaching->cover_image_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($coaching->cover_image_url, '/')) : asset('assets/images/about_team_meeting.png') }}" alt="{{ $coaching->name }} Cover">
                                             </a>
                                         </div>
                                     </div>
@@ -316,7 +316,7 @@
                                 <div class="school-info-body">
                                     <div class="school-identity-row">
                                         <div class="school-logo-box" style="width: 48px; height: 48px; flex-shrink: 0;">
-                                            <img src="{{ $coaching->logo_url ? env('BACKEND_URL') . '/' . $coaching->logo_url : asset('assets/images/school-card-logo.png') }}" alt="{{ $coaching->name }} Logo" style="object-fit: contain;">
+                                            <img src="{{ $coaching->logo_url ? (str_starts_with($coaching->logo_url, 'http') ? $coaching->logo_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($coaching->logo_url, '/')) : asset('assets/images/school-card-logo.png') }}" alt="{{ $coaching->name }} Logo" style="object-fit: contain;">
                                         </div>
                                         <div class="school-identity-text">
                                             <h3 class="school-name"><a href="{{ route('coaching.detail', $coaching->slug) }}" class="text-dark text-decoration-none">{{ $coaching->name }}</a></h3>

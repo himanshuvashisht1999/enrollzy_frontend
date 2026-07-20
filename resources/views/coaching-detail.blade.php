@@ -7,7 +7,7 @@
         </div>
         <div class="container">
             <div class="about-hero-container">
-                <img src="{{ $coaching->cover_image_url ? (str_starts_with($coaching->cover_image_url, 'http') ? $coaching->cover_image_url : env('BACKEND_URL') . '/' . ltrim($coaching->cover_image_url, '/')) : asset('assets/images/school-detail-banner-img.png') }}" alt="{{ $coaching->name }}" />
+                <img src="{{ $coaching->cover_image_url ? (str_starts_with($coaching->cover_image_url, 'http') ? $coaching->cover_image_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($coaching->cover_image_url, '/')) : asset('assets/images/school-detail-banner-img.png') }}" alt="{{ $coaching->name }}" />
 
                 <!-- Centered Badge (Placed outside card to prevent clipping) -->
                 <div class="about-us-badge-wrapper">
