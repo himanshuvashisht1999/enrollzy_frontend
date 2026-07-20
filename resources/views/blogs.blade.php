@@ -1,4 +1,8 @@
 @extends('layouts.app')
+
+@section('meta_title', 'Blogs & Insights | Enrollzy')
+@section('meta_description', 'Stay updated with the latest news, guides, and stories from our college.')
+
 @section('content')
 <main class="about-hero-section ptb-70">
       <div class="bg-square">
@@ -71,383 +75,41 @@
         </div>
 
         <!-- Blogs Grid (4 Columns) -->
-        <div
-          class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4"
-        >
-          <!-- Card 1 -->
-          <div class="col">
-            <div class="blog-card">
-              <div class="blog-card-banner">
-                <img src="{{ asset('assets/images/school-img-1.png') }}" alt="BBA vs BCom vs BA" />
-              </div>
-              <div class="blog-card-body">
-                <span class="blog-badge">BBA vs B.Com</span>
-                <h3 class="blog-title">
-                  BBA vs BCom vs BA: Which Course is Better for Your Care...
-                </h3>
-                <div class="blog-meta">
-                  <span
-                    ><i class="fa-regular fa-user me-1"></i> Admin User</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-calendar me-1"></i> 25 Jul,
-                    2026</span
-                  >
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+          @forelse($blogs as $blog)
+            <div class="col">
+              <div class="blog-card">
+                <div class="blog-card-banner">
+                  <img src="{{ $blog->image ? env('BACKEND_URL') . '/' . $blog->image : asset('assets/images/blog-img-1.png') }}" alt="{{ $blog->title }}" />
                 </div>
-                <button class="btn-blog-read">
-                  Read more
-                  <i
-                    class="fa-solid fa-arrow-right"
-                    style="font-size: 10px"
-                  ></i>
-                </button>
+                <div class="blog-card-body">
+                  <span class="blog-badge">{{ $blog->category ? $blog->category->name : 'Uncategorized' }}</span>
+                  <h3 class="blog-title">
+                    {{ Str::limit($blog->title, 55) }}
+                  </h3>
+                  <div class="blog-meta">
+                    <span><i class="fa-regular fa-user me-1"></i> {{ $blog->author ?? 'Admin User' }}</span>
+                    <span><i class="fa-regular fa-calendar me-1"></i> {{ \Carbon\Carbon::parse($blog->published_at ?? $blog->created_at)->format('d M, Y') }}</span>
+                  </div>
+                  <a href="{{ route('blog.detail', $blog->slug) }}" class="btn-blog-read text-decoration-none d-inline-block">
+                    Read more
+                    <i class="fa-solid fa-arrow-right" style="font-size: 10px"></i>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
+          @empty
+            <div class="col-12 w-100 text-center">
+              <p class="text-muted py-5">No blogs found.</p>
+            </div>
+          @endforelse
+        </div>
 
-          <!-- Card 2 -->
-          <div class="col">
-            <div class="blog-card">
-              <div class="blog-card-banner">
-                <img src="{{ asset('assets/images/school-img-2.png') }}" alt="BBA vs BCom vs BA" />
-              </div>
-              <div class="blog-card-body">
-                <span class="blog-badge">Updates</span>
-                <h3 class="blog-title">
-                  BBA vs BCom vs BA: Which Course is Better for Your Care...
-                </h3>
-                <div class="blog-meta">
-                  <span
-                    ><i class="fa-regular fa-user me-1"></i> Admin User</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-calendar me-1"></i> 25 Jul,
-                    2026</span
-                  >
-                </div>
-                <button class="btn-blog-read">
-                  Read more
-                  <i
-                    class="fa-solid fa-arrow-right"
-                    style="font-size: 10px"
-                  ></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="col">
-            <div class="blog-card">
-              <div class="blog-card-banner">
-                <img src="{{ asset('assets/images/school-img-3.png') }}" alt="BBA vs BCom vs BA" />
-              </div>
-              <div class="blog-card-body">
-                <span class="blog-badge">Important</span>
-                <h3 class="blog-title">
-                  BBA vs BCom vs BA: Which Course is Better for Your Care...
-                </h3>
-                <div class="blog-meta">
-                  <span
-                    ><i class="fa-regular fa-user me-1"></i> Admin User</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-calendar me-1"></i> 25 Jul,
-                    2026</span
-                  >
-                </div>
-                <button class="btn-blog-read">
-                  Read more
-                  <i
-                    class="fa-solid fa-arrow-right"
-                    style="font-size: 10px"
-                  ></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 4 -->
-          <div class="col">
-            <div class="blog-card">
-              <div class="blog-card-banner">
-                <img src="{{ asset('assets/images/school-img-4.png') }}" alt="BBA vs BCom vs BA" />
-              </div>
-              <div class="blog-card-body">
-                <span class="blog-badge">Online MBA</span>
-                <h3 class="blog-title">
-                  BBA vs BCom vs BA: Which Course is Better for Your Care...
-                </h3>
-                <div class="blog-meta">
-                  <span
-                    ><i class="fa-regular fa-user me-1"></i> Admin User</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-calendar me-1"></i> 25 Jul,
-                    2026</span
-                  >
-                </div>
-                <button class="btn-blog-read">
-                  Read more
-                  <i
-                    class="fa-solid fa-arrow-right"
-                    style="font-size: 10px"
-                  ></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 5 -->
-          <div class="col">
-            <div class="blog-card">
-              <div class="blog-card-banner">
-                <img src="{{ asset('assets/images/school-img-5.png') }}" alt="BBA vs BCom vs BA" />
-              </div>
-              <div class="blog-card-body">
-                <span class="blog-badge">BBA vs B.Com</span>
-                <h3 class="blog-title">
-                  BBA vs BCom vs BA: Which Course is Better for Your Care...
-                </h3>
-                <div class="blog-meta">
-                  <span
-                    ><i class="fa-regular fa-user me-1"></i> Admin User</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-calendar me-1"></i> 25 Jul,
-                    2026</span
-                  >
-                </div>
-                <button class="btn-blog-read">
-                  Read more
-                  <i
-                    class="fa-solid fa-arrow-right"
-                    style="font-size: 10px"
-                  ></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 6 -->
-          <div class="col">
-            <div class="blog-card">
-              <div class="blog-card-banner">
-                <img src="{{ asset('assets/images/school-img-1.png') }}" alt="BBA vs BCom vs BA" />
-              </div>
-              <div class="blog-card-body">
-                <span class="blog-badge">Updates</span>
-                <h3 class="blog-title">
-                  BBA vs BCom vs BA: Which Course is Better for Your Care...
-                </h3>
-                <div class="blog-meta">
-                  <span
-                    ><i class="fa-regular fa-user me-1"></i> Admin User</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-calendar me-1"></i> 25 Jul,
-                    2026</span
-                  >
-                </div>
-                <button class="btn-blog-read">
-                  Read more
-                  <i
-                    class="fa-solid fa-arrow-right"
-                    style="font-size: 10px"
-                  ></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 7 -->
-          <div class="col">
-            <div class="blog-card">
-              <div class="blog-card-banner">
-                <img src="{{ asset('assets/images/school-img-2.png') }}" alt="BBA vs BCom vs BA" />
-              </div>
-              <div class="blog-card-body">
-                <span class="blog-badge">Important</span>
-                <h3 class="blog-title">
-                  BBA vs BCom vs BA: Which Course is Better for Your Care...
-                </h3>
-                <div class="blog-meta">
-                  <span
-                    ><i class="fa-regular fa-user me-1"></i> Admin User</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-calendar me-1"></i> 25 Jul,
-                    2026</span
-                  >
-                </div>
-                <button class="btn-blog-read">
-                  Read more
-                  <i
-                    class="fa-solid fa-arrow-right"
-                    style="font-size: 10px"
-                  ></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 8 -->
-          <div class="col">
-            <div class="blog-card">
-              <div class="blog-card-banner">
-                <img src="{{ asset('assets/images/school-img-3.png') }}" alt="BBA vs BCom vs BA" />
-              </div>
-              <div class="blog-card-body">
-                <span class="blog-badge">Online MBA</span>
-                <h3 class="blog-title">
-                  BBA vs BCom vs BA: Which Course is Better for Your Care...
-                </h3>
-                <div class="blog-meta">
-                  <span
-                    ><i class="fa-regular fa-user me-1"></i> Admin User</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-calendar me-1"></i> 25 Jul,
-                    2026</span
-                  >
-                </div>
-                <button class="btn-blog-read">
-                  Read more
-                  <i
-                    class="fa-solid fa-arrow-right"
-                    style="font-size: 10px"
-                  ></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 9 -->
-          <div class="col">
-            <div class="blog-card">
-              <div class="blog-card-banner">
-                <img src="{{ asset('assets/images/school-img-4.png') }}" alt="BBA vs BCom vs BA" />
-              </div>
-              <div class="blog-card-body">
-                <span class="blog-badge">BBA vs B.Com</span>
-                <h3 class="blog-title">
-                  BBA vs BCom vs BA: Which Course is Better for Your Care...
-                </h3>
-                <div class="blog-meta">
-                  <span
-                    ><i class="fa-regular fa-user me-1"></i> Admin User</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-calendar me-1"></i> 25 Jul,
-                    2026</span
-                  >
-                </div>
-                <button class="btn-blog-read">
-                  Read more
-                  <i
-                    class="fa-solid fa-arrow-right"
-                    style="font-size: 10px"
-                  ></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 10 -->
-          <div class="col">
-            <div class="blog-card">
-              <div class="blog-card-banner">
-                <img src="{{ asset('assets/images/school-img-5.png') }}" alt="BBA vs BCom vs BA" />
-              </div>
-              <div class="blog-card-body">
-                <span class="blog-badge">Updates</span>
-                <h3 class="blog-title">
-                  BBA vs BCom vs BA: Which Course is Better for Your Care...
-                </h3>
-                <div class="blog-meta">
-                  <span
-                    ><i class="fa-regular fa-user me-1"></i> Admin User</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-calendar me-1"></i> 25 Jul,
-                    2026</span
-                  >
-                </div>
-                <button class="btn-blog-read">
-                  Read more
-                  <i
-                    class="fa-solid fa-arrow-right"
-                    style="font-size: 10px"
-                  ></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 11 -->
-          <div class="col">
-            <div class="blog-card">
-              <div class="blog-card-banner">
-                <img src="{{ asset('assets/images/school-img-1.png') }}" alt="BBA vs BCom vs BA" />
-              </div>
-              <div class="blog-card-body">
-                <span class="blog-badge">Important</span>
-                <h3 class="blog-title">
-                  BBA vs BCom vs BA: Which Course is Better for Your Care...
-                </h3>
-                <div class="blog-meta">
-                  <span
-                    ><i class="fa-regular fa-user me-1"></i> Admin User</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-calendar me-1"></i> 25 Jul,
-                    2026</span
-                  >
-                </div>
-                <button class="btn-blog-read">
-                  Read more
-                  <i
-                    class="fa-solid fa-arrow-right"
-                    style="font-size: 10px"
-                  ></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 12 -->
-          <div class="col">
-            <div class="blog-card">
-              <div class="blog-card-banner">
-                <img src="{{ asset('assets/images/school-img-3.png') }}" alt="BBA vs BCom vs BA" />
-              </div>
-              <div class="blog-card-body">
-                <span class="blog-badge">Online MBA</span>
-                <h3 class="blog-title">
-                  BBA vs BCom vs BA: Which Course is Better for Your Care...
-                </h3>
-                <div class="blog-meta">
-                  <span
-                    ><i class="fa-regular fa-user me-1"></i> Admin User</span
-                  >
-                  <span
-                    ><i class="fa-regular fa-calendar me-1"></i> 25 Jul,
-                    2026</span
-                  >
-                </div>
-                <button class="btn-blog-read">
-                  Read more
-                  <i
-                    class="fa-solid fa-arrow-right"
-                    style="font-size: 10px"
-                  ></i>
-                </button>
-              </div>
-            </div>
-          </div>
+        <!-- Pagination Links -->
+        <div class="d-flex justify-content-center mt-5">
+            {{ $blogs->links() }}
         </div>
       </div>
     </div>
-
     
 @endsection

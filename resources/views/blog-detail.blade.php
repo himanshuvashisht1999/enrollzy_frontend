@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('meta_title', $blog->meta_title ?? $blog->title)
+@section('meta_keywords', $blog->meta_keywords ?? '')
+@section('meta_description', $blog->meta_description ?? $blog->excerpt)
+
 @section('content')
 <main>
     <!-- Blog Detail Header -->
