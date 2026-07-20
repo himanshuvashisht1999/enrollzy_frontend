@@ -479,7 +479,134 @@ class PageController extends Controller
         return view('coaching-detail', compact('coaching', 'location', 'boards', 'grades'));
     }
 
-    public function university() { return view('university'); }
+    public function university(\Illuminate\Http\Request $request) {
+        $regionMap = [
+            'North India'   => ['Uttarakhand','Rajasthan','Uttar Pradesh','Punjab','Haryana','Himachal Pradesh','Jammu','Kashmir','Delhi','Chandigarh','Noida','Dehradun','Jaipur','Ajmer','Mussoorie','Gurgaon','Gurugram','Lucknow','Nainital','Shimla','Solan','Selaqui'],
+            'South India'   => ['Tamil Nadu','Karnataka','Andhra Pradesh','Telangana','Kerala','Bengaluru','Bangalore','Hyderabad','Chennai','Ooty','Kodaikanal','Madanapalle','Lovedale'],
+            'East India'    => ['West Bengal','Bihar','Jharkhand','Odisha','Assam','Kolkata','Patna','Guwahati','Tezpur'],
+            'West India'    => ['Maharashtra','Gujarat','Goa','Mumbai','Pune','Panchgani','Ahmedabad'],
+            'Central India' => ['Madhya Pradesh','Chhattisgarh','Bhopal','Indore','Gwalior'],
+        ];
+
+        $query = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1);
+
+        // Search
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('about_university', 'like', "%{$search}%")
+                  ->orWhere('head_office_location', 'like', "%{$search}%")
+                  ->orWhere('states_present_in', 'like', "%{$search}%")
+                  ->orWhere('cities_present_in', 'like', "%{$search}%");
+            });
+        }
+
+        // Region filter
+        $regions = (array) $request->input('region', []);
+        if (!empty($regions)) {
+            $keywords = [];
+            foreach ($regions as $reg) {
+                if (isset($regionMap[$reg])) {
+                    $keywords = array_merge($keywords, $regionMap[$reg]);
+                }
+            }
+            if (!empty($keywords)) {
+                $query->where(function($q) use ($keywords) {
+                    foreach ($keywords as $kw) {
+                        $q->orWhere('head_office_location', 'like', "%{$kw}%")
+                          ->orWhere('states_present_in', 'like', "%{$kw}%")
+                          ->orWhere('cities_present_in', 'like', "%{$kw}%");
+                    }
+                });
+            }
+        }
+
+        // State filter
+        $states = (array) $request->input('state', []);
+        if (!empty($states)) {
+            $query->where(function($q) use ($states) {
+                foreach ($states as $st) {
+                    $q->orWhere('head_office_location', 'like', "%{$st}%")
+                      ->orWhere('states_present_in', 'like', "%{$st}%");
+                }
+            });
+        }
+
+        // City filter
+        $cities = (array) $request->input('city', []);
+        if (!empty($cities)) {
+            $query->where(function($q) use ($cities) {
+                foreach ($cities as $cy) {
+                    $q->orWhere('head_office_location', 'like', "%{$cy}%")
+                      ->orWhere('cities_present_in', 'like', "%{$cy}%");
+                }
+            });
+        }
+
+        // Ownership filter (Private / Government / Trust)
+        $ownerships = (array) $request->input('ownership', []);
+        if (!empty($ownerships)) {
+            $query->where(function($q) use ($ownerships) {
+                foreach ($ownerships as $own) {
+                    $q->orWhere('ownership_type', 'like', "%{$own}%");
+                }
+            });
+        }
+
+        // University type filter (Deemed / Central / State / Private)
+        $univTypes = (array) $request->input('university_type', []);
+        if (!empty($univTypes)) {
+            $query->where(function($q) use ($univTypes) {
+                foreach ($univTypes as $ut) {
+                    $q->orWhere('university_type', 'like', "%{$ut}%");
+                }
+            });
+        }
+
+        // Level / Program filter (UG, PG, Diploma, PhD)
+        $levels = (array) $request->input('level', []);
+        if (!empty($levels)) {
+            $query->where(function($q) use ($levels) {
+                foreach ($levels as $lv) {
+                    $q->orWhere('levels_offered', 'like', "%{$lv}%");
+                }
+            });
+        }
+
+        $universities = $query->orderBy('nirf_rank_overall', 'asc')->paginate(12)->withQueryString();
+
+        return view('university', compact('universities'));
+    }
+
+    public function universityDetail($slug) {
+        $university = \App\Models\Organisation::with(['feeStructures', 'admissionRoutes'])
+            ->where('slug', $slug)
+            ->where('organisation_type_id', 1)
+            ->where('status', 1)
+            ->firstOrFail();
+            
+        $locationParts = [];
+        $cities = is_string($university->cities_present_in) ? json_decode($university->cities_present_in, true) : ($university->cities_present_in ?? []);
+        $states = is_string($university->states_present_in) ? json_decode($university->states_present_in, true) : ($university->states_present_in ?? []);
+        if (!empty($cities)) {
+            $locationParts[] = $cities[0];
+        }
+        if (!empty($states)) {
+            $locationParts[] = $states[0];
+        }
+        if (empty($locationParts) && !empty($university->head_office_location)) {
+            $location = $university->head_office_location;
+        } else {
+            $location = implode(', ', $locationParts);
+        }
+        
+        $boards = is_string($university->education_boards_supported) ? json_decode($university->education_boards_supported, true) : ($university->education_boards_supported ?? []);
+        $grades = is_string($university->education_levels_supported) ? json_decode($university->education_levels_supported, true) : ($university->education_levels_supported ?? []);
+            
+        return view('university-detail', compact('university', 'location', 'boards', 'grades'));
+    }
+
     public function mentors() { return view('mentors'); }
     public function mentorDetail($id = null) { return view('mentor-detail'); }
     public function askEnrollzy() { return view('ask-enrollzy'); }
