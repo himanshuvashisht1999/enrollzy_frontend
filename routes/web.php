@@ -17,9 +17,9 @@ Route::post('/site-login', function (\Illuminate\Http\Request $request) {
 })->name('site-login.submit');
 
 Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(function () {
-    Route::get('/', [PageController::class, 'index']);
+    Route::get('/', [PageController::class, 'index'])->name('home');
     Route::get('/about', [PageController::class, 'about']);
-    Route::get('/all-schools', [PageController::class, 'allSchools']);
+    Route::get('/all-schools', [PageController::class, 'allSchools'])->name('all-schools');
     Route::get('/blogs', [PageController::class, 'blogs'])->name('blogs');
     Route::get('/blog/{slug}', [PageController::class, 'blogDetail'])->name('blog.detail');
     Route::get('/contact-us', [PageController::class, 'contactUs'])->name('contact');
@@ -28,9 +28,12 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/exam/{slug}', [PageController::class, 'examDetail'])->name('exam.detail');
     Route::get('/faq', [App\Http\Controllers\PageController::class, 'faq'])->name('faq');
     Route::get('/about-us', [App\Http\Controllers\PageController::class, 'aboutUs'])->name('about-us');
-    Route::get('/scholarships-and-benefits', [PageController::class, 'scholarships']);
+    Route::get('/scholarships-and-benefits', [PageController::class, 'scholarships'])->name('scholarships');
     Route::get('/school-detail/{slug}', [PageController::class, 'schoolDetail'])->name('school.detail');
     Route::get('/all-coaching', [PageController::class, 'allCoaching'])->name('all.coaching');
     Route::get('/coaching-detail/{slug}', [PageController::class, 'coachingDetail'])->name('coaching.detail');
-    Route::get('/university', [PageController::class, 'university']);
+    Route::get('/university', [PageController::class, 'university'])->name('university');
+    Route::get('/mentors', [PageController::class, 'mentors'])->name('mentors');
+    Route::get('/mentor-detail/{id?}', [PageController::class, 'mentorDetail'])->name('mentor.detail');
+    Route::get('/ask-enrollzy', [PageController::class, 'askEnrollzy'])->name('ask.enrollzy');
 });

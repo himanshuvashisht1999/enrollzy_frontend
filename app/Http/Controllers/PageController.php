@@ -22,6 +22,11 @@ class PageController extends Controller
         $schoolsCount = \App\Models\Organisation::where('organisation_type_id', 4)->count();
         $coachingCount = \App\Models\Organisation::where('organisation_type_id', 3)->count();
         $universitiesCount = \App\Models\Organisation::where('organisation_type_id', 1)->count();
+        $totalInstitutionsCount = \App\Models\Organisation::where('status', 1)->count();
+        
+        $totalLeadsCount = \Illuminate\Support\Facades\DB::table('leads')->count();
+        $totalExamsCount = \App\Models\DynamicExam::where('status', 'Active')->count();
+
         // Since MentorProfile might be in backend, let's copy the model to frontend first if it's not there, or just use DB facade
         $mentorsCount = \Illuminate\Support\Facades\DB::table('mentor_profiles')->count();
         $mentors = \Illuminate\Support\Facades\DB::table('mentor_profiles')->orderBy('id', 'desc')->take(4)->get();
@@ -29,8 +34,17 @@ class PageController extends Controller
         $coachingInstitutes = \App\Models\Organisation::where('organisation_type_id', 3)->where('status', 1)->take(6)->get();
 
         $heroSliders = \Illuminate\Support\Facades\DB::table('hero_sliders')->where('is_active', 1)->orderBy('sort_order')->get();
+        $firstHero = $heroSliders->first();
 
-        return view('index', compact('boardingSchools', 'noteworthy_categories', 'faqs', 'home_services', 'top_exams', 'video_testimonials', 'blogs', 'testimonials', 'schoolsCount', 'coachingCount', 'universitiesCount', 'mentorsCount', 'coachingInstitutes', 'mentors', 'heroSliders'));
+        $quesAnsSection = \Illuminate\Support\Facades\DB::table('homepage_sections')->where('section_key', 'ques_ans')->first();
+
+        return view('index', compact(
+            'boardingSchools', 'noteworthy_categories', 'faqs', 'home_services', 
+            'top_exams', 'video_testimonials', 'blogs', 'testimonials', 
+            'schoolsCount', 'coachingCount', 'universitiesCount', 'totalInstitutionsCount',
+            'totalLeadsCount', 'totalExamsCount', 'mentorsCount', 'coachingInstitutes', 
+            'mentors', 'heroSliders', 'firstHero', 'quesAnsSection'
+        ));
     }
     public function about() { return view('about'); }
     
@@ -54,9 +68,84 @@ class PageController extends Controller
             
         return view('all-schools', compact('schools'));
     }
-    public function topExams() {
-        $exams = \App\Models\DynamicExam::where('status', 'Active')->orderBy('id', 'desc')->paginate(12);
-        return view('top-exams', compact('exams'));
+    public function topExams(\Illuminate\Http\Request $request) {
+        $query = \App\Models\DynamicExam::where('status', 'Active');
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('short_name', 'like', "%{$search}%")
+                  ->orWhere('conducting_authority_name', 'like', "%{$search}%");
+            });
+        }
+
+        // Category filter (exam_category is a JSON array)
+        if ($request->filled('category')) {
+            $categories = array_filter((array) $request->category);
+            if (!empty($categories)) {
+                $query->where(function($q) use ($categories) {
+                    foreach ($categories as $cat) {
+                        $q->orWhereJsonContains('exam_category', $cat)
+                          ->orWhere('exam_category', 'like', '%"' . $cat . '"%');
+                    }
+                });
+            }
+        }
+
+        // Exam Type filter
+        if ($request->filled('exam_type')) {
+            $query->where('exam_type', $request->exam_type);
+        }
+
+        // Conducting body type filter
+        if ($request->filled('conducting_body_type')) {
+            $query->where('conducting_body_type', $request->conducting_body_type);
+        }
+
+        // Featured filter
+        if ($request->boolean('featured')) {
+            $query->where('featured_exam', true);
+        }
+
+        // Sort
+        $sort = $request->get('sort', 'latest');
+        if ($sort === 'name') {
+            $query->orderBy('name', 'asc');
+        } elseif ($sort === 'featured') {
+            $query->orderByDesc('featured_exam')->orderBy('name');
+        } else {
+            $query->orderBy('id', 'desc');
+        }
+
+        $exams = $query->paginate(12)->withQueryString();
+
+        // Pass distinct values for dynamic filter options
+        $allCategories = \App\Models\DynamicExam::where('status', 'Active')
+            ->whereNotNull('exam_category')
+            ->pluck('exam_category')
+            ->flatten()
+            ->unique()
+            ->filter()
+            ->sort()
+            ->values();
+
+        $allExamTypes = \App\Models\DynamicExam::where('status', 'Active')
+            ->whereNotNull('exam_type')
+            ->distinct()
+            ->pluck('exam_type')
+            ->sort()
+            ->values();
+
+        $allConductingBodyTypes = \App\Models\DynamicExam::where('status', 'Active')
+            ->whereNotNull('conducting_body_type')
+            ->distinct()
+            ->pluck('conducting_body_type')
+            ->sort()
+            ->values();
+
+        return view('top-exams', compact('exams', 'allCategories', 'allExamTypes', 'allConductingBodyTypes'));
     }
     public function examDetail($slug)
     {
@@ -65,7 +154,7 @@ class PageController extends Controller
     }
     
     public function contactUs() {
-        $contactDetails = \Illuminate\Support\Facades\DB::table('contact_us_details')->first();
+        $contactDetails = \App\Models\ContactUsDetail::firstOrCreate(['id' => 1]);
         return view('contact-us', compact('contactDetails'));
     }
 
@@ -73,31 +162,42 @@ class PageController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
+            'email' => 'nullable|email|max:255',
             'company' => 'nullable|string|max:255',
             'type' => 'nullable|string|max:100',
-            'message' => 'required|string',
+            'looking_for' => 'nullable|string|max:255',
+            'session_time' => 'nullable|string|max:255',
+            'message' => 'nullable|string',
         ]);
 
-        $subjectParts = ['Contact Us'];
+        $subjectParts = ['Contact Inquiry'];
+        if ($request->looking_for) $subjectParts[] = 'Looking For: ' . $request->looking_for;
         if ($request->type) $subjectParts[] = 'Type: ' . $request->type;
         if ($request->company) $subjectParts[] = 'Company: ' . $request->company;
         
         $subject = implode(' | ', $subjectParts);
 
+        $messageContent = $request->message;
+        if (empty($messageContent)) {
+            $details = [];
+            if ($request->looking_for) $details[] = 'Looking for: ' . $request->looking_for;
+            if ($request->session_time) $details[] = 'Preferred Session Time: ' . $request->session_time;
+            $messageContent = !empty($details) ? implode("\n", $details) : 'Free session booking inquiry from website.';
+        }
+
         \Illuminate\Support\Facades\DB::table('leads')->insert([
             'name' => $request->name,
             'phone' => $request->phone,
-            'email' => $request->email,
+            'email' => $request->email ?? null,
             'subject' => $subject,
             'type' => 'Student', // ENUM only accepts 'Student','Expert','Alumni'
-            'message' => $request->message,
+            'message' => $messageContent,
             'status' => 'New',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Your message has been sent successfully. We will get back to you soon!');
+        return redirect()->back()->with('success', 'Your request has been submitted successfully! Our advisors will get back to you shortly.');
     }
 
     public function faq() {
@@ -120,7 +220,10 @@ class PageController extends Controller
         return view('about-us', compact('about_page', 'offers', 'features', 'impacts', 'teams', 'advisory_boards'));
     }
     
-    public function scholarships() { return view('scholarships-and-benefits'); }
+    public function scholarships() {
+        $benefits = \App\Models\HomeBenefit::where('status', 1)->orderBy('sort_order')->get();
+        return view('scholarships-and-benefits', compact('benefits'));
+    }
     public function schoolDetail($slug) {
         $school = \App\Models\Organisation::with(['feeStructures', 'admissionRoutes'])
             ->where('slug', $slug)
@@ -183,4 +286,7 @@ class PageController extends Controller
     }
 
     public function university() { return view('university'); }
+    public function mentors() { return view('mentors'); }
+    public function mentorDetail($id = null) { return view('mentor-detail'); }
+    public function askEnrollzy() { return view('ask-enrollzy'); }
 }
