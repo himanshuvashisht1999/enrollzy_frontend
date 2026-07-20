@@ -171,9 +171,29 @@
               @if($exam->sections && $exam->sections->count() > 0)
                 @foreach($exam->sections as $sec)
                 <div class="border-top pt-4 mt-4">
-                  <h3 class="fs-5 fw-bold text-dark mb-2">{{ $sec->title ?? $sec->tab_name }}</h3>
+                  @php
+                    $headingVal = $sec->title ?? $sec->heading ?? $sec->tab_name ?? '';
+                    if (is_array($headingVal)) {
+                        $headingVal = implode(' ', array_filter($headingVal, 'is_string'));
+                    }
+                  @endphp
+                  <h3 class="fs-5 fw-bold text-dark mb-2">{{ $headingVal }}</h3>
                   <div class="text-muted leading-relaxed" style="font-size: 14px;">
-                    {!! $sec->content ?? $sec->description !!}
+                    @php
+                      $cVal = $sec->content ?? $sec->description ?? '';
+                      if (is_array($cVal)) {
+                          $htmlOut = '';
+                          foreach ($cVal as $item) {
+                              if (is_array($item)) {
+                                  $htmlOut .= implode(' ', array_filter($item, 'is_string'));
+                              } elseif (is_string($item)) {
+                                  $htmlOut .= $item;
+                              }
+                          }
+                          $cVal = $htmlOut;
+                      }
+                    @endphp
+                    {!! $cVal !!}
                   </div>
                 </div>
                 @endforeach
@@ -362,14 +382,29 @@
               
               @php
                 $admitCardSection = $exam->sections ? $exam->sections->first(function($sec) {
-                    $title = strtolower($sec->heading ?? $sec->title ?? $sec->tab_name ?? '');
+                    $secTitle = $sec->heading ?? $sec->title ?? $sec->tab_name ?? '';
+                    $title = strtolower(is_array($secTitle) ? implode(' ', $secTitle) : (string)$secTitle);
                     return str_contains($title, 'admit');
                 }) : null;
               @endphp
 
               @if($admitCardSection && !empty($admitCardSection->content))
+                @php
+                  $admitContent = $admitCardSection->content;
+                  if (is_array($admitContent)) {
+                      $htmlOut = '';
+                      foreach ($admitContent as $item) {
+                          if (is_array($item)) {
+                              $htmlOut .= implode(' ', array_filter($item, 'is_string'));
+                          } elseif (is_string($item)) {
+                              $htmlOut .= $item;
+                          }
+                      }
+                      $admitContent = $htmlOut;
+                  }
+                @endphp
                 <div class="text-muted leading-relaxed mb-4 fs-6">
-                  {!! $admitCardSection->content !!}
+                  {!! $admitContent !!}
                 </div>
               @else
                 <p class="text-muted mb-4">Follow these simple step-by-step instructions to download your official {{ $exam->name }} 2026 Admit Card / Hall Ticket online:</p>
