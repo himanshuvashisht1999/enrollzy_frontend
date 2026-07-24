@@ -128,203 +128,65 @@
                 <!-- Swiper Carousel -->
                 <div class="swiper feedback-swiper" style="padding: 10px 0 30px 0;">
                     <div class="swiper-wrapper">
-                        <!-- Slide 1 -->
-                        <div class="swiper-slide">
-                            <div class="testimonial-slide-card">
-                                <div class="testimonial-top-header">
-                                    <img src="{{ asset('assets/images/mentor_1.png') }}" class="testimonial-mentor-avatar"
-                                        alt="Vinay Singh">
-                                    <div>
-                                        <div class="testimonial-top-name">Vinay Singh</div>
-                                        <div class="testimonial-top-role">CEO enrollzy</div>
-                                    </div>
-                                </div>
-                                <div class="testimonial-body">
-                                    <div class="testimonial-stars">
-                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i>
-                                    </div>
-                                    <p class="testimonial-text">
-                                        Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                        minus id quod maxime placeat facere possimus.
-                                    </p>
-                                    <div class="testimonial-bottom-profile">
-                                        <img src="{{ asset('assets/images/team_member_1.png') }}"
-                                            class="testimonial-mentee-avatar" alt="Serhiy Hipskyy">
-                                        <div>
-                                            <div class="testimonial-bottom-name">Serhiy Hipskyy</div>
-                                            <div class="testimonial-bottom-role">CEO Universal</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @if(isset($testimonials) && count($testimonials) > 0)
+                            @foreach($testimonials as $t)
+                                @php
+                                    $mAvatar = asset('assets/images/mentor_1.png');
+                                    if (!empty($t['mentor_avatar'])) {
+                                        if (str_starts_with($t['mentor_avatar'], 'http')) {
+                                            $mAvatar = $t['mentor_avatar'];
+                                        } elseif (file_exists(public_path('storage/' . $t['mentor_avatar']))) {
+                                            $mAvatar = asset('storage/' . $t['mentor_avatar']);
+                                        } elseif (file_exists(base_path('../enrollzy_backend/public/storage/' . $t['mentor_avatar']))) {
+                                            $mAvatar = 'http://127.0.0.1:8001/storage/' . $t['mentor_avatar'];
+                                        } elseif (file_exists(public_path('assets/images/' . $t['mentor_avatar']))) {
+                                            $mAvatar = asset('assets/images/' . $t['mentor_avatar']);
+                                        }
+                                    }
 
-                        <!-- Slide 2 -->
-                        <div class="swiper-slide">
-                            <div class="testimonial-slide-card">
-                                <div class="testimonial-top-header">
-                                    <img src="{{ asset('assets/images/mentor_1.png') }}" class="testimonial-mentor-avatar"
-                                        alt="Vinay Singh">
-                                    <div>
-                                        <div class="testimonial-top-name">Vinay Singh</div>
-                                        <div class="testimonial-top-role">CEO enrollzy</div>
-                                    </div>
-                                </div>
-                                <div class="testimonial-body">
-                                    <div class="testimonial-stars">
-                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i>
-                                    </div>
-                                    <p class="testimonial-text">
-                                        Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                        minus id quod maxime placeat facere possimus.
-                                    </p>
-                                    <div class="testimonial-bottom-profile">
-                                        <img src="{{ asset('assets/images/team_member_2.png') }}"
-                                            class="testimonial-mentee-avatar" alt="Serhiy Hipskyy">
-                                        <div>
-                                            <div class="testimonial-bottom-name">Serhiy Hipskyy</div>
-                                            <div class="testimonial-bottom-role">CEO Universal</div>
+                                    $menteeAvatar = asset('assets/images/team_member_1.png');
+                                    if (!empty($t['mentee_avatar'])) {
+                                        if (str_starts_with($t['mentee_avatar'], 'http')) {
+                                            $menteeAvatar = $t['mentee_avatar'];
+                                        } elseif (file_exists(public_path('storage/' . $t['mentee_avatar']))) {
+                                            $menteeAvatar = asset('storage/' . $t['mentee_avatar']);
+                                        } elseif (file_exists(base_path('../enrollzy_backend/public/storage/' . $t['mentee_avatar']))) {
+                                            $menteeAvatar = 'http://127.0.0.1:8001/storage/' . $t['mentee_avatar'];
+                                        } elseif (file_exists(public_path('assets/images/' . $t['mentee_avatar']))) {
+                                            $menteeAvatar = asset('assets/images/' . $t['mentee_avatar']);
+                                        }
+                                    }
+                                @endphp
+                                <div class="swiper-slide">
+                                    <div class="testimonial-slide-card">
+                                        <div class="testimonial-top-header">
+                                            <img src="{{ $mAvatar }}" class="testimonial-mentor-avatar" alt="{{ $t['mentor_name'] }}" onError="this.onerror=null; this.src='{{ asset('assets/images/mentor_1.png') }}';">
+                                            <div>
+                                                <div class="testimonial-top-name">{{ $t['mentor_name'] }}</div>
+                                                <div class="testimonial-top-role">{{ $t['mentor_role'] }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="testimonial-body">
+                                            <div class="testimonial-stars">
+                                                @for($s = 0; $s < ($t['stars'] ?? 5); $s++)
+                                                    <i class="fa-solid fa-star"></i>
+                                                @endfor
+                                            </div>
+                                            <p class="testimonial-text">
+                                                {{ $t['text'] }}
+                                            </p>
+                                            <div class="testimonial-bottom-profile">
+                                                <img src="{{ $menteeAvatar }}" class="testimonial-mentee-avatar" alt="{{ $t['mentee_name'] }}" onError="this.onerror=null; this.src='{{ asset('assets/images/team_member_1.png') }}';">
+                                                <div>
+                                                    <div class="testimonial-bottom-name">{{ $t['mentee_name'] }}</div>
+                                                    <div class="testimonial-bottom-role">{{ $t['mentee_role'] }}</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Slide 3 -->
-                        <div class="swiper-slide">
-                            <div class="testimonial-slide-card">
-                                <div class="testimonial-top-header">
-                                    <img src="{{ asset('assets/images/mentor_1.png') }}" class="testimonial-mentor-avatar"
-                                        alt="Vinay Singh">
-                                    <div>
-                                        <div class="testimonial-top-name">Vinay Singh</div>
-                                        <div class="testimonial-top-role">CEO enrollzy</div>
-                                    </div>
-                                </div>
-                                <div class="testimonial-body">
-                                    <div class="testimonial-stars">
-                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i>
-                                    </div>
-                                    <p class="testimonial-text">
-                                        Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                        minus id quod maxime placeat facere possimus.
-                                    </p>
-                                    <div class="testimonial-bottom-profile">
-                                        <img src="{{ asset('assets/images/team_member_3.png') }}"
-                                            class="testimonial-mentee-avatar" alt="Serhiy Hipskyy">
-                                        <div>
-                                            <div class="testimonial-bottom-name">Serhiy Hipskyy</div>
-                                            <div class="testimonial-bottom-role">CEO Universal</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Slide 4 -->
-                        <div class="swiper-slide">
-                            <div class="testimonial-slide-card">
-                                <div class="testimonial-top-header">
-                                    <img src="{{ asset('assets/images/mentor_2.png') }}" class="testimonial-mentor-avatar"
-                                        alt="Amit Kumar">
-                                    <div>
-                                        <div class="testimonial-top-name">Amit Kumar</div>
-                                        <div class="testimonial-top-role">Product Lead</div>
-                                    </div>
-                                </div>
-                                <div class="testimonial-body">
-                                    <div class="testimonial-stars">
-                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i>
-                                    </div>
-                                    <p class="testimonial-text">
-                                        Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                        minus id quod maxime placeat facere possimus.
-                                    </p>
-                                    <div class="testimonial-bottom-profile">
-                                        <img src="{{ asset('assets/images/team_member_4.png') }}"
-                                            class="testimonial-mentee-avatar" alt="Karan Malhotra">
-                                        <div>
-                                            <div class="testimonial-bottom-name">Karan Malhotra</div>
-                                            <div class="testimonial-bottom-role">Student</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Slide 5 -->
-                        <div class="swiper-slide">
-                            <div class="testimonial-slide-card">
-                                <div class="testimonial-top-header">
-                                    <img src="{{ asset('assets/images/mentor_3.png') }}" class="testimonial-mentor-avatar"
-                                        alt="Siddharth Roy">
-                                    <div>
-                                        <div class="testimonial-top-name">Siddharth Roy</div>
-                                        <div class="testimonial-top-role">Data Scientist</div>
-                                    </div>
-                                </div>
-                                <div class="testimonial-body">
-                                    <div class="testimonial-stars">
-                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i>
-                                    </div>
-                                    <p class="testimonial-text">
-                                        Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                        minus id quod maxime placeat facere possimus.
-                                    </p>
-                                    <div class="testimonial-bottom-profile">
-                                        <img src="{{ asset('assets/images/team_member_1.png') }}"
-                                            class="testimonial-mentee-avatar" alt="Sneha Patel">
-                                        <div>
-                                            <div class="testimonial-bottom-name">Sneha Patel</div>
-                                            <div class="testimonial-bottom-role">Analyst</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Slide 6 -->
-                        <div class="swiper-slide">
-                            <div class="testimonial-slide-card">
-                                <div class="testimonial-top-header">
-                                    <img src="{{ asset('assets/images/mentor_4.png') }}" class="testimonial-mentor-avatar"
-                                        alt="Neha Sharma">
-                                    <div>
-                                        <div class="testimonial-top-name">Neha Sharma</div>
-                                        <div class="testimonial-top-role">Marketing Expert</div>
-                                    </div>
-                                </div>
-                                <div class="testimonial-body">
-                                    <div class="testimonial-stars">
-                                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
-                                            class="fa-solid fa-star"></i>
-                                    </div>
-                                    <p class="testimonial-text">
-                                        Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
-                                        minus id quod maxime placeat facere possimus.
-                                    </p>
-                                    <div class="testimonial-bottom-profile">
-                                        <img src="{{ asset('assets/images/team_member_2.png') }}"
-                                            class="testimonial-mentee-avatar" alt="Aarav Sharma">
-                                        <div>
-                                            <div class="testimonial-bottom-name">Aarav Sharma</div>
-                                            <div class="testimonial-bottom-role">Consultant</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
 
@@ -409,167 +271,89 @@
 
                 <!-- Mentors Grid -->
                 <div class="row g-4 justify-content-center" id="mentor-grid-row">
-                    <!-- If database has mentors, display them. Else fallback to high-quality fallback items matching the design. -->
-                    <!-- Card 1 -->
-                    <div class="col-lg-3 col-md-6 col-12 mentor-card-col" data-categories="university,jee">
-                        <div class="mentor-grid-card">
-                            <div class="mentor-card-img-wrapper">
-                                <img src="{{ asset('assets/images/mentor_1.png') }}" alt="Abhishek Sharma">
-                                <a href="{{ route('mentor.detail') }}" class="mentor-view-profile-btn" title="View Profile">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </div>
-                            <div class="mentor-card-content">
-                                <h3 class="mentor-card-name">Abhishek Sharma</h3>
-                                <p class="mentor-card-role">Product Manager • Google • IIM-A</p>
+                    @forelse($mentors as $index => $mentor)
+                        @php
+                            $mName = trim(($mentor->first_name ?? '') . ' ' . ($mentor->last_name ?? ''));
+                            if (empty($mName)) {
+                                $mName = $mentor->user->name ?? 'Expert Mentor';
+                            }
 
-                                <div class="mentor-tags-wrapper">
-                                    <span class="mentor-tag-badge tag-blue">MBA Prep</span>
-                                    <span class="mentor-tag-badge tag-yellow">Product</span>
-                                    <span class="mentor-tag-badge tag-green">Startups</span>
-                                </div>
+                            $defaultAvatars = ['mentor_1.png', 'mentor_2.png', 'mentor_3.png', 'mentor_4.png'];
+                            $mPhoto = asset('assets/images/' . $defaultAvatars[$index % count($defaultAvatars)]);
+                            if (!empty($mentor->profile_photo)) {
+                                if (str_starts_with($mentor->profile_photo, 'http')) {
+                                    $mPhoto = $mentor->profile_photo;
+                                } elseif (file_exists(public_path('storage/' . $mentor->profile_photo))) {
+                                    $mPhoto = asset('storage/' . $mentor->profile_photo);
+                                } elseif (file_exists(base_path('../enrollzy_backend/public/storage/' . $mentor->profile_photo))) {
+                                    $mPhoto = 'http://127.0.0.1:8001/storage/' . $mentor->profile_photo;
+                                } elseif (file_exists(public_path('assets/images/' . $mentor->profile_photo))) {
+                                    $mPhoto = asset('assets/images/' . $mentor->profile_photo);
+                                }
+                            }
 
-                                <div class="mentor-rating-row">
-                                    <div class="mentor-stars-info">
-                                        <i class="fa-solid fa-star mentor-star-filled"></i>
-                                        <span class="mentor-rating-num">4.9</span>
-                                    </div>
-                                    <span class="mentor-session-count">280 sessions</span>
-                                </div>
+                            $tagLists = [
+                                ['MBA Prep', 'Product', 'Startups'],
+                                ['CS & AI', 'JEE Strategy', 'Coding'],
+                                ['NEET Prep', 'MBBS Guide', 'Medical'],
+                                ['NDA & SSB', 'Defence', 'Fitness']
+                            ];
+                            $mTags = $mentor->tags ?? $tagLists[$index % count($tagLists)];
 
-                                <div class="mentor-booking-footer">
-                                    <div class="mentor-price-tag">
-                                        ₹500<span>/min</span>
-                                    </div>
-                                    <a href="{{ route('mentor.detail') }}" class="btn-mentor-book">
-                                        Book session <i class="fa-solid fa-arrow-right-long"></i>
+                            $catMapList = ['university,jee', 'nda,ssc', 'neet,jee', 'university,ssc'];
+                            $catAttr = $mentor->categories ?? $catMapList[$index % count($catMapList)];
+                            $ratingNum = $mentor->rating ?? number_format(4.7 + (($index % 3) * 0.1), 1);
+                            $sessionNum = $mentor->sessions_count ?? (180 + ($index * 65));
+                            $priceMin = $mentor->price_per_min ?? (300 + ($index * 100));
+                        @endphp
+                        <div class="col-lg-3 col-md-6 col-12 mentor-card-col" data-categories="{{ $catAttr }}">
+                            <div class="mentor-grid-card">
+                                <div class="mentor-card-img-wrapper">
+                                    <img src="{{ $mPhoto }}" alt="{{ $mName }}" onError="this.src='{{ asset('assets/images/mentor_1.png') }}'">
+                                    <a href="{{ route('mentor.detail', $mentor->id) }}" class="mentor-view-profile-btn" title="View Profile">
+                                        <i class="fa-solid fa-eye"></i>
                                     </a>
+                                </div>
+                                <div class="mentor-card-content">
+                                    <h3 class="mentor-card-name">{{ $mName }}</h3>
+                                    <p class="mentor-card-role">{{ $mentor->professional_headline ?? 'Product Manager • Google • IIM-A' }}</p>
+
+                                    <div class="mentor-tags-wrapper">
+                                        @foreach($mTags as $tIndex => $tTag)
+                                            @php $colorClass = ['tag-blue', 'tag-yellow', 'tag-green'][$tIndex % 3]; @endphp
+                                            <span class="mentor-tag-badge {{ $colorClass }}">{{ $tTag }}</span>
+                                        @endforeach
+                                    </div>
+
+                                    <div class="mentor-rating-row">
+                                        <div class="mentor-stars-info">
+                                            <i class="fa-solid fa-star mentor-star-filled"></i>
+                                            <span class="mentor-rating-num">{{ $ratingNum }}</span>
+                                        </div>
+                                        <span class="mentor-session-count">{{ $sessionNum }} sessions</span>
+                                    </div>
+
+                                    <div class="mentor-booking-footer">
+                                        <div class="mentor-price-tag">
+                                            ₹{{ $priceMin }}<span>/min</span>
+                                        </div>
+                                        <a href="{{ route('mentor.detail', $mentor->id) }}" class="btn-mentor-book">
+                                            Book session <i class="fa-solid fa-arrow-right-long"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Card 2 -->
-                    <div class="col-lg-3 col-md-6 col-12 mentor-card-col" data-categories="nda,ssc">
-                        <div class="mentor-grid-card">
-                            <div class="mentor-card-img-wrapper">
-                                <img src="{{ asset('assets/images/mentor_2.png') }}" alt="Abhishek Sharma">
-                                <a href="{{ route('mentor.detail') }}" class="mentor-view-profile-btn" title="View Profile">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </div>
-                            <div class="mentor-card-content">
-                                <h3 class="mentor-card-name">Abhishek Sharma</h3>
-                                <p class="mentor-card-role">Product Manager • Google • IIM-A</p>
-
-                                <div class="mentor-tags-wrapper">
-                                    <span class="mentor-tag-badge tag-blue">MBA Prep</span>
-                                    <span class="mentor-tag-badge tag-yellow">Product</span>
-                                    <span class="mentor-tag-badge tag-green">Startups</span>
-                                </div>
-
-                                <div class="mentor-rating-row">
-                                    <div class="mentor-stars-info">
-                                        <i class="fa-solid fa-star mentor-star-filled"></i>
-                                        <span class="mentor-rating-num">4.9</span>
-                                    </div>
-                                    <span class="mentor-session-count">280 sessions</span>
-                                </div>
-
-                                <div class="mentor-booking-footer">
-                                    <div class="mentor-price-tag">
-                                        ₹500<span>/min</span>
-                                    </div>
-                                    <a href="{{ route('mentor.detail') }}" class="btn-mentor-book">
-                                        Book session <i class="fa-solid fa-arrow-right-long"></i>
-                                    </a>
-                                </div>
-                            </div>
+                    @empty
+                        <div class="col-12 text-center py-5">
+                            <p class="text-muted fs-5">No mentors found at the moment.</p>
                         </div>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="col-lg-3 col-md-6 col-12 mentor-card-col" data-categories="neet,jee">
-                        <div class="mentor-grid-card">
-                            <div class="mentor-card-img-wrapper">
-                                <img src="{{ asset('assets/images/mentor_3.png') }}" alt="Abhishek Sharma">
-                                <a href="{{ route('mentor.detail') }}" class="mentor-view-profile-btn" title="View Profile">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </div>
-                            <div class="mentor-card-content">
-                                <h3 class="mentor-card-name">Abhishek Sharma</h3>
-                                <p class="mentor-card-role">Product Manager • Google • IIM-A</p>
-
-                                <div class="mentor-tags-wrapper">
-                                    <span class="mentor-tag-badge tag-blue">MBA Prep</span>
-                                    <span class="mentor-tag-badge tag-yellow">Product</span>
-                                    <span class="mentor-tag-badge tag-green">Startups</span>
-                                </div>
-
-                                <div class="mentor-rating-row">
-                                    <div class="mentor-stars-info">
-                                        <i class="fa-solid fa-star mentor-star-filled"></i>
-                                        <span class="mentor-rating-num">4.9</span>
-                                    </div>
-                                    <span class="mentor-session-count">280 sessions</span>
-                                </div>
-
-                                <div class="mentor-booking-footer">
-                                    <div class="mentor-price-tag">
-                                        ₹500<span>/min</span>
-                                    </div>
-                                    <a href="{{ route('mentor.detail') }}" class="btn-mentor-book">
-                                        Book session <i class="fa-solid fa-arrow-right-long"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 4 -->
-                    <div class="col-lg-3 col-md-6 col-12 mentor-card-col" data-categories="university,ssc">
-                        <div class="mentor-grid-card">
-                            <div class="mentor-card-img-wrapper">
-                                <img src="{{ asset('assets/images/mentor_4.png') }}" alt="Abhishek Sharma">
-                                <a href="{{ route('mentor.detail') }}" class="mentor-view-profile-btn" title="View Profile">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </div>
-                            <div class="mentor-card-content">
-                                <h3 class="mentor-card-name">Abhishek Sharma</h3>
-                                <p class="mentor-card-role">Product Manager • Google • IIM-A</p>
-
-                                <div class="mentor-tags-wrapper">
-                                    <span class="mentor-tag-badge tag-blue">MBA Prep</span>
-                                    <span class="mentor-tag-badge tag-yellow">Product</span>
-                                    <span class="mentor-tag-badge tag-green">Startups</span>
-                                </div>
-
-                                <div class="mentor-rating-row">
-                                    <div class="mentor-stars-info">
-                                        <i class="fa-solid fa-star mentor-star-filled"></i>
-                                        <span class="mentor-rating-num">4.9</span>
-                                    </div>
-                                    <span class="mentor-session-count">280 sessions</span>
-                                </div>
-
-                                <div class="mentor-booking-footer">
-                                    <div class="mentor-price-tag">
-                                        ₹500<span>/min</span>
-                                    </div>
-                                    <a href="{{ route('mentor.detail') }}" class="btn-mentor-book">
-                                        Book session <i class="fa-solid fa-arrow-right-long"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
             </div>
         </section>
         <!-- Testimonials Section -->
-        <section class="testimonials-section ptb-70" style="background-color: #FFFCF8;">
+        <section class="testimonials-section ptb-70" id="video-testimonials-sec" style="background-color: #FFFCF8;">
             <div class="container">
                 <!-- Section Header -->
                 <div class="text-center mb-5">
@@ -584,10 +368,10 @@
                 </div>
 
                 <!-- Video Cards Grid -->
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4">
                     @if(isset($video_testimonials) && $video_testimonials->count() > 0)
-                        @foreach($video_testimonials as $video)
-                            <div class="col">
+                        @foreach($video_testimonials as $index => $video)
+                            <div class="col video-card-item {{ $index >= 4 ? 'd-none video-card-extra' : '' }}">
                                 <div class="testimonial-card"
                                     style="background-image: url('{{ $video->thumbnail ? (str_starts_with($video->thumbnail, 'http') ? $video->thumbnail : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($video->thumbnail, '/')) : asset('assets/images/mentor_1.png') }}');">
                                     <div class="testimonial-overlay"></div>
@@ -617,12 +401,20 @@
                     @endif
                 </div>
 
+                @if(isset($video_testimonials) && $video_testimonials->count() > 4)
                 <!-- View More Button -->
                 <div class="text-center">
-                    <a href="{{ route('blogs') }}"
-                        class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
-                        More <i class="fa-solid fa-arrow-right-long"></i></a>
+                    <button type="button" id="btn-toggle-videos" class="btn btn-enrollzy btn-enrollzy-lg text-white">
+                        <span id="video-btn-text">View More</span> <i class="fa-solid fa-chevron-down ms-1" id="video-toggle-icon"></i>
+                    </button>
                 </div>
+                @else
+                <div class="text-center">
+                    <a href="#video-testimonials-sec" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">
+                        View More <i class="fa-solid fa-arrow-down ms-1"></i>
+                    </a>
+                </div>
+                @endif
             </div>
         </section>
 
@@ -776,6 +568,34 @@
                     });
                 });
             });
+            // Toggle Video Testimonials Extra Cards
+            const toggleVideosBtn = document.getElementById('btn-toggle-videos');
+            if (toggleVideosBtn) {
+                toggleVideosBtn.addEventListener('click', function () {
+                    const extraCards = document.querySelectorAll('.video-card-extra');
+                    const btnText = document.getElementById('video-btn-text');
+                    const icon = document.getElementById('video-toggle-icon');
+                    let isExpanding = false;
+
+                    extraCards.forEach(card => {
+                        if (card.classList.contains('d-none')) {
+                            card.classList.remove('d-none');
+                            isExpanding = true;
+                        } else {
+                            card.classList.add('d-none');
+                        }
+                    });
+
+                    if (isExpanding) {
+                        if (btnText) btnText.textContent = "Show Less";
+                        if (icon) icon.className = "fa-solid fa-chevron-up ms-1";
+                    } else {
+                        if (btnText) btnText.textContent = "View More";
+                        if (icon) icon.className = "fa-solid fa-chevron-down ms-1";
+                        document.getElementById('video-testimonials-sec').scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
         });
     </script>
 @endsection
