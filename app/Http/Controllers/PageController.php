@@ -607,9 +607,259 @@ class PageController extends Controller
         return view('university-detail', compact('university', 'location', 'boards', 'grades'));
     }
 
-    public function mentors() { return view('mentors'); }
-    public function mentorDetail($id = null) { return view('mentor-detail'); }
-    public function askEnrollzy() { return view('ask-enrollzy'); }
+    public function mentors() {
+        $mentors = \App\Models\MentorProfile::with('user')->latest()->get();
+
+        $dbTestimonials = \App\Models\Testimonial::latest()->get();
+        $testimonials = [];
+        if ($dbTestimonials->isNotEmpty()) {
+            foreach ($dbTestimonials as $idx => $tItem) {
+                $mentorRef = null;
+                if (!empty($tItem->mentor_profile_id)) {
+                    $mentorRef = \App\Models\MentorProfile::with('user')->find($tItem->mentor_profile_id);
+                }
+                if (!$mentorRef) {
+                    $mentorRef = $mentors->get($idx % max(1, $mentors->count()));
+                }
+
+                $mName = $mentorRef ? trim(($mentorRef->first_name ?? '') . ' ' . ($mentorRef->last_name ?? '')) : 'Expert Mentor';
+                if (empty($mName) && $mentorRef) {
+                    $mName = $mentorRef->user->name ?? 'Expert Mentor';
+                }
+
+                $tPhoto = 'team_member_1.png';
+                if (!empty($tItem->image)) {
+                    if (str_starts_with($tItem->image, 'http')) {
+                        $tPhoto = $tItem->image;
+                    } elseif (file_exists(public_path($tItem->image))) {
+                        $tPhoto = asset($tItem->image);
+                    } elseif (file_exists(public_path('storage/' . $tItem->image))) {
+                        $tPhoto = asset('storage/' . $tItem->image);
+                    } elseif (file_exists(base_path('../enrollzy_backend/public/' . ltrim($tItem->image, '/')))) {
+                        $tPhoto = 'http://127.0.0.1:8001/' . ltrim($tItem->image, '/');
+                    } elseif (file_exists(public_path('assets/images/' . $tItem->image))) {
+                        $tPhoto = asset('assets/images/' . $tItem->image);
+                    }
+                }
+
+                $testimonials[] = [
+                    'mentor_name' => $mName,
+                    'mentor_role' => $mentorRef->professional_headline ?? 'Senior Mentor & Guide',
+                    'mentor_avatar' => $mentorRef && $mentorRef->profile_photo ? $mentorRef->profile_photo : 'mentor_1.png',
+                    'mentee_name' => $tItem->name,
+                    'mentee_role' => $tItem->role ?? 'Mentee / Student',
+                    'mentee_avatar' => $tPhoto,
+                    'text' => $tItem->content,
+                    'stars' => $tItem->rating ?? 5
+                ];
+            }
+        } else {
+            $testimonials = [
+                [
+                    'mentor_name' => 'Abhishek Sharma',
+                    'mentor_role' => 'Product Lead • Google',
+                    'mentor_avatar' => 'mentor_1.png',
+                    'mentee_name' => 'Serhiy Hipskyy',
+                    'mentee_role' => 'Tech Aspirant',
+                    'mentee_avatar' => 'team_member_1.png',
+                    'text' => 'The session with Abhishek was game-changing for my MBA application strategy and interview prep!',
+                    'stars' => 5
+                ],
+                [
+                    'mentor_name' => 'Priya Verma',
+                    'mentor_role' => 'Sr. Software Engineer • Microsoft',
+                    'mentor_avatar' => 'mentor_2.png',
+                    'mentee_name' => 'Sneha Patel',
+                    'mentee_role' => 'CS Student',
+                    'mentee_avatar' => 'team_member_2.png',
+                    'text' => 'Priya gave direct, clear insights into system design and top university computer science admissions.',
+                    'stars' => 5
+                ],
+                [
+                    'mentor_name' => 'Dr. Rajesh Kulkarni',
+                    'mentor_role' => 'AIIMS Counselor',
+                    'mentor_avatar' => 'mentor_3.png',
+                    'mentee_name' => 'Karan Malhotra',
+                    'mentee_role' => 'NEET Aspirant',
+                    'mentee_avatar' => 'team_member_3.png',
+                    'text' => 'Outstanding guidance on NEET strategy and stress management before the final exam.',
+                    'stars' => 5
+                ]
+            ];
+        }
+
+        $video_testimonials = \App\Models\VideoTestimonial::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
+
+        return view('mentors', compact('mentors', 'testimonials', 'video_testimonials'));
+    }
+
+    public function mentorDetail($id = null) {
+        $mentor = null;
+        if ($id) {
+            $mentor = \App\Models\MentorProfile::with('user')->find($id);
+        }
+        if (!$mentor) {
+            $mentor = \App\Models\MentorProfile::with('user')->first();
+        }
+
+        $otherMentors = \App\Models\MentorProfile::with('user')->where('id', '!=', optional($mentor)->id)->take(4)->get();
+        $video_testimonials = \App\Models\VideoTestimonial::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
+
+        return view('mentor-detail', compact('mentor', 'otherMentors', 'video_testimonials'));
+    }
+
+    public function submitMentorReview(Request $request) {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'feedback' => 'required|string|max:1000'
+        ]);
+
+        return back()->with('success', 'Thank you! Your review for this mentor has been submitted successfully.');
+    }
+    public function askEnrollzy(Request $request) {
+        $query = \App\Models\CommunityQuestion::with(['user', 'category'])
+            ->withCount(['replies', 'likes'])
+            ->where('is_active', 1)
+            ->where('status', 'approved');
+
+        $sort = $request->input('sort', 'new');
+        if ($sort === 'popular') {
+            $query->orderBy('views', 'desc')->orderBy('id', 'desc');
+        } else {
+            $query->latest();
+        }
+
+        $selectedCategory = null;
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+            $selectedCategory = \App\Models\CommunityCategory::find($request->category);
+        }
+
+        $questions = $query->paginate(10);
+        $categories = \App\Models\CommunityCategory::withCount('questions')->get();
+
+        $rules = [
+            [
+                'title' => '1. Rule 1 - Questions must be clear and direct and may not use the body textbox',
+                'body' => 'Please ensure all submitted questions are direct and fully written in the title bar. Do not submit blank questions or post questions that only reference descriptions.'
+            ],
+            [
+                'title' => '2. Rule 2 - No personal or professional advice requests',
+                'body' => 'Avoid requests that ask for specific legal, medical, or financial advice. The community represents an academic forum.'
+            ],
+            [
+                'title' => '3. Rule 3 - Open ended questions only',
+                'body' => 'Ask questions that prompt discussion and allow multiple expert perspectives to add value, rather than simple yes/no checks.'
+            ],
+            [
+                'title' => '4. Rule 4 - No personal info',
+                'body' => 'Do not post email addresses, phone numbers, or private details to protect user privacy.'
+            ],
+            [
+                'title' => '5. Rule 5 - No loaded questions',
+                'body' => 'Keep questions unbiased. Do not frame questions in a way that forces a specific viewpoint.'
+            ]
+        ];
+
+        return view('ask-enrollzy', compact('questions', 'categories', 'rules', 'sort', 'selectedCategory'));
+    }
+
+    public function storeQuestion(Request $request) {
+        $request->validate([
+            'question_text' => 'required|string|max:1000',
+            'category_id' => 'required|exists:community_categories,id',
+            'image' => 'nullable|image|max:4096'
+        ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('community_questions', 'public');
+        }
+
+        \App\Models\CommunityQuestion::create([
+            'user_id' => auth()->id() ?? 1,
+            'category_id' => $request->category_id,
+            'question_text' => $request->question_text,
+            'image' => $imagePath,
+            'status' => 'approved',
+            'is_active' => 1,
+            'views' => 0
+        ]);
+
+        return redirect()->route('ask.enrollzy')->with('success', 'Your question has been posted successfully!');
+    }
+
+    public function questionDetail($id) {
+        $question = \App\Models\CommunityQuestion::with(['user', 'category', 'replies' => function($q) {
+            $q->where('status', 'approved')->where('is_active', 1)->with(['user', 'likes']);
+        }])->withCount(['replies', 'likes'])->findOrFail($id);
+
+        $question->increment('views');
+
+        $relatedQuestions = \App\Models\CommunityQuestion::where('category_id', $question->category_id)
+            ->where('id', '!=', $question->id)
+            ->where('status', 'approved')
+            ->where('is_active', 1)
+            ->take(5)
+            ->get();
+
+        $categories = \App\Models\CommunityCategory::withCount('questions')->get();
+
+        return view('ask-enrollzy-detail', compact('question', 'relatedQuestions', 'categories'));
+    }
+
+    public function storeReply(Request $request) {
+        $request->validate([
+            'question_id' => 'required|exists:community_questions,id',
+            'content' => 'required|string|max:2000'
+        ]);
+
+        \App\Models\CommunityReply::create([
+            'user_id' => auth()->id() ?? 1,
+            'question_id' => $request->question_id,
+            'content' => $request->content,
+            'status' => 'approved',
+            'is_active' => 1
+        ]);
+
+        return back()->with('success', 'Your answer/reply has been posted successfully!');
+    }
+
+    public function toggleLike(Request $request) {
+        $request->validate([
+            'question_id' => 'required|exists:community_questions,id'
+        ]);
+
+        $userId = auth()->id() ?? 1;
+        $questionId = $request->question_id;
+
+        $existingLike = \App\Models\CommunityLike::where('user_id', $userId)
+            ->where('likable_id', $questionId)
+            ->where('likable_type', \App\Models\CommunityQuestion::class)
+            ->first();
+
+        if ($existingLike) {
+            $existingLike->delete();
+            $liked = false;
+        } else {
+            \App\Models\CommunityLike::create([
+                'user_id' => $userId,
+                'likable_id' => $questionId,
+                'likable_type' => \App\Models\CommunityQuestion::class
+            ]);
+            $liked = true;
+        }
+
+        $likesCount = \App\Models\CommunityLike::where('likable_id', $questionId)
+            ->where('likable_type', \App\Models\CommunityQuestion::class)
+            ->count();
+
+        return response()->json([
+            'success' => true,
+            'liked' => $liked,
+            'likes_count' => $likesCount
+        ]);
+    }
 
     public function globalSearch(\Illuminate\Http\Request $request) {
         $type = strtolower(trim($request->input('type', '')));
