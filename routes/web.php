@@ -36,6 +36,11 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/university-detail/{slug}', [PageController::class, 'universityDetail'])->name('university.detail');
     Route::get('/mentors', [PageController::class, 'mentors'])->name('mentors');
     Route::get('/mentor-detail/{id?}', [PageController::class, 'mentorDetail'])->name('mentor.detail');
+    Route::post('/mentor-detail/review', [PageController::class, 'submitMentorReview'])->name('mentor.review.submit');
     Route::get('/ask-enrollzy', [PageController::class, 'askEnrollzy'])->name('ask.enrollzy');
+    Route::post('/ask-enrollzy/question/store', [PageController::class, 'storeQuestion'])->name('ask.enrollzy.store');
+    Route::get('/ask-enrollzy/question/{id}', [PageController::class, 'questionDetail'])->name('ask.enrollzy.detail');
+    Route::post('/ask-enrollzy/reply/store', [PageController::class, 'storeReply'])->name('ask.enrollzy.reply.store');
+    Route::post('/ask-enrollzy/like', [PageController::class, 'toggleLike'])->name('ask.enrollzy.like');
     Route::get('/global-search', [PageController::class, 'globalSearch'])->name('global.search');
 });

@@ -15,6 +15,12 @@
                     <img src="{{ asset('assets/images/banner-square-img.svg') }}" alt="Grid Background">
                 </div>
                 <div class="container">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4" role="alert">
+                            <i class="fa-solid fa-circle-check me-2"></i> {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
                     <!-- Grey Card Banner -->
                     <div class="profile-banner-card">
                         <div class="profile-banner-watermark">enrollzy</div>
@@ -28,14 +34,33 @@
                     <div class="profile-details-card">
                         <div class="profile-main-card">
                             <div class="row align-items-center">
+                                @php
+                                    $mName = trim(($mentor->first_name ?? '') . ' ' . ($mentor->last_name ?? ''));
+                                    if (empty($mName)) {
+                                        $mName = $mentor->user->name ?? 'Abhishek Sharma';
+                                    }
+
+                                    $mPhoto = asset('assets/images/mentor_1.png');
+                                    if (!empty($mentor->profile_photo)) {
+                                        if (str_starts_with($mentor->profile_photo, 'http')) {
+                                            $mPhoto = $mentor->profile_photo;
+                                        } elseif (file_exists(public_path('storage/' . $mentor->profile_photo))) {
+                                            $mPhoto = asset('storage/' . $mentor->profile_photo);
+                                        } elseif (file_exists(base_path('../enrollzy_backend/public/storage/' . $mentor->profile_photo))) {
+                                            $mPhoto = 'http://127.0.0.1:8001/storage/' . $mentor->profile_photo;
+                                        } elseif (file_exists(public_path('assets/images/' . $mentor->profile_photo))) {
+                                            $mPhoto = asset('assets/images/' . $mentor->profile_photo);
+                                        }
+                                    }
+                                @endphp
                                 <div class="col-lg-2 col-md-3 col-12 d-flex justify-content-center">
                                     <div class="profile-avatar-wrapper">
-                                        <img src="{{ asset('assets/images/mentor_1.png') }}" alt="Abhishek Sharma">
+                                        <img src="{{ $mPhoto }}" alt="{{ $mName }}" onError="this.src='{{ asset('assets/images/mentor_1.png') }}'">
                                     </div>
                                 </div>
                                 <div class="col-lg-7 col-md-6 col-12 text-center text-md-start ps-lg-4">
-                                    <h1 class="profile-info-name">Abhishek Sharma</h1>
-                                    <p class="profile-info-role">Product Manager • Google • IIM-A</p>
+                                    <h1 class="profile-info-name">{{ $mName }}</h1>
+                                    <p class="profile-info-role">{{ $mentor->professional_headline ?? 'Product Manager • Google • IIM-A' }}</p>
                                     <div class="mb-3">
                                         <span class="profile-info-badge tag-blue">MBA Prep</span>
                                         <span class="profile-info-badge tag-yellow">Product</span>
@@ -65,24 +90,9 @@
 
                         <!-- About Me section inside details card -->
                         <div class="profile-about-box">
-                            <h2 class="profile-about-title">About Abhishek sharma</h2>
+                            <h2 class="profile-about-title">About {{ $mName }}</h2>
                             <p class="profile-about-text">
-                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
-                                Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur
-                                ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla
-                                consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget,
-                                arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu
-                                pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean
-                                vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
-                                enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra
-                                nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel
-                                augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
-                                tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed
-                                ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio
-                                et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante.
-                                Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet
-                                nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit
-                                cursus nunc,
+                                {{ $mentor->short_bio ?? 'Guiding students for MBA admissions, JEE Advanced strategy, and tech career roadmaps with 8+ years of industry experience.' }}
                             </p>
                         </div>
                     </div>
@@ -327,13 +337,14 @@
                             </div>
 
                             <!-- Feedback Form -->
-                            <form action="#" method="POST">
+                            <form action="{{ route('mentor.review.submit') }}" method="POST">
                                 @csrf
+                                <input type="hidden" name="mentor_id" value="{{ optional($mentor)->id }}">
                                 <div class="text-start mb-2" style="font-size: 13.5px; font-weight: 700; color: #0D1B2A;">
                                     Your Feedback</div>
-                                <textarea class="review-textarea"
-                                    placeholder="Write your feedback about the mentor..."></textarea>
-                                <input type="hidden" name="rating" id="rating-input" value="0">
+                                <textarea name="feedback" class="review-textarea"
+                                    placeholder="Write your feedback about the mentor..." required></textarea>
+                                <input type="hidden" name="rating" id="rating-input" value="5">
 
                                 <button type="submit" class="btn-submit-review">
                                     Submit Review <i class="fa-solid fa-chevron-right"></i>
