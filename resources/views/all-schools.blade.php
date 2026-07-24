@@ -35,7 +35,7 @@
     </div>
 
     <!-- Main Content Section -->
-    <section class="py-5" style="background-color: #FAFBFD;">
+    <section class="py-5" >
         <div class="container">
             
             <!-- School Hero Intro Card -->

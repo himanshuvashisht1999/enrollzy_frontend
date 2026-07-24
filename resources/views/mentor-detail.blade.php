@@ -182,6 +182,8 @@
                 </div>
             </div>
         </section>
+         <div class="grad-main"
+        style="background: linear-gradient(180deg, rgb(205 230 255 / 3%) 0%, rgb(226 240 255 / 51%) 50%, rgb(191 219 247 / 1%) 100%)">
 
         <!-- 3. Achievements Section -->
         <section class="achievements-section">
@@ -242,7 +244,7 @@
                 </div>
             </div>
         </section>
-        <section class="testimonials-section ptb-70" style="background-color: #FFFCF8;">
+        <section class="testimonials-section ptb-70" >
             <div class="container">
                 <!-- Section Header -->
                 <div class="text-center mb-5">
@@ -298,6 +300,7 @@
                 </div>
             </div>
         </section>
+        </div>
 
         <!-- 4. Review Our Mentors Section -->
         <section class="review-form-section">

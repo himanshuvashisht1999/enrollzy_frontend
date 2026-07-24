@@ -5,13 +5,13 @@
 -- ==========================================================
 
 -- 1. Latest Change (2026-07-24): Add image column to community_categories table
-ALTER TABLE `community_categories` ADD COLUMN `image` VARCHAR(255) NULL AFTER `description`;
+-- ALTER TABLE `community_categories` ADD COLUMN `image` VARCHAR(255) NULL AFTER `description`;
 
 -- 2. Recent Change (2026-07-20): Add image column to homepage_sections table
-ALTER TABLE `homepage_sections` ADD COLUMN `image` VARCHAR(255) NULL AFTER `cta_url`;
+-- ALTER TABLE `homepage_sections` ADD COLUMN `image` VARCHAR(255) NULL AFTER `cta_url`;
 
 -- 3. Recent Change (2026-07-18): Add reward_amount column to home_benefits table
-ALTER TABLE `home_benefits` ADD COLUMN `reward_amount` VARCHAR(255) NULL AFTER `icon`;
+-- ALTER TABLE `home_benefits` ADD COLUMN `reward_amount` VARCHAR(255) NULL AFTER `icon`;
 
 -- 4. Recent Change (2026-07-18): Add founder messages to about_us_pages table
 ALTER TABLE `about_us_pages` ADD COLUMN `founder_1_message` TEXT NULL AFTER `founder_1_twitter`;

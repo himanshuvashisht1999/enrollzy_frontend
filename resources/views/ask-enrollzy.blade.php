@@ -67,7 +67,7 @@
                         <div class="mt-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
                             <div class="dropdown">
                                 <button class="filter-sort-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {{ ucfirst($sort ?? 'New') }} <i class="fa-solid fa-chevron-down ms-1"></i>
+                                    {{ ucfirst($sort ?? 'New') }} 
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item {{ ($sort ?? 'new') == 'new' ? 'active' : '' }}" href="{{ route('ask.enrollzy', array_merge(request()->query(), ['sort' => 'new'])) }}">New</a></li>
