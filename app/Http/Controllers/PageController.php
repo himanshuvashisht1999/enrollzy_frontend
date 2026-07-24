@@ -15,7 +15,7 @@ class PageController extends Controller
         $faqs = \App\Models\Faq::orderBy('sort_order')->take(5)->get();
         $home_services = \App\Models\HomeService::where('status', 1)->orderBy('sort_order')->get();
         $top_exams = \App\Models\DynamicExam::where('status', 'Active')->orderBy('id', 'desc')->take(6)->get();
-        $video_testimonials = \App\Models\VideoTestimonial::where('is_active', 1)->orderBy('sort_order')->get();
+        $video_testimonials = collect();
         $blogs = \App\Models\Blog::with('category')->orderBy('published_at', 'desc')->take(4)->get();
         $testimonials = \App\Models\Testimonial::orderBy('id', 'desc')->get();
 

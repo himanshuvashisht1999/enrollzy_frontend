@@ -1,194 +1,406 @@
 @extends('layouts.app')
+
 @section('content')
-    <!-- Profile Header Banner -->
-    <main class="about-hero-section ptb-70">
-        <div class="bg-square">
-            <img src="{{ asset('assets/images/banner-square-img.svg') }}" alt="" />
-        </div>
-        <div class="container">
-            <div class="about-hero-container">
-                <img src="{{ asset('assets/images/scholarship-page-banner-img.png') }}" alt="Mentor Profile" />
 
-                <!-- Centered Badge / Profile Tag -->
-                <div class="about-us-badge-wrapper">
-                    <button class="about-us-badge"><i class="fa-solid fa-circle-check text-warning me-1"></i> Verified Expert Mentor</button>
-                    <p>Aarav Sharma — Senior Product Manager @ Google | IIM Ahmedabad Alumni</p>
-                </div>
 
-                <!-- Green Down Arrow Button -->
-                <button class="about-scroll-btn" aria-label="Scroll Down">
-                    <img style="width: 49px; height: 62px" src="{{ asset('assets/images/inner-banner-down-arror.png') }}" alt="" />
-                </button>
+    <div class="mentor-detail-page">
+
+        <!-- 1. Profile Header Banner -->
+        <main class="about-hero-section ptb-70 pb-0">
+            <div class="bg-square">
+                <img src="assets/images/banner-square-img.svg" alt="" />
             </div>
-        </div>
-    </main>
-
-    <!-- Breadcrumb -->
-    <div class="py-3" style="background-color: #f9ad0b14">
-        <div class="container">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0" style="font-size: 13.5px; font-weight: 500;">
-                    <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none text-muted"><i class="fa-solid fa-house me-1"></i> Home</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('mentors') }}" class="text-decoration-none text-muted">Mentors</a></li>
-                    <li class="breadcrumb-item active text-primary" aria-current="page">Aarav Sharma</li>
-                </ol>
-            </nav>
-        </div>
-    </div>
-
-    <!-- Main Detail Section -->
-    <div style="background-color: #FAFBFD; padding: 50px 0;">
-        <div class="container">
-            <div class="row g-4">
-                
-                <!-- Left Column: Profile Bio & Details -->
-                <div class="col-lg-8">
-                    
-                    <!-- Profile Summary Header Card -->
-                    <div class="bg-white rounded-4 p-4 p-md-5 border shadow-sm mb-4">
-                        <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-4">
-                            <div class="position-relative">
-                                <img src="{{ asset('assets/images/mentor1.png') }}" alt="Aarav Sharma" class="rounded-circle border border-4 border-white shadow-sm" style="width: 130px; height: 130px; object-fit: cover;">
-                                <span class="badge bg-success position-absolute bottom-0 end-0 px-2 py-1 rounded-pill" style="font-size: 10px;">
-                                    <i class="fa-solid fa-check"></i> Verified
-                                </span>
-                            </div>
-                            <div class="text-center text-md-start flex-grow-1">
-                                <h1 class="fw-bold fs-3 mb-1 text-dark">Aarav Sharma</h1>
-                                <p class="text-primary fw-semibold mb-2 fs-6">Senior Product Manager @ Google</p>
-                                <p class="text-muted mb-3" style="font-size: 14px;"><i class="fa-solid fa-graduation-cap me-1"></i> IIM Ahmedabad (MBA, 2018) | Ex-Flipkart, Ex-Amazon</p>
-                                
-                                <div class="d-flex flex-wrap justify-content-center justify-content-md-start gap-3 border-top pt-3" style="font-size: 13px;">
-                                    <div><i class="fa-solid fa-star text-warning me-1"></i><strong>4.9</strong> (140 Reviews)</div>
-                                    <div><i class="fa-solid fa-users text-primary me-1"></i><strong>320+</strong> Sessions Completed</div>
-                                    <div><i class="fa-solid fa-briefcase text-success me-1"></i><strong>8+ Yrs</strong> Experience</div>
-                                    <div><i class="fa-solid fa-language text-info me-1"></i> English, Hindi</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- About Me Card -->
-                    <div class="bg-white rounded-4 p-4 p-md-5 border shadow-sm mb-4">
-                        <h2 class="fs-4 fw-bold mb-3 text-dark"><i class="fa-solid fa-user me-2 text-primary"></i> About Me</h2>
-                        <p class="text-muted leading-relaxed mb-4">
-                            Hi! I am Aarav. I have over 8 years of experience in product strategy, consumer tech, and business operations. Having cleared CAT with a 99.8 percentile and graduated from IIM Ahmedabad, I have mentored 300+ students for top B-school admissions, GD-PI rounds, and Product Management transitions.
-                        </p>
-                        <p class="text-muted leading-relaxed mb-0">
-                            Whether you need guidance on CAT preparation strategies, SOP and resume reviews, mock interviews, or career advice on breaking into top tech companies — I am here to help you navigate your journey with confidence!
-                        </p>
-                    </div>
-
-                    <!-- Expertise Tags Card -->
-                    <div class="bg-white rounded-4 p-4 p-md-5 border shadow-sm mb-4">
-                        <h2 class="fs-4 fw-bold mb-3 text-dark"><i class="fa-solid fa-tags me-2 text-primary"></i> Areas of Expertise</h2>
-                        <div class="d-flex flex-wrap gap-2">
-                            <span class="badge bg-primary-subtle text-primary border rounded-pill px-3 py-2 fs-6">CAT / MBA Prep</span>
-                            <span class="badge bg-warning-subtle text-dark border rounded-pill px-3 py-2 fs-6">IIM Interview Prep</span>
-                            <span class="badge bg-success-subtle text-success border rounded-pill px-3 py-2 fs-6">Product Management</span>
-                            <span class="badge bg-info-subtle text-info border rounded-pill px-3 py-2 fs-6">Resume & SOP Review</span>
-                            <span class="badge bg-secondary-subtle text-dark border rounded-pill px-3 py-2 fs-6">Case Studies</span>
-                            <span class="badge bg-danger-subtle text-danger border rounded-pill px-3 py-2 fs-6">Career Transition</span>
-                        </div>
-                    </div>
-
-                    <!-- Education & Work Experience Card -->
-                    <div class="bg-white rounded-4 p-4 p-md-5 border shadow-sm mb-4">
-                        <h2 class="fs-4 fw-bold mb-4 text-dark"><i class="fa-solid fa-briefcase me-2 text-primary"></i> Work & Education History</h2>
-                        
-                        <div class="border-start border-3 border-primary ps-4 mb-4">
-                            <h3 class="fs-6 fw-bold mb-1">Senior Product Manager — Google</h3>
-                            <p class="text-muted mb-1" style="font-size: 13px;">2021 – Present | Bengaluru, India</p>
-                            <p class="text-muted mb-0" style="font-size: 13px;">Leading core search & growth initiatives across APAC region.</p>
-                        </div>
-
-                        <div class="border-start border-3 border-secondary ps-4 mb-4">
-                            <h3 class="fs-6 fw-bold mb-1">Product Manager — Flipkart</h3>
-                            <p class="text-muted mb-1" style="font-size: 13px;">2018 – 2021 | Bengaluru, India</p>
-                            <p class="text-muted mb-0" style="font-size: 13px;">Managed checkout conversion and payment funnel optimization.</p>
-                        </div>
-
-                        <div class="border-start border-3 border-warning ps-4">
-                            <h3 class="fs-6 fw-bold mb-1">MBA (Post Graduate Diploma in Management) — IIM Ahmedabad</h3>
-                            <p class="text-muted mb-1" style="font-size: 13px;">2016 – 2018 | Ahmedabad, India</p>
-                            <p class="text-muted mb-0" style="font-size: 13px;">Specialization in Marketing & Strategy. CAT Percentile: 99.8%ile.</p>
-                        </div>
-                    </div>
-
-                    <!-- Reviews & Feedback Card -->
-                    <div class="bg-white rounded-4 p-4 p-md-5 border shadow-sm">
-                        <h2 class="fs-4 fw-bold mb-4 text-dark"><i class="fa-solid fa-comments me-2 text-primary"></i> Student Reviews</h2>
-                        
-                        <div class="border-bottom pb-3 mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="fw-bold text-dark">Karan Malhotra</span>
-                                <span class="text-warning" style="font-size: 12px;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
-                            </div>
-                            <p class="text-muted mb-0" style="font-size: 13px;">"Aarav sir gave me invaluable advice for my IIM Bangalore interview. His mock interview format was identical to the actual interview!"</p>
-                        </div>
-
-                        <div class="border-bottom pb-3 mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="fw-bold text-dark">Sneha Patel</span>
-                                <span class="text-warning" style="font-size: 12px;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
-                            </div>
-                            <p class="text-muted mb-0" style="font-size: 13px;">"Got my resume reviewed by Aarav. The feedback was super actionable and helped me land product interviews!"</p>
-                        </div>
-                    </div>
-
+            <div class="profile-hero-banner">
+                <div class="bg-square">
+                    <img src="{{ asset('assets/images/banner-square-img.svg') }}" alt="Grid Background">
                 </div>
+                <div class="container">
+                    <!-- Grey Card Banner -->
+                    <div class="profile-banner-card">
+                        <div class="profile-banner-watermark">enrollzy</div>
+                        <a href="{{ route('mentors') }}" class="btn-back-mentors">
+                            <i class="fa-solid fa-chevron-left"></i> Back to mentors
+                        </a>
+                        <span class="verified-mentor-badge">Verified mentor</span>
+                    </div>
 
-                <!-- Right Column: Booking Box Widget -->
-                <div class="col-lg-4">
-                    <div class="sticky-top" style="top: 100px;">
-                        <div class="bg-white rounded-4 p-4 border shadow-sm">
-                            <h3 class="fs-5 fw-bold mb-3 text-dark">Book 1:1 Session</h3>
-                            
-                            <div class="p-3 bg-light rounded-3 mb-3">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-muted fw-medium" style="font-size: 14px;">Session Fee</span>
-                                    <span class="fs-4 fw-bold text-primary">₹499 <small class="text-muted fs-6">/30 mins</small></span>
-                                </div>
-                            </div>
-
-                            <form action="#" method="POST" class="mb-3">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold" style="font-size: 13px;">Select Session Type</label>
-                                    <select class="form-select">
-                                        <option selected>1:1 Career Guidance (30 mins)</option>
-                                        <option>Mock Interview & Feedback (45 mins)</option>
-                                        <option>Resume & SOP Review (60 mins)</option>
-                                    </select>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold" style="font-size: 13px;">Select Preferred Date</label>
-                                    <input type="date" class="form-control" value="{{ date('Y-m-d') }}">
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="form-label fw-bold" style="font-size: 13px;">Select Available Time Slot</label>
-                                    <div class="row g-2">
-                                        <div class="col-6"><button type="button" class="btn btn-outline-primary w-100 btn-sm active">04:00 PM</button></div>
-                                        <div class="col-6"><button type="button" class="btn btn-outline-primary w-100 btn-sm">05:30 PM</button></div>
-                                        <div class="col-6"><button type="button" class="btn btn-outline-primary w-100 btn-sm">07:00 PM</button></div>
-                                        <div class="col-6"><button type="button" class="btn btn-outline-primary w-100 btn-sm">08:30 PM</button></div>
+                    <!-- Profile Info Card (Overlapping) -->
+                    <div class="profile-details-card">
+                        <div class="profile-main-card">
+                            <div class="row align-items-center">
+                                <div class="col-lg-2 col-md-3 col-12 d-flex justify-content-center">
+                                    <div class="profile-avatar-wrapper">
+                                        <img src="{{ asset('assets/images/mentor_1.png') }}" alt="Abhishek Sharma">
                                     </div>
                                 </div>
+                                <div class="col-lg-7 col-md-6 col-12 text-center text-md-start ps-lg-4">
+                                    <h1 class="profile-info-name">Abhishek Sharma</h1>
+                                    <p class="profile-info-role">Product Manager • Google • IIM-A</p>
+                                    <div class="mb-3">
+                                        <span class="profile-info-badge tag-blue">MBA Prep</span>
+                                        <span class="profile-info-badge tag-yellow">Product</span>
+                                        <span class="profile-info-badge tag-green">Startups</span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-12 text-center text-md-end">
+                                    <div class="profile-rating-info">
+                                        <div class="profile-sessions-count">280 sessions</div>
+                                        <div class="profile-rating-stars mt-1">
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <span class="profile-rating-num">4.9</span>
+                                        </div>
+                                        <div class="mt-3">
+                                            <a href="#" class="profile-connect-btn">
+                                                Connect Now <i class="fa-solid fa-arrow-right-long"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                <button type="submit" class="btn btn-enrollzy btn-enrollzy-lg w-100 mb-2">
-                                    Proceed To Book <i class="fa-solid fa-arrow-right-long ms-1"></i>
-                                </button>
-                            </form>
+                        <!-- About Me section inside details card -->
+                        <div class="profile-about-box">
+                            <h2 class="profile-about-title">About Abhishek sharma</h2>
+                            <p class="profile-about-text">
+                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur
+                                ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla
+                                consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget,
+                                arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu
+                                pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean
+                                vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
+                                enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra
+                                nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel
+                                augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus,
+                                tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed
+                                ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio
+                                et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante.
+                                Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet
+                                nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit
+                                cursus nunc,
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
 
-                            <div class="text-center text-muted" style="font-size: 11px;">
-                                <i class="fa-solid fa-lock me-1"></i> 100% Secure Payment & Satisfaction Refund Guarantee
+
+        <!-- 2. Grid Cards Layout -->
+        <section class="py-5">
+            <div class="container">
+                <div class="row g-4">
+                    <!-- Row 1 Left: Areas of expertise -->
+                    <div class="col-lg-6 col-12">
+                        <div class="grid-info-card">
+                            <h2 class="grid-info-card-title">Areas of expertise</h2>
+                            <div class="expertise-pills-row">
+                                <div class="expertise-pill-card">Campus life</div>
+                                <div class="expertise-pill-card">Campus life</div>
+                                <div class="expertise-pill-card">Campus life</div>
+                                <div class="expertise-pill-card">Campus life</div>
+                                <div class="expertise-pill-card">Campus life</div>
+                                <div class="expertise-pill-card">Campus life</div>
+                                <div class="expertise-pill-card">Campus life</div>
+                                <div class="expertise-pill-card">Campus life</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 1 Right: Ready to connect (Blue CTA) -->
+                    <div class="col-lg-6 col-12">
+                        <div class="ready-connect-card">
+                            <div>
+                                <h2 class="ready-connect-title">Ready to connect?</h2>
+                                <p class="ready-connect-desc">
+                                    Book a session with Abhishek sharma and get your questions answered.
+                                </p>
+                            </div>
+                            <a href="#" class="btn-ready-connect">
+                                Connect Now <i class="fa-solid fa-arrow-right-long"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Row 2 Left: Education -->
+                    <div class="col-lg-6 col-12">
+                        <div class="grid-info-card">
+                            <h2 class="grid-info-card-title">Education</h2>
+                            <div class="education-list">
+                                <div class="education-capsule">
+                                    <span class="education-grade-badge">10th</span>
+                                    <span class="education-school-name">Govt senior secondary school sector 33 - d
+                                        chandigarh</span>
+                                </div>
+                                <div class="education-capsule">
+                                    <span class="education-grade-badge">12th</span>
+                                    <span class="education-school-name">Netaji subhash chandra bose school hamirpur himchal
+                                        pradesh</span>
+                                </div>
+                                <div class="education-capsule">
+                                    <span class="education-grade-badge">Btech</span>
+                                    <span class="education-school-name">shaheed kansi ram college of technology hamipur
+                                        himachal pradesh</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2 Right: Skills -->
+                    <div class="col-lg-6 col-12">
+                        <div class="grid-info-card">
+                            <h2 class="grid-info-card-title">Skills</h2>
+                            <div class="skills-row-box mb-3">
+                                <span class="skills-outline-badge">Human Resource</span>
+                                <span class="skills-outline-badge">Marketing</span>
+                                <span class="skills-outline-badge">Social work</span>
+                                <span class="skills-outline-badge">writing skills</span>
+                            </div>
+                            <div class="skills-row-box">
+                                <span class="skills-outline-badge">Human Resource</span>
+                                <span class="skills-outline-badge">Marketing</span>
+                                <span class="skills-outline-badge">Social work</span>
+                                <span class="skills-outline-badge">writing skills</span>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-        </div>
+        </section>
+
+        <!-- 3. Achievements Section -->
+        <section class="achievements-section">
+            <div class="container">
+                <div class="text-center heading-achievements">
+                    <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3">
+                        <span class="heading-line-orange d-none d-md-block"></span>
+                        <h2>Achievements</h2>
+                        <span class="heading-line-orange d-none d-md-block"></span>
+                    </div>
+                </div>
+
+                <div class="achievements-flow">
+                    <!-- Item 1 -->
+                    <div class="achievement-item">
+                        <div class="achievement-icon-circle" >
+                           <img src="{{ asset('assets/images/achievement-icon-1.png') }}" alt="">
+                        </div>
+                        <div class="achievement-stat">10003+</div>
+                        <div class="achievement-label">Total Counselling</div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <i class="fa-solid fa-arrow-right-long achievement-flow-arrow d-none d-lg-block"></i>
+
+                    <!-- Item 2 -->
+                    <div class="achievement-item">
+                        <div class="achievement-icon-circle">
+                            <img src="{{ asset('assets/images/achievement-icon-2.png') }}" alt="">
+                        </div>
+                        <div class="achievement-stat">217hr</div>
+                        <div class="achievement-label">Total Hours</div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <i class="fa-solid fa-arrow-right-long achievement-flow-arrow d-none d-lg-block"></i>
+
+                    <!-- Item 3 -->
+                    <div class="achievement-item">
+                        <div class="achievement-icon-circle">
+                           <img src="{{ asset('assets/images/achievement-icon-3.png') }}" alt="">
+                        </div>
+                        <div class="achievement-stat">42+</div>
+                        <div class="achievement-label">Successful Sessions</div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <i class="fa-solid fa-arrow-right-long achievement-flow-arrow d-none d-lg-block"></i>
+
+                    <!-- Item 4 -->
+                    <div class="achievement-item">
+                        <div class="achievement-icon-circle" >
+                        <img src="{{ asset('assets/images/achievement-icon-4.png') }}" alt="">
+                        </div>
+                        <div class="achievement-stat">98%</div>
+                        <div class="achievement-label">Satisfaction Score</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="testimonials-section ptb-70" style="background-color: #FFFCF8;">
+            <div class="container">
+                <!-- Section Header -->
+                <div class="text-center mb-5">
+                    <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3 mb-3">
+                        <span class="heading-line d-none d-md-block"></span>
+                        <h2 class="section-title mb-0">Video Testimonials</h2>
+                        <span class="heading-line d-none d-md-block"></span>
+                    </div>
+                    <p class="section-subtitle mx-auto text-muted" style="max-width: 900px;">
+                        What our students and parents have to say about their experience with us.
+                    </p>
+                </div>
+
+                <!-- Video Cards Grid -->
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
+                    @if(isset($video_testimonials) && $video_testimonials->count() > 0)
+                        @foreach($video_testimonials as $video)
+                            <div class="col">
+                                <div class="testimonial-card"
+                                    style="background-image: url('{{ $video->thumbnail ? (str_starts_with($video->thumbnail, 'http') ? $video->thumbnail : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($video->thumbnail, '/')) : asset('assets/images/mentor_1.png') }}');">
+                                    <div class="testimonial-overlay"></div>
+                                    @if($video->video_url)
+                                        <a href="{{ $video->video_url }}" target="_blank" style="text-decoration: none;">
+                                    @endif
+                                        <button class="play-icon-btn" type="button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                                class="bi bi-play-fill" viewBox="0 0 16 16">
+                                                <path
+                                                    d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                                            </svg>
+                                        </button>
+                                        @if($video->video_url)
+                                            </a>
+                                        @endif
+                                    <div class="testimonial-card-body">
+                                        <h3 class="testimonial-name">{{ $video->name }}</h3>
+                                        <p class="testimonial-sub">{{ $video->course }}</p>
+                                        <div class="testimonial-rating">★ ★ ★ ★ ★</div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <p class="text-center text-muted">No testimonials found.</p>
+                    @endif
+                </div>
+
+                <!-- View More Button -->
+                <div class="text-center">
+                    <a href="{{ route('blogs') }}"
+                        class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
+                        More <i class="fa-solid fa-arrow-right-long"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Review Our Mentors Section -->
+        <section class="review-form-section">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3">
+                        <span class="heading-line-orange d-none d-md-block"></span>
+                        <h2>Review our mentors</h2>
+                        <span class="heading-line-orange d-none d-md-block"></span>
+                    </div>
+                </div>
+
+                <div class="row align-items-center">
+                    <!-- Left: Review Form -->
+                    <div class="col-lg-6 col-12">
+                        <div class="review-box-card">
+                            <!-- Checklist/Notepad Icon -->
+                            <div class="mx-auto review-box-icon d-flex align-items-center justify-content-center"
+                                >
+                                <img src="{{ asset('assets/images/mentor-review-icon.png') }}" alt="">
+                            </div>
+
+                            <h3 class="review-box-title">Review Your Mentor</h3>
+                            <p class="review-box-desc">we value your feedback. Please share your honest review.</p>
+
+                            <!-- Overall Rating Stars -->
+                            <div class="text-start mb-3" style="font-size: 13.5px; font-weight: 700; color: #0D1B2A;">
+                                Overall Rating</div>
+                            <div class="rating-stars-interactive" id="stars-container">
+                                <i class="fa-regular fa-star" data-index="1"></i>
+                                <i class="fa-regular fa-star" data-index="2"></i>
+                                <i class="fa-regular fa-star" data-index="3"></i>
+                                <i class="fa-regular fa-star" data-index="4"></i>
+                                <i class="fa-regular fa-star" data-index="5"></i>
+                                <span class="ms-2" style="font-size: 12.5px; color: #888888; font-weight: 500;"
+                                    id="rating-label">Tap to rate</span>
+                            </div>
+
+                            <!-- Feedback Form -->
+                            <form action="#" method="POST">
+                                @csrf
+                                <div class="text-start mb-2" style="font-size: 13.5px; font-weight: 700; color: #0D1B2A;">
+                                    Your Feedback</div>
+                                <textarea class="review-textarea"
+                                    placeholder="Write your feedback about the mentor..."></textarea>
+                                <input type="hidden" name="rating" id="rating-input" value="0">
+
+                                <button type="submit" class="btn-submit-review">
+                                    Submit Review <i class="fa-solid fa-chevron-right"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Right: Collage & Notice -->
+                    <div class="col-lg-6 col-12 ps-lg-5 position-relative">
+                        <div class="review-info-notice">
+                            <img src="{{ asset('assets/images/review-anti-icon.png') }}" alt="">
+                            <span>Your feedback is important and helps us maintain high quality mentorship.</span>
+                        </div>
+
+                        <div class="review-collage-wrapper">
+                           
+                            <img src="{{ asset('assets/images/review-mentor-img.png') }}" class="review-img-small"
+                                alt="Mentor at work">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
+
+    <!-- Interactive Stars script logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const stars = document.querySelectorAll('#stars-container i');
+            const ratingInput = document.getElementById('rating-input');
+            const ratingLabel = document.getElementById('rating-label');
+
+            stars.forEach(star => {
+                star.addEventListener('click', function () {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    ratingInput.value = index;
+                    ratingLabel.textContent = index + "/5 rating selected";
+
+                    // Toggle classes
+                    stars.forEach((s, idx) => {
+                        if (idx < index) {
+                            s.classList.remove('fa-regular');
+                            s.classList.add('fa-solid', 'active');
+                        } else {
+                            s.classList.remove('fa-solid', 'active');
+                            s.classList.add('fa-regular');
+                        }
+                    });
+                });
+
+                star.addEventListener('mouseenter', function () {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    stars.forEach((s, idx) => {
+                        if (idx < index) {
+                            s.style.color = '#FEA008';
+                        }
+                    });
+                });
+
+                star.addEventListener('mouseleave', function () {
+                    stars.forEach(s => {
+                        s.style.color = '';
+                    });
+                });
+            });
+        });
+    </script>
 @endsection
