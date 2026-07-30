@@ -411,7 +411,7 @@
               <!-- School building SVG icon -->
               <img src="assets/images/step-img-2.png" alt="" />
             </div>
-            <span class="about-impact-number">217+</span>
+            <span class="about-impact-number">{{ \App\Models\Organisation::count() }}+</span>
             <span class="about-impact-label">Institutions Listed</span>
           </div>
 

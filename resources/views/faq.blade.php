@@ -203,76 +203,7 @@
                 }
             }, true);
         })();
-        (function () {
-            const megaMenu = document.querySelector('.mega-menu-wrapper');
-            if (!megaMenu) return;
 
-            const triggerItems = document.querySelectorAll('.nav-item[data-tab-trigger]');
-            let hideTimeout;
-
-            function showMenu(tabId) {
-                clearTimeout(hideTimeout);
-                megaMenu.classList.add('show-mega');
-
-                // Switch tab sidebar and content panel
-                const sidebarItem = megaMenu.querySelector(`.mega-sidebar-item[data-mega-tab="${tabId}"]`);
-                if (sidebarItem) {
-                    // Remove active classes
-                    megaMenu.querySelectorAll('.mega-sidebar-item').forEach(i => i.classList.remove('active'));
-                    megaMenu.querySelectorAll('.mega-tab-content').forEach(pane => pane.classList.remove('active'));
-
-                    // Set active
-                    sidebarItem.classList.add('active');
-                    const targetPane = megaMenu.querySelector('#' + tabId);
-                    if (targetPane) {
-                        targetPane.classList.add('active');
-                    }
-                }
-            }
-
-            function hideMenu() {
-                hideTimeout = setTimeout(() => {
-                    megaMenu.classList.remove('show-mega');
-                }, 150); // delay to allow moving between trigger and menu
-            }
-
-            triggerItems.forEach(item => {
-                item.addEventListener('mouseenter', function () {
-                    const tabId = this.getAttribute('data-tab-trigger');
-                    showMenu(tabId);
-                });
-
-                item.addEventListener('mouseleave', function () {
-                    hideMenu();
-                });
-            });
-
-            megaMenu.addEventListener('mouseenter', function () {
-                clearTimeout(hideTimeout);
-            });
-
-            megaMenu.addEventListener('mouseleave', function () {
-                hideMenu();
-            });
-
-            // Mega Menu inner sidebar tab switching on hover
-            const sidebarItems = megaMenu.querySelectorAll('.mega-sidebar-item');
-            sidebarItems.forEach(item => {
-                item.addEventListener('mouseenter', function () {
-                    // Remove active classes inside menu
-                    megaMenu.querySelectorAll('.mega-sidebar-item').forEach(i => i.classList.remove('active'));
-                    megaMenu.querySelectorAll('.mega-tab-content').forEach(pane => pane.classList.remove('active'));
-
-                    // Set active
-                    this.classList.add('active');
-                    const targetTabId = this.getAttribute('data-mega-tab');
-                    const targetPane = megaMenu.querySelector('#' + targetTabId);
-                    if (targetPane) {
-                        targetPane.classList.add('active');
-                    }
-                });
-            });
-        })();
 
         // FAQ Accordions and Topic Switcher logic
         document.addEventListener('DOMContentLoaded', function () {

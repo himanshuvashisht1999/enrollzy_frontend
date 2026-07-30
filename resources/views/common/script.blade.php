@@ -82,11 +82,13 @@
                 }
             }, true);
         })();
-        (function () {
+        function initMegaMenu() {
             const megaMenu = document.querySelector('.mega-menu-wrapper');
-            if (!megaMenu) return;
+            if (!megaMenu || megaMenu.dataset.initialized) return;
+            megaMenu.dataset.initialized = "true";
 
             const triggerItems = document.querySelectorAll('.nav-item[data-tab-trigger]');
+            const navCardTop = document.querySelector('.nav-card-top');
             let hideTimeout;
 
             function showMenu(tabId) {
@@ -96,11 +98,9 @@
                 // Switch tab sidebar and content panel
                 const sidebarItem = megaMenu.querySelector(`.mega-sidebar-item[data-mega-tab="${tabId}"]`);
                 if (sidebarItem) {
-                    // Remove active classes
                     megaMenu.querySelectorAll('.mega-sidebar-item').forEach(i => i.classList.remove('active'));
                     megaMenu.querySelectorAll('.mega-tab-content').forEach(pane => pane.classList.remove('active'));
 
-                    // Set active
                     sidebarItem.classList.add('active');
                     const targetPane = megaMenu.querySelector('#' + tabId);
                     if (targetPane) {
@@ -112,19 +112,28 @@
             function hideMenu() {
                 hideTimeout = setTimeout(() => {
                     megaMenu.classList.remove('show-mega');
-                }, 150); // delay to allow moving between trigger and menu
+                }, 300);
             }
 
             triggerItems.forEach(item => {
                 item.addEventListener('mouseenter', function () {
                     const tabId = this.getAttribute('data-tab-trigger');
-                    showMenu(tabId);
+                    if (tabId) showMenu(tabId);
                 });
 
                 item.addEventListener('mouseleave', function () {
                     hideMenu();
                 });
             });
+
+            if (navCardTop) {
+                navCardTop.addEventListener('mouseenter', function () {
+                    clearTimeout(hideTimeout);
+                });
+                navCardTop.addEventListener('mouseleave', function () {
+                    hideMenu();
+                });
+            }
 
             megaMenu.addEventListener('mouseenter', function () {
                 clearTimeout(hideTimeout);
@@ -138,11 +147,9 @@
             const sidebarItems = megaMenu.querySelectorAll('.mega-sidebar-item');
             sidebarItems.forEach(item => {
                 item.addEventListener('mouseenter', function () {
-                    // Remove active classes inside menu
                     megaMenu.querySelectorAll('.mega-sidebar-item').forEach(i => i.classList.remove('active'));
                     megaMenu.querySelectorAll('.mega-tab-content').forEach(pane => pane.classList.remove('active'));
 
-                    // Set active
                     this.classList.add('active');
                     const targetTabId = this.getAttribute('data-mega-tab');
                     const targetPane = megaMenu.querySelector('#' + targetTabId);
@@ -151,5 +158,90 @@
                     }
                 });
             });
-        })();
+        }
+
+        function initLiveSearch() {
+            const searchInput = document.querySelector('.search-bar-container .search-input');
+            const searchTypeInput = document.getElementById('searchType');
+            const resultsContainer = document.getElementById('liveSearchResults');
+            let debounceTimer;
+
+            if (!searchInput || !resultsContainer) return;
+
+            function performLiveSearch() {
+                const query = searchInput.value.trim();
+                const type = searchTypeInput ? searchTypeInput.value : '';
+
+                if (query.length < 1) {
+                    resultsContainer.style.display = 'none';
+                    resultsContainer.innerHTML = '';
+                    return;
+                }
+
+                const searchUrl = "{{ route('live.search') }}";
+
+                fetch(`${searchUrl}?q=${encodeURIComponent(query)}&type=${encodeURIComponent(type)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!Array.isArray(data) || data.length === 0) {
+                            resultsContainer.innerHTML = `
+                                <div class="p-3 text-muted text-center" style="font-size:13px;">
+                                    No matching records found for "<strong>${escapeHtml(query)}</strong>"
+                                </div>`;
+                            resultsContainer.style.display = 'block';
+                            return;
+                        }
+
+                        let html = '<div class="list-group list-group-flush border-0">';
+                        data.forEach(item => {
+                            html += `
+                                <a href="${item.url}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between py-2 px-3 border-bottom border-light text-decoration-none">
+                                    <div class="pe-2 text-start">
+                                        <div class="fw-bold text-dark" style="font-size:14px; line-height:1.2;">${escapeHtml(item.title)}</div>
+                                        <small class="text-muted" style="font-size:12px;">${escapeHtml(item.subtitle)}</small>
+                                    </div>
+                                    <span class="badge bg-light text-primary border" style="font-size:11px; font-weight:600;">${escapeHtml(item.type)}</span>
+                                </a>`;
+                        });
+                        html += '</div>';
+
+                        resultsContainer.innerHTML = html;
+                        resultsContainer.style.display = 'block';
+                    })
+                    .catch(err => {
+                        console.error('Live search error:', err);
+                    });
+            }
+
+            function escapeHtml(text) {
+                return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+            }
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(performLiveSearch, 150);
+            });
+
+            searchInput.addEventListener('focus', function() {
+                if (this.value.trim().length >= 1) {
+                    performLiveSearch();
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.search-bar-container')) {
+                    resultsContainer.style.display = 'none';
+                }
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                initMegaMenu();
+                initLiveSearch();
+            });
+        } else {
+            initMegaMenu();
+            initLiveSearch();
+        }
     </script>
