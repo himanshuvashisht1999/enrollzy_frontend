@@ -1,5 +1,9 @@
 @extends('layouts.app')
 @section('content')
+@php
+  $pageTitle = isset($heroPillLabel) && !empty($heroPillLabel) ? $heroPillLabel : ((request('is_top') == '1' || request('is_top') == 'true') ? 'Top Coaching Institutes' : 'All Coaching Institutes');
+  $pageSubtitle = (request('is_top') == '1' || request('is_top') == 'true') ? 'Explore top coaching institutes across India.' : 'Explore our complete list of coaching institutes across India.';
+@endphp
     <main class="about-hero-section ptb-70">
         <div class="bg-square">
             <img src="assets/images/banner-square-img.svg" alt="" />
@@ -10,8 +14,8 @@
 
                 <!-- Centered Badge -->
                 <div class="about-us-badge-wrapper">
-                    <button class="about-us-badge">All Coaching Institutes</button>
-                    <p>Explore top coaching institutes across India.</p>
+                    <button class="about-us-badge">{{ $pageTitle }}</button>
+                    <p>{{ $pageSubtitle }}</p>
                 </div>
 
                 <!-- Green Down Arrow Button -->
@@ -29,7 +33,7 @@
                 <ol class="breadcrumb mb-0" style="font-size: 13.5px; font-weight: 500;">
                     <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none text-muted"><i
                                 class="fa-solid fa-house me-1"></i> Home</a></li>
-                    <li class="breadcrumb-item active text-primary" aria-current="page">Coaching Institutes</li>
+                    <li class="breadcrumb-item active text-primary" aria-current="page">{{ $pageTitle }}</li>
                 </ol>
             </nav>
         </div>
@@ -54,7 +58,10 @@
 
             <!-- Global Search Bar & Active Filters -->
             <div class="bg-white rounded-4 p-4 border shadow-sm mb-4">
-                <form action="{{ route('all.coaching') }}" method="GET" class="row g-3 align-items-center">
+                <form action="{{ request('is_top') ? route('top.coaching') : route('all.coaching') }}" method="GET" class="row g-3 align-items-center">
+                    @if(request('is_top'))
+                        <input type="hidden" name="is_top" value="{{ request('is_top') }}">
+                    @endif
                     <div class="col-md-9">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0"><i
@@ -70,7 +77,7 @@
                             Search Coaching
                         </button>
                         @if(request()->hasAny(['search', 'region', 'state', 'city', 'area', 'board', 'class', 'ownership', 'school_type', 'gender']))
-                            <a href="{{ route('all.coaching') }}" class="btn btn-outline-danger text-nowrap rounded-pill px-3"
+                            <a href="{{ request('is_top') ? route('top.coaching') : route('all.coaching') }}" class="btn btn-outline-danger text-nowrap rounded-pill px-3"
                                 title="Clear All Filters">
                                 <i class="fa-solid fa-rotate-left"></i> Reset
                             </a>
@@ -121,9 +128,12 @@
             <div class="row g-4">
                 <!-- Left Sidebar Filters -->
                 <div class="col-lg-3 col-md-4">
-                    <form action="{{ route('all.coaching') }}" method="GET" id="coachingFilterSidebarForm">
+                    <form action="{{ request('is_top') ? route('top.coaching') : route('all.coaching') }}" method="GET" id="coachingFilterSidebarForm">
                         @if(request('search'))
                             <input type="hidden" name="search" value="{{ request('search') }}">
+                        @endif
+                        @if(request('is_top'))
+                            <input type="hidden" name="is_top" value="{{ request('is_top') }}">
                         @endif
 
                         <div class="filter-sidebar-wrapper">

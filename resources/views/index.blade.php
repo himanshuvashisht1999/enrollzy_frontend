@@ -31,8 +31,8 @@
                         @endif
 
                         <!-- Search Capsule -->
-                        <form action="{{ route('global.search') }}" method="GET"
-                            class="search-bar-container position-relative mx-auto mx-lg-0">
+                        <form class="search-bar-container position-relative mx-auto mx-lg-0"
+                            onsubmit="return false;">
                             <div class="dropdown">
                                 <button class="search-dropdown" type="button" id="searchFilterDropdown"
                                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -41,28 +41,28 @@
                                 </button>
                                 <ul class="dropdown-menu border-0 shadow-sm" aria-labelledby="searchFilterDropdown">
                                     <li><a class="dropdown-item" href="javascript:void(0)"
-                                            onclick="document.getElementById('searchType').value=''; document.getElementById('searchFilterLabel').innerText='Looking for..';">All
+                                            onclick="setSearchType('', 'Looking for..');">All
                                             Categories</a>
                                     </li>
                                     <li><a class="dropdown-item" href="javascript:void(0)"
-                                            onclick="document.getElementById('searchType').value='colleges'; document.getElementById('searchFilterLabel').innerText='Colleges';">Colleges</a>
+                                            onclick="setSearchType('colleges', 'Colleges');">Colleges</a>
                                     </li>
                                     <li><a class="dropdown-item" href="javascript:void(0)"
-                                            onclick="document.getElementById('searchType').value='courses'; document.getElementById('searchFilterLabel').innerText='Courses';">Courses</a>
+                                            onclick="setSearchType('coaching', 'Coaching');">Coaching</a>
                                     </li>
                                     <li><a class="dropdown-item" href="javascript:void(0)"
-                                            onclick="document.getElementById('searchType').value='mentors'; document.getElementById('searchFilterLabel').innerText='Mentors';">Mentors</a>
+                                            onclick="setSearchType('mentors', 'Mentors');">Mentors</a>
                                     </li>
                                     <li><a class="dropdown-item" href="javascript:void(0)"
-                                            onclick="document.getElementById('searchType').value='schools'; document.getElementById('searchFilterLabel').innerText='Schools';">Schools</a>
+                                            onclick="setSearchType('schools', 'Schools');">Schools</a>
                                     </li>
                                 </ul>
-                                <input type="hidden" name="type" id="searchType" value="">
+                                <input type="hidden" id="searchType" value="">
                             </div>
 
-                            <input type="text" name="q" class="search-input" placeholder="Search courses, colleges, mentor"
+                            <input type="text" id="heroSearchInput" class="search-input" placeholder="Search coaching, colleges, mentor..."
                                 aria-label="Search text" autocomplete="off">
-                            <button class="search-btn" type="submit" aria-label="Submit Search">
+                            <button class="search-btn" type="button" id="heroSearchBtn" aria-label="Submit Search">
                                 Search
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-arrow-right" viewBox="0 0 16 16">
@@ -75,13 +75,20 @@
                             </div>
                         </form>
 
-                        <!-- Search Tags -->
                         <div class=" d-flex flex-wrap justify-content-center justify-content-lg-start"
                             style="margin-bottom:41px">
-                            <a href="{{ route('top.universities') }}" class="tag-pill">Top University</a>
-                            <a href="{{ route('top.schools') }}" class="tag-pill">Top Schools</a>
-                            <a href="{{ route('top-exams') }}" class="tag-pill">Top Exams</a>
-                            <a href="{{ route('top.coaching') }}" class="tag-pill">Top Courses</a>
+                            <a href="{{ !empty($firstHero->pill_1_url) ? (str_starts_with($firstHero->pill_1_url, 'http') ? $firstHero->pill_1_url : url($firstHero->pill_1_url)) : route('top.universities') }}" class="tag-pill">
+                                {{ !empty($firstHero->pill_1_label) ? $firstHero->pill_1_label : 'Top Universities' }}
+                            </a>
+                            <a href="{{ !empty($firstHero->pill_2_url) ? (str_starts_with($firstHero->pill_2_url, 'http') ? $firstHero->pill_2_url : url($firstHero->pill_2_url)) : route('top.schools') }}" class="tag-pill">
+                                {{ !empty($firstHero->pill_2_label) ? $firstHero->pill_2_label : 'Top Schools' }}
+                            </a>
+                            <a href="{{ !empty($firstHero->pill_3_url) ? (str_starts_with($firstHero->pill_3_url, 'http') ? $firstHero->pill_3_url : url($firstHero->pill_3_url)) : route('top-exams') }}" class="tag-pill">
+                                {{ !empty($firstHero->pill_3_label) ? $firstHero->pill_3_label : 'Top Exams' }}
+                            </a>
+                            <a href="{{ !empty($firstHero->pill_4_url) ? (str_starts_with($firstHero->pill_4_url, 'http') ? $firstHero->pill_4_url : url($firstHero->pill_4_url)) : route('top.coaching') }}" class="tag-pill">
+                                {{ !empty($firstHero->pill_4_label) ? $firstHero->pill_4_label : 'Top Courses' }}
+                            </a>
                         </div>
 
                         <!-- Statistics Cards -->
@@ -1038,9 +1045,9 @@
         </section>
     @endif
 
-    <!-- Testimonials Section -->
+    <!-- Testimonials Section (Video Testimonials) -->
     @php $secVideoTestimonials = $homepageSections['video_testimonials'] ?? null; @endphp
-    @if(!isset($secVideoTestimonials) || (isset($secVideoTestimonials->is_visible) && $secVideoTestimonials->is_visible))
+    @if((!isset($secVideoTestimonials) || (isset($secVideoTestimonials->is_visible) && $secVideoTestimonials->is_visible)) && isset($video_testimonials) && $video_testimonials->count() > 0)
         <section class="testimonials-section ptb-70" style="background-color: #FFFCF8;">
             <div class="container">
                 <!-- Section Header -->
@@ -1057,51 +1064,50 @@
                 </div>
 
                 <!-- Video Cards Grid -->
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
-                    @if(isset($video_testimonials) && $video_testimonials->count() > 0)
-                        @foreach($video_testimonials as $video)
-                            <div class="col">
-                                <div class="testimonial-card"
-                                    style="background-image: url('{{ $video->thumbnail ? (str_starts_with($video->thumbnail, 'http') ? $video->thumbnail : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($video->thumbnail, '/')) : asset('assets/images/mentor_1.png') }}');">
-                                    <div class="testimonial-overlay"></div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 {{ !empty($secVideoTestimonials->cta_title) ? 'mb-5' : '' }}">
+                    @foreach($video_testimonials as $video)
+                        <div class="col">
+                            <div class="testimonial-card"
+                                style="background-image: url('{{ $video->thumbnail ? (str_starts_with($video->thumbnail, 'http') ? $video->thumbnail : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($video->thumbnail, '/')) : asset('assets/images/mentor_1.png') }}');">
+                                <div class="testimonial-overlay"></div>
+                                @if($video->video_url)
+                                    <a href="{{ $video->video_url }}" target="_blank" style="text-decoration: none;">
+                                @endif
+                                    <button class="play-icon-btn" type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                            class="bi bi-play-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                                        </svg>
+                                    </button>
                                     @if($video->video_url)
-                                        <a href="{{ $video->video_url }}" target="_blank" style="text-decoration: none;">
+                                        </a>
                                     @endif
-                                        <button class="play-icon-btn" type="button">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                                class="bi bi-play-fill" viewBox="0 0 16 16">
-                                                <path
-                                                    d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
-                                            </svg>
-                                        </button>
-                                        @if($video->video_url)
-                                            </a>
-                                        @endif
-                                    <div class="testimonial-card-body">
-                                        <h3 class="testimonial-name">{{ $video->name }}</h3>
-                                        <p class="testimonial-sub">{{ $video->course }}</p>
-                                        <div class="testimonial-rating">★ ★ ★ ★ ★</div>
-                                    </div>
+                                <div class="testimonial-card-body">
+                                    <h3 class="testimonial-name">{{ $video->name }}</h3>
+                                    <p class="testimonial-sub">{{ $video->course }}</p>
+                                    <div class="testimonial-rating">★ ★ ★ ★ ★</div>
                                 </div>
                             </div>
-                        @endforeach
-                    @else
-                        <p class="text-center text-muted">No testimonials found.</p>
-                    @endif
+                        </div>
+                    @endforeach
                 </div>
 
-                <!-- View More Button -->
-                <div class="text-center">
-                    <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
-                        More <i class="fa-solid fa-arrow-right-long"></i></a>
-                </div>
+                <!-- View More Button (Shows only if cta_title/label is defined) -->
+                @if(!empty($secVideoTestimonials->cta_title))
+                    <div class="text-center">
+                        <a href="{{ !empty($secVideoTestimonials->cta_url) ? (str_starts_with($secVideoTestimonials->cta_url, 'http') ? $secVideoTestimonials->cta_url : url($secVideoTestimonials->cta_url)) : route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">
+                            {{ $secVideoTestimonials->cta_title }} <i class="fa-solid fa-arrow-right-long"></i>
+                        </a>
+                    </div>
+                @endif
             </div>
         </section>
     @endif
 
     <!-- Student Insights & Feedback Section -->
     @php $secTestimonials = $homepageSections['testimonials'] ?? null; @endphp
-    @if(!isset($secTestimonials) || (isset($secTestimonials->is_visible) && $secTestimonials->is_visible))
+    @if((!isset($secTestimonials) || (isset($secTestimonials->is_visible) && $secTestimonials->is_visible)) && isset($testimonials) && $testimonials->count() > 0)
         <section class="feedback-section ptb-70" style="background:#FFFCF8;">
             <div class="container">
                 <div class="text-center mb-5">
@@ -1118,7 +1124,6 @@
 
                 <!-- Section Header + Nav Buttons -->
                 <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
-
                     <div class="carousel-nav-container"
                         style="width: 100%;justify-content:space-between;padding:0px 50px 0px 50px;">
                         <a href="#" class="carousel-nav-btn feedback-prev-btn">
@@ -1139,42 +1144,47 @@
                 </div>
 
                 <!-- Feedback Cards Swiper -->
-                <div class="swiper feedback-swiper" style="overflow: hidden;padding:0px 50px 100px 50px;">
+                <div class="swiper feedback-swiper" style="overflow: hidden;padding:0px 50px 0px 50px;">
                     <div class="swiper-wrapper">
-                        @if(isset($testimonials) && $testimonials->count() > 0)
-                            @foreach($testimonials as $testimonial)
-                                <div class="swiper-slide h-auto">
-                                    <div class="feedback-card h-100 d-flex flex-column">
-                                        <div class="mb-auto">
-                                            <div class="feedback-rating">
-                                                @for($i = 1; $i <= 5; $i++)
-                                                    @if($i <= $testimonial->rating)
-                                                        ★
-                                                    @else
-                                                        ☆
-                                                    @endif
-                                                @endfor
-                                            </div>
-                                            <p class="feedback-text">
-                                                {{ $testimonial->content }}
-                                            </p>
+                        @foreach($testimonials as $testimonial)
+                            <div class="swiper-slide h-auto">
+                                <div class="feedback-card h-100 d-flex flex-column">
+                                    <div class="mb-auto">
+                                        <div class="feedback-rating">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                @if($i <= $testimonial->rating)
+                                                    ★
+                                                @else
+                                                    ☆
+                                                @endif
+                                            @endfor
                                         </div>
-                                        <div class="feedback-author-row mt-4">
-                                            <img src="{{ $testimonial->image ? (str_starts_with($testimonial->image, 'http') ? $testimonial->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($testimonial->image, '/')) : asset('assets/images/mentor_2.png') }}"
-                                                alt="{{ $testimonial->name }}" class="feedback-avatar">
-                                            <div>
-                                                <h4 class="feedback-author-name">{{ $testimonial->name }}</h4>
-                                                <span class="feedback-author-title">{{ $testimonial->role }}</span>
-                                            </div>
+                                        <p class="feedback-text">
+                                            {{ $testimonial->content }}
+                                        </p>
+                                    </div>
+                                    <div class="feedback-author-row mt-4">
+                                        <img src="{{ $testimonial->image ? (str_starts_with($testimonial->image, 'http') ? $testimonial->image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($testimonial->image, '/')) : asset('assets/images/mentor_2.png') }}"
+                                            alt="{{ $testimonial->name }}" class="feedback-avatar">
+                                        <div>
+                                            <h4 class="feedback-author-name">{{ $testimonial->name }}</h4>
+                                            <span class="feedback-author-title">{{ $testimonial->role }}</span>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
-                        @else
-                            <p class="text-center w-100">No testimonials found.</p>
-                        @endif
+                            </div>
+                        @endforeach
                     </div>
                 </div>
+
+                <!-- View More Button (Shows only if cta_title/label is defined) -->
+                @if(!empty($secTestimonials->cta_title))
+                    <div class="text-center mt-5">
+                        <a href="{{ !empty($secTestimonials->cta_url) ? (str_starts_with($secTestimonials->cta_url, 'http') ? $secTestimonials->cta_url : url($secTestimonials->cta_url)) : '#' }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">
+                            {{ $secTestimonials->cta_title }} <i class="fa-solid fa-arrow-right-long"></i>
+                        </a>
+                    </div>
+                @endif
             </div>
         </section>
     @endif
@@ -1189,772 +1199,130 @@
                     <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3 mb-3">
                         <span class="heading-line d-none d-md-block"></span>
                         <h2 class="section-title mb-0">
-                            {{ !empty($secUnivGrid->title) ? $secUnivGrid->title : "Find The Perfect University For You" }}</h2>
+                            {{ !empty($secUnivGrid->title) ? $secUnivGrid->title : "Leading Universities" }}</h2>
                         <span class="heading-line d-none d-md-block"></span>
                     </div>
                     <p class="section-subtitle mx-auto text-muted" style="max-width: 900px;">
-                        {!! !empty($secUnivGrid->subtitle) ? $secUnivGrid->subtitle : "Discover top universities, exams, and opportunities in your preferred field." !!}
+                        {!! !empty($secUnivGrid->subtitle) ? $secUnivGrid->subtitle : "Discover leading universities offering world-class education, industry-relevant curriculum, and strong career opportunities." !!}
                     </p>
                 </div>
 
                 <!-- Category Tabs Navigation -->
                 <div class="mb-5 m-auto">
-                    <ul class="perfect-univ-tabs nav  m-auto" role="tablist" id="perfectUnivTabs">
-                        <li role="presentation"><a href="#tab-medical" class="perfect-univ-tab active" data-bs-toggle="tab"
-                                role="tab" aria-selected="true">&lt; Medical</a></li>
-                        <li role="presentation"><a href="#tab-science" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
-                                aria-selected="false">Science</a></li>
-                        <li role="presentation"><a href="#tab-hotel" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
-                                aria-selected="false">Hotel Management</a></li>
-                        <li role="presentation"><a href="#tab-it" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
-                                aria-selected="false">Information Technology</a></li>
-                        <li role="presentation"><a href="#tab-arts" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
-                                aria-selected="false">Arts & Humanities</a></li>
-                        <li role="presentation"><a href="#tab-agri" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
-                                aria-selected="false">Agriculture</a></li>
-                        <li role="presentation"><a href="#tab-law" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
-                                aria-selected="false">Law</a></li>
-                        <li role="presentation"><a href="#tab-pharmacy" class="perfect-univ-tab" data-bs-toggle="tab" role="tab"
-                                aria-selected="false">Pharmacy</a></li>
-                        <li role="presentation"><a href="#tab-education" class="perfect-univ-tab" data-bs-toggle="tab"
-                                role="tab" aria-selected="false">Education &gt;</a></li>
+                    <ul class="perfect-univ-tabs nav m-auto" role="tablist" id="perfectUnivTabs">
+                        @if(isset($dbStreamTabs) && $dbStreamTabs->count() > 0)
+                            @foreach($dbStreamTabs as $tab)
+                                <li role="presentation">
+                                    <a href="#tab-{{ $tab->key }}" class="perfect-univ-tab {{ $loop->first ? 'active' : '' }}" data-bs-toggle="tab" role="tab" aria-selected="{{ $loop->first ? 'true' : 'false' }}">
+                                        {{ $tab->name }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        @endif
                     </ul>
                 </div>
 
                 <!-- Perfect Match Box Grid -->
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab-medical" role="tabpanel">
-                        <div class="row row-cols-1 row-cols-lg-3 g-4">
-                            <!-- Column 1: Featured Colleges -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Featured Colleges</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
+                    @if(isset($streamData) && count($streamData) > 0)
+                        @foreach($streamData as $sKey => $sVal)
+                            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="tab-{{ $sKey }}" role="tabpanel">
+                                <div class="row row-cols-1 row-cols-lg-3 g-4">
+                                    <!-- Column 1: Featured Colleges -->
+                                    <div class="col">
+                                        <div class="perfect-match-box">
+                                            <div class="perfect-match-header">
+                                                <h3 class="perfect-match-title mb-0">Featured Colleges</h3>
+                                                <a href="{{ route('university') }}" class="btn-view-all-link">View all</a>
+                                            </div>
+                                            <div class="perfect-badges-grid">
+                                                @if(isset($sVal['colleges']) && $sVal['colleges']->count() > 0)
+                                                    @foreach($sVal['colleges'] as $univ)
+                                                        <a href="{{ route('university.detail', $univ->slug ?? $univ->id) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
+                                                            {{ Str::limit($univ->brand_name ?? $univ->name, 25) }}
+                                                        </a>
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">Chitkara University</span>
-                                        <span class="badge-univ-pill">Parul University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Column 2: Important Exams & Top States -->
-                            <div class="col">
-                                <div class="d-flex flex-column gap-4 h-100">
-                                    <!-- Box A: Important Exams -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Important Exams</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid"
-                                            style="padding: 10px 12px;border-radius: 10px;background-color: #fff;border: 1px solid #DDDDDD;">
-                                            <span class="badge-univ-pill">JEE Main</span>
-                                            <span class="badge-univ-pill">JEE Advanced</span>
-                                            <span class="badge-univ-pill">EAMCET</span>
-                                            <span class="badge-univ-pill">WBJEE</span>
+                                    <!-- Column 2: Important Exams & Top States -->
+                                    <div class="col">
+                                        <div class="d-flex flex-column gap-4 h-100">
+                                            <!-- Box A: Important Exams -->
+                                            <div class="perfect-match-box" style="flex: 1;">
+                                                <div class="perfect-match-header">
+                                                    <h3 class="perfect-match-title mb-0">Important Exams</h3>
+                                                    <a href="{{ route('top-exams') }}" class="btn-view-all-link">View all</a>
+                                                </div>
+                                                <div class="perfect-badges-grid" style="padding: 10px 12px;border-radius: 10px;background-color: #fff;border: 1px solid #DDDDDD;">
+                                                    @foreach($sVal['exams'] as $ex)
+                                                        <a href="{{ route('top-exams', ['search' => $ex]) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
+                                                            {{ $ex }}
+                                                        </a>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            <!-- Box B: Top States -->
+                                            <div class="perfect-match-box" style="flex: 1;">
+                                                <div class="perfect-match-header" style="margin-bottom:10px;">
+                                                    <h3 class="perfect-match-title mb-0">Top States</h3>
+                                                    <a href="{{ route('university') }}" class="btn-view-all-link">View all</a>
+                                                </div>
+                                                <div class="perfect-badges-grid" style="padding: 10px 12px;border-radius: 10px;background-color: #fff;border: 1px solid #DDDDDD;">
+                                                    @foreach($sVal['states'] as $st)
+                                                        <a href="{{ route('university', ['state' => $st]) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
+                                                            {{ $st }}
+                                                        </a>
+                                                    @endforeach
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <!-- Box B: Top States -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header" style="margin-bottom:10px;">
-                                            <h3 class="perfect-match-title mb-0">Top States</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid"
-                                            style="padding: 10px 12px;border-radius: 10px;background-color: #fff;border: 1px solid #DDDDDD;">
-                                            <span class="badge-univ-pill">Maharashtra</span>
-                                            <span class="badge-univ-pill">Tamilnadu</span>
-                                            <span class="badge-univ-pill">Uttar Pradesh</span>
-                                            <span class="badge-univ-pill">Punjab</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Column 3: Related Courses -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Related Courses</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">B tech</span>
-                                        <span class="badge-univ-pill">M tech</span>
-                                        <span class="badge-univ-pill">Bachelor of Engineering</span>
-                                        <span class="badge-univ-pill">Civil Engineering</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
+                                    <!-- Column 3: Related Courses -->
+                                    <div class="col">
+                                        <div class="perfect-match-box">
+                                            <div class="perfect-match-header">
+                                                <h3 class="perfect-match-title mb-0">Related Courses</h3>
+                                                <a href="{{ route('university') }}" class="btn-view-all-link">View all</a>
+                                            </div>
+                                            <div class="perfect-badges-grid">
+                                                @foreach($sVal['courses'] as $crs)
+                                                    <a href="{{ route('university', ['search' => $crs]) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
+                                                        {{ $crs }}
+                                                    </a>
+                                                @endforeach
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        @endforeach
+                    @endif
+                </div>         </div>
+                <!-- View More Button (Shows only if cta_title/label is defined) -->
+                @if(!empty($secUnivGrid->cta_title))
+                    @php
+                        $univCtaUrl = route('university');
+                        if (!empty($secUnivGrid->cta_url)) {
+                            $uStr = $secUnivGrid->cta_url;
+                            if (str_contains($uStr, 'university') || str_contains($uStr, 'universities')) {
+                                $univCtaUrl = route('university');
+                            } elseif (str_starts_with($uStr, 'http')) {
+                                $univCtaUrl = $uStr;
+                            } else {
+                                $univCtaUrl = url($uStr);
+                            }
+                        }
+                    @endphp
+                    <div class="text-center mt-5">
+                        <a href="{{ $univCtaUrl }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">
+                            {{ $secUnivGrid->cta_title }} <i class="fa-solid fa-arrow-right-long"></i>
+                        </a>
                     </div>
-                    <div class="tab-pane fade" id="tab-science" role="tabpanel">
-                        <div class="row row-cols-1 row-cols-lg-3 g-4">
-                            <!-- Column 1: Featured Colleges -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Featured Colleges</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">Chitkara University</span>
-                                        <span class="badge-univ-pill">Parul University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 2: Important Exams & Top States -->
-                            <div class="col">
-                                <div class="d-flex flex-column gap-4 h-100">
-                                    <!-- Box A: Important Exams -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Important Exams</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">JEE Main</span>
-                                            <span class="badge-univ-pill">JEE Advanced</span>
-                                            <span class="badge-univ-pill">EAMCET</span>
-                                            <span class="badge-univ-pill">WBJEE</span>
-                                        </div>
-                                    </div>
-                                    <!-- Box B: Top States -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Top States</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">Maharashtra</span>
-                                            <span class="badge-univ-pill">Tamilnadu</span>
-                                            <span class="badge-univ-pill">Uttar Pradesh</span>
-                                            <span class="badge-univ-pill">Punjab</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 3: Related Courses -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Related Courses</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">B tech</span>
-                                        <span class="badge-univ-pill">M tech</span>
-                                        <span class="badge-univ-pill">Bachelor of Engineering</span>
-                                        <span class="badge-univ-pill">Civil Engineering</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab-hotel" role="tabpanel">
-                        <div class="row row-cols-1 row-cols-lg-3 g-4">
-                            <!-- Column 1: Featured Colleges -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Featured Colleges</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">Chitkara University</span>
-                                        <span class="badge-univ-pill">Parul University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 2: Important Exams & Top States -->
-                            <div class="col">
-                                <div class="d-flex flex-column gap-4 h-100">
-                                    <!-- Box A: Important Exams -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Important Exams</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">JEE Main</span>
-                                            <span class="badge-univ-pill">JEE Advanced</span>
-                                            <span class="badge-univ-pill">EAMCET</span>
-                                            <span class="badge-univ-pill">WBJEE</span>
-                                        </div>
-                                    </div>
-                                    <!-- Box B: Top States -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Top States</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">Maharashtra</span>
-                                            <span class="badge-univ-pill">Tamilnadu</span>
-                                            <span class="badge-univ-pill">Uttar Pradesh</span>
-                                            <span class="badge-univ-pill">Punjab</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 3: Related Courses -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Related Courses</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">B tech</span>
-                                        <span class="badge-univ-pill">M tech</span>
-                                        <span class="badge-univ-pill">Bachelor of Engineering</span>
-                                        <span class="badge-univ-pill">Civil Engineering</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab-it" role="tabpanel">
-                        <div class="row row-cols-1 row-cols-lg-3 g-4">
-                            <!-- Column 1: Featured Colleges -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Featured Colleges</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">Chitkara University</span>
-                                        <span class="badge-univ-pill">Parul University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 2: Important Exams & Top States -->
-                            <div class="col">
-                                <div class="d-flex flex-column gap-4 h-100">
-                                    <!-- Box A: Important Exams -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Important Exams</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">JEE Main</span>
-                                            <span class="badge-univ-pill">JEE Advanced</span>
-                                            <span class="badge-univ-pill">EAMCET</span>
-                                            <span class="badge-univ-pill">WBJEE</span>
-                                        </div>
-                                    </div>
-                                    <!-- Box B: Top States -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Top States</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">Maharashtra</span>
-                                            <span class="badge-univ-pill">Tamilnadu</span>
-                                            <span class="badge-univ-pill">Uttar Pradesh</span>
-                                            <span class="badge-univ-pill">Punjab</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 3: Related Courses -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Related Courses</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">B tech</span>
-                                        <span class="badge-univ-pill">M tech</span>
-                                        <span class="badge-univ-pill">Bachelor of Engineering</span>
-                                        <span class="badge-univ-pill">Civil Engineering</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab-arts" role="tabpanel">
-                        <div class="row row-cols-1 row-cols-lg-3 g-4">
-                            <!-- Column 1: Featured Colleges -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Featured Colleges</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">Chitkara University</span>
-                                        <span class="badge-univ-pill">Parul University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 2: Important Exams & Top States -->
-                            <div class="col">
-                                <div class="d-flex flex-column gap-4 h-100">
-                                    <!-- Box A: Important Exams -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Important Exams</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">JEE Main</span>
-                                            <span class="badge-univ-pill">JEE Advanced</span>
-                                            <span class="badge-univ-pill">EAMCET</span>
-                                            <span class="badge-univ-pill">WBJEE</span>
-                                        </div>
-                                    </div>
-                                    <!-- Box B: Top States -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Top States</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">Maharashtra</span>
-                                            <span class="badge-univ-pill">Tamilnadu</span>
-                                            <span class="badge-univ-pill">Uttar Pradesh</span>
-                                            <span class="badge-univ-pill">Punjab</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 3: Related Courses -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Related Courses</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">B tech</span>
-                                        <span class="badge-univ-pill">M tech</span>
-                                        <span class="badge-univ-pill">Bachelor of Engineering</span>
-                                        <span class="badge-univ-pill">Civil Engineering</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab-agri" role="tabpanel">
-                        <div class="row row-cols-1 row-cols-lg-3 g-4">
-                            <!-- Column 1: Featured Colleges -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Featured Colleges</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">Chitkara University</span>
-                                        <span class="badge-univ-pill">Parul University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 2: Important Exams & Top States -->
-                            <div class="col">
-                                <div class="d-flex flex-column gap-4 h-100">
-                                    <!-- Box A: Important Exams -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Important Exams</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">JEE Main</span>
-                                            <span class="badge-univ-pill">JEE Advanced</span>
-                                            <span class="badge-univ-pill">EAMCET</span>
-                                            <span class="badge-univ-pill">WBJEE</span>
-                                        </div>
-                                    </div>
-                                    <!-- Box B: Top States -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Top States</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">Maharashtra</span>
-                                            <span class="badge-univ-pill">Tamilnadu</span>
-                                            <span class="badge-univ-pill">Uttar Pradesh</span>
-                                            <span class="badge-univ-pill">Punjab</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 3: Related Courses -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Related Courses</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">B tech</span>
-                                        <span class="badge-univ-pill">M tech</span>
-                                        <span class="badge-univ-pill">Bachelor of Engineering</span>
-                                        <span class="badge-univ-pill">Civil Engineering</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab-law" role="tabpanel">
-                        <div class="row row-cols-1 row-cols-lg-3 g-4">
-                            <!-- Column 1: Featured Colleges -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Featured Colleges</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">Chitkara University</span>
-                                        <span class="badge-univ-pill">Parul University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 2: Important Exams & Top States -->
-                            <div class="col">
-                                <div class="d-flex flex-column gap-4 h-100">
-                                    <!-- Box A: Important Exams -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Important Exams</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">JEE Main</span>
-                                            <span class="badge-univ-pill">JEE Advanced</span>
-                                            <span class="badge-univ-pill">EAMCET</span>
-                                            <span class="badge-univ-pill">WBJEE</span>
-                                        </div>
-                                    </div>
-                                    <!-- Box B: Top States -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Top States</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">Maharashtra</span>
-                                            <span class="badge-univ-pill">Tamilnadu</span>
-                                            <span class="badge-univ-pill">Uttar Pradesh</span>
-                                            <span class="badge-univ-pill">Punjab</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 3: Related Courses -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Related Courses</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">B tech</span>
-                                        <span class="badge-univ-pill">M tech</span>
-                                        <span class="badge-univ-pill">Bachelor of Engineering</span>
-                                        <span class="badge-univ-pill">Civil Engineering</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab-pharmacy" role="tabpanel">
-                        <div class="row row-cols-1 row-cols-lg-3 g-4">
-                            <!-- Column 1: Featured Colleges -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Featured Colleges</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">Chitkara University</span>
-                                        <span class="badge-univ-pill">Parul University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 2: Important Exams & Top States -->
-                            <div class="col">
-                                <div class="d-flex flex-column gap-4 h-100">
-                                    <!-- Box A: Important Exams -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Important Exams</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">JEE Main</span>
-                                            <span class="badge-univ-pill">JEE Advanced</span>
-                                            <span class="badge-univ-pill">EAMCET</span>
-                                            <span class="badge-univ-pill">WBJEE</span>
-                                        </div>
-                                    </div>
-                                    <!-- Box B: Top States -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Top States</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">Maharashtra</span>
-                                            <span class="badge-univ-pill">Tamilnadu</span>
-                                            <span class="badge-univ-pill">Uttar Pradesh</span>
-                                            <span class="badge-univ-pill">Punjab</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 3: Related Courses -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Related Courses</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">B tech</span>
-                                        <span class="badge-univ-pill">M tech</span>
-                                        <span class="badge-univ-pill">Bachelor of Engineering</span>
-                                        <span class="badge-univ-pill">Civil Engineering</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab-education" role="tabpanel">
-                        <div class="row row-cols-1 row-cols-lg-3 g-4">
-                            <!-- Column 1: Featured Colleges -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Featured Colleges</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">Chitkara University</span>
-                                        <span class="badge-univ-pill">Parul University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">K.R. Mangalam University</span>
-                                        <span class="badge-univ-pill">Chandigarh University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 2: Important Exams & Top States -->
-                            <div class="col">
-                                <div class="d-flex flex-column gap-4 h-100">
-                                    <!-- Box A: Important Exams -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Important Exams</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">JEE Main</span>
-                                            <span class="badge-univ-pill">JEE Advanced</span>
-                                            <span class="badge-univ-pill">EAMCET</span>
-                                            <span class="badge-univ-pill">WBJEE</span>
-                                        </div>
-                                    </div>
-                                    <!-- Box B: Top States -->
-                                    <div class="perfect-match-box" style="flex: 1;">
-                                        <div class="perfect-match-header">
-                                            <h3 class="perfect-match-title mb-0">Top States</h3>
-                                            <a href="#" class="btn-view-all-link">View all</a>
-                                        </div>
-                                        <div class="perfect-badges-grid">
-                                            <span class="badge-univ-pill">Maharashtra</span>
-                                            <span class="badge-univ-pill">Tamilnadu</span>
-                                            <span class="badge-univ-pill">Uttar Pradesh</span>
-                                            <span class="badge-univ-pill">Punjab</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 3: Related Courses -->
-                            <div class="col">
-                                <div class="perfect-match-box">
-                                    <div class="perfect-match-header">
-                                        <h3 class="perfect-match-title mb-0">Related Courses</h3>
-                                        <a href="#" class="btn-view-all-link">View all</a>
-                                    </div>
-                                    <div class="perfect-badges-grid">
-                                        <span class="badge-univ-pill">B tech</span>
-                                        <span class="badge-univ-pill">M tech</span>
-                                        <span class="badge-univ-pill">Bachelor of Engineering</span>
-                                        <span class="badge-univ-pill">Civil Engineering</span>
-                                        <span class="badge-univ-pill">Lovely University</span>
-                                        <span class="badge-univ-pill">Sanskriti University</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
         </section>
     @endif
@@ -1984,113 +1352,57 @@
             </div>
         </div>
 
-        <section class="compare-courses-section ptb-70">
-            <div class="container">
-                <!-- Part B: Trending Courses -->
-                <div class="text-center" style="margin-bottom: 57px;">
-                    <span
-                        class="marketplace-badge mb-3">{{ !empty($secUnivComp->cta_title) ? $secUnivComp->cta_title : "Trending Courses" }}</span>
-                    <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3 mb-3">
-                        <span class="heading-line d-none d-md-block"></span>
-                        <h2 class="section-title mb-0">
-                            {{ !empty($secUnivComp->title) ? $secUnivComp->title : "Build skills employers actually want" }}
-                        </h2>
-                        <span class="heading-line d-none d-md-block"></span>
+        @php $secTrendingCourses = $homepageSections['trending_courses'] ?? null; @endphp
+        @if(!isset($secTrendingCourses) || (isset($secTrendingCourses->is_visible) && $secTrendingCourses->is_visible))
+            <section class="compare-courses-section ptb-70">
+                <div class="container">
+                    <!-- Part B: Trending Courses Header -->
+                    <div class="text-center" style="margin-bottom: 57px;">
+                        <span class="marketplace-badge mb-3">Trending Courses</span>
+                        <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3 mb-3">
+                            <span class="heading-line d-none d-md-block"></span>
+                            <h2 class="section-title mb-0">
+                                {{ !empty($secTrendingCourses->title) ? $secTrendingCourses->title : "Build skills employers actually want" }}
+                            </h2>
+                            <span class="heading-line d-none d-md-block"></span>
+                        </div>
+                        <p class="section-subtitle mx-auto text-muted" style="max-width: 900px;">
+                            {!! !empty($secTrendingCourses->subtitle) ? $secTrendingCourses->subtitle : "Prepare for the top competitive exams and professional career courses in the country." !!}
+                        </p>
                     </div>
-                    <p class="section-subtitle mx-auto text-muted" style="max-width: 900px;">
-                        {!! !empty($secUnivComp->subtitle) ? $secUnivComp->subtitle : "Prepare for the top competitive exams in the country." !!}
-                    </p>
-                </div>
 
-                <!-- Course Cards Grid -->
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-3 mb-5">
-                    <!-- Course 1 -->
-                    <div class="col">
-                        <div class="course-card">
-                            <img src="assets/images/training-course-img.png" alt="Course circular icon"
-                                class="course-img-circular">
-                            <h3 class="course-title">AI & Machine Learning</h3>
-                            <span class="course-instructor">Andrew Ng · Coursera</span>
-                            <div class="course-footer">
-                                <span class="star-rating">★★★★★ <span class="text-dark">4.9</span></span>
-                                <span class="text-primary">₹3,499</span>
-                            </div>
-                        </div>
+                    <!-- Course Cards Grid -->
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-3 mb-5">
+                        @if(isset($trendingCourses) && $trendingCourses->count() > 0)
+                            @foreach($trendingCourses as $course)
+                                <div class="col">
+                                    <a href="{{ !empty($course->url) ? (str_starts_with($course->url, 'http') ? $course->url : url($course->url)) : route('university', ['search' => $course->name]) }}" class="text-decoration-none text-dark">
+                                        <div class="course-card h-100">
+                                            <img src="{{ !empty($course->image) ? asset($course->image) : 'assets/images/training-course-img.png' }}" alt="{{ $course->name }}" class="course-img-circular">
+                                            <h3 class="course-title" title="{{ $course->name }}">{{ Str::limit($course->name, 22) }}</h3>
+                                            <span class="course-instructor">{{ $course->instructor ?? 'Featured Course' }}</span>
+                                            <div class="course-footer">
+                                                <span class="star-rating">★★★★★ <span class="text-dark">{{ $course->rating ?? '4.9' }}</span></span>
+                                                <span class="text-primary">{{ $course->price ?? 'Popular' }}</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
-                    <!-- Course 2 -->
-                    <div class="col">
-                        <div class="course-card">
-                            <img src="assets/images/training-course-img.png" alt="Course circular icon"
-                                class="course-img-circular">
-                            <h3 class="course-title">Full Stack Web Dev</h3>
-                            <span class="course-instructor">Andrew Ng · Coursera</span>
-                            <div class="course-footer">
-                                <span class="star-rating">★★★★★ <span class="text-dark">4.9</span></span>
-                                <span class="text-primary">₹3,499</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Course 3 -->
-                    <div class="col">
-                        <div class="course-card">
-                            <img src="assets/images/training-course-img.png" alt="Course circular icon"
-                                class="course-img-circular">
-                            <h3 class="course-title">Full Stack Web Dev</h3>
-                            <span class="course-instructor">Andrew Ng · Coursera</span>
-                            <div class="course-footer">
-                                <span class="star-rating">★★★★★ <span class="text-dark">4.9</span></span>
-                                <span class="text-primary">₹3,499</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Course 4 -->
-                    <div class="col">
-                        <div class="course-card">
-                            <img src="assets/images/training-course-img.png" alt="Course circular icon"
-                                class="course-img-circular">
-                            <h3 class="course-title">UI/UX Design</h3>
-                            <span class="course-instructor">Andrew Ng · Coursera</span>
-                            <div class="course-footer">
-                                <span class="star-rating">★★★★★ <span class="text-dark">4.9</span></span>
-                                <span class="text-primary">₹3,499</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Course 5 -->
-                    <div class="col">
-                        <div class="course-card">
-                            <img src="assets/images/training-course-img.png" alt="Course circular icon"
-                                class="course-img-circular">
-                            <h3 class="course-title">Digital Marketing</h3>
-                            <span class="course-instructor">Andrew Ng · Coursera</span>
-                            <div class="course-footer">
-                                <span class="star-rating">★★★★★ <span class="text-dark">4.9</span></span>
-                                <span class="text-primary">₹3,499</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Course 6 -->
-                    <div class="col">
-                        <div class="course-card">
-                            <img src="assets/images/training-course-img.png" alt="Course circular icon"
-                                class="course-img-circular">
-                            <h3 class="course-title">AI & Machine Learning</h3>
-                            <span class="course-instructor">Andrew Ng · Coursera</span>
-                            <div class="course-footer">
-                                <span class="star-rating">★★★★★ <span class="text-dark">4.9</span></span>
-                                <span class="text-primary">₹3,499</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- View More Button -->
-                <div class="text-center">
-                    <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
-                        More <i class="fa-solid fa-arrow-right-long"></i></a>
+                    <!-- View More Button (Shows only if cta_title is set in admin Homepage Sections) -->
+                    @if(!empty($secTrendingCourses->cta_title))
+                        <div class="text-center">
+                            <a href="{{ !empty($secTrendingCourses->cta_url) ? (str_starts_with($secTrendingCourses->cta_url, 'http') ? $secTrendingCourses->cta_url : url($secTrendingCourses->cta_url)) : route('university') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">
+                                {{ $secTrendingCourses->cta_title }} <i class="fa-solid fa-arrow-right-long"></i>
+                            </a>
+                        </div>
+                    @endif
                 </div>
-            </div>
-        </section>
+            </section>
+        @endif
     @endif
 
     <!-- Let's Get in Touch Section (Student Form) -->
@@ -2153,50 +1465,24 @@
                                 @csrf
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
-                                        <label for="fullName" class="form-label fw-semibold">Full Name <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                                            id="fullName" placeholder="Enter your name" value="{{ old('name') }}" required>
+                                        <label for="studentName" class="form-label fw-semibold">Student Name <span class="text-danger">*</span></label>
+                                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="studentName" placeholder="Enter Student Name" value="{{ old('name') }}" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="phoneNumber" class="form-label fw-semibold">Phone Number <span
-                                                class="text-danger">*</span></label>
-                                        <input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror"
-                                            id="phoneNumber" placeholder="Enter your Phone Number" value="{{ old('phone') }}"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="row g-3 mb-3">
-                                    <div class="col-md-6">
-                                        <label for="emailAddress" class="form-label fw-semibold">Email Address</label>
-                                        <input type="email" name="email"
-                                            class="form-control @error('email') is-invalid @enderror" id="emailAddress"
-                                            placeholder="Email address" value="{{ old('email') }}">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="companyName" class="form-label fw-semibold">Company Name</label>
-                                        <input type="text" name="company"
-                                            class="form-control @error('company') is-invalid @enderror" id="companyName"
-                                            placeholder="Company name" value="{{ old('company') }}">
-                                    </div>
-                                </div>
-                                <div class="row g-3 mb-3">
-                                    <div class="col-md-12">
-                                        <label for="businessType" class="form-label fw-semibold">Business Type</label>
-                                        <select name="type" class="form-select" id="businessType">
-                                            <option value="School Admission" selected>School Admission</option>
-                                            <option value="Coaching Institutes">Coaching Institutes</option>
-                                            <option value="University Partner">University Partner</option>
-                                            <option value="EdTech Partner">EdTech Partner</option>
-                                        </select>
+                                        <label for="phoneNumber" class="form-label fw-semibold">Mobile number <span class="text-danger">*</span></label>
+                                        <input type="tel" name="phone" class="form-control @error('phone') is-invalid @enderror" id="phoneNumber" placeholder="Enter Mobile Number" value="{{ old('phone') }}" required>
                                     </div>
                                 </div>
                                 <div class="mb-4">
-                                    <label for="businessHelp" class="form-label fw-semibold">How can we help your
-                                        business</label>
-                                    <textarea name="message" class="form-control @error('message') is-invalid @enderror"
-                                        id="businessHelp" rows="3"
-                                        placeholder="How can we help your business">{{ old('message') }}</textarea>
+                                    <label for="programmeInterested" class="form-label fw-semibold">Programme interested in? <span class="text-danger">*</span></label>
+                                    <select name="programme" class="form-select @error('programme') is-invalid @enderror" id="programmeInterested" required>
+                                        <option value="" disabled {{ old('programme') ? '' : 'selected' }}>Select Programme</option>
+                                        <option value="School" {{ old('programme') == 'School' ? 'selected' : '' }}>School</option>
+                                        <option value="Coaching" {{ old('programme') == 'Coaching' ? 'selected' : '' }}>Coaching</option>
+                                        <option value="UG" {{ old('programme') == 'UG' ? 'selected' : '' }}>UG</option>
+                                        <option value="PG" {{ old('programme') == 'PG' ? 'selected' : '' }}>PG</option>
+                                        <option value="Doctorate" {{ old('programme') == 'Doctorate' ? 'selected' : '' }}>Doctorate</option>
+                                    </select>
                                 </div>
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-enrollzy btn-enrollzy-lg">

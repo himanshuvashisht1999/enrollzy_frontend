@@ -16,8 +16,9 @@ class PageController extends Controller
         $home_services = \App\Models\HomeService::where('status', 1)->orderBy('sort_order')->get();
         $home_benefits = \App\Models\HomeBenefit::where('status', 1)->orderBy('sort_order')->get();
         $trending_skills = \App\Models\TrendingSkill::where('status', 1)->orderBy('sort_order')->get();
+        $trendingCourses = \App\Models\TrendingCourse::where('status', 1)->orderBy('sort_order', 'asc')->get();
         $top_exams = \App\Models\DynamicExam::where('status', 'Active')->orderBy('id', 'desc')->take(6)->get();
-        $video_testimonials = collect();
+        $video_testimonials = \App\Models\VideoTestimonial::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
         $blogs = \App\Models\Blog::with('category')->orderBy('published_at', 'desc')->take(4)->get();
         $testimonials = \App\Models\Testimonial::orderBy('id', 'desc')->get();
 
@@ -43,6 +44,40 @@ class PageController extends Controller
         $internshipsCount = 4500;
         
         $coachingInstitutes = \App\Models\Organisation::where('organisation_type_id', 3)->where('status', 1)->take(6)->get();
+        $featuredUniversities = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1)->orderBy('id', 'desc')->take(15)->get();
+
+        $allActiveUnivs = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1)->orderBy('id', 'desc')->get();
+
+        $dbStreamTabs = \App\Models\HomepageStreamTab::where('status', 1)->orderBy('sort_order', 'asc')->get();
+
+        $streamData = [];
+        foreach ($dbStreamTabs as $tab) {
+            $keywords = is_array($tab->keywords) ? $tab->keywords : json_decode($tab->keywords ?? '[]', true);
+            $exams = is_array($tab->default_exams) ? $tab->default_exams : json_decode($tab->default_exams ?? '[]', true);
+            $states = is_array($tab->default_states) ? $tab->default_states : json_decode($tab->default_states ?? '[]', true);
+            $courses = is_array($tab->default_courses) ? $tab->default_courses : json_decode($tab->default_courses ?? '[]', true);
+
+            $filteredUnivs = $allActiveUnivs->filter(function($u) use ($keywords) {
+                if (empty($keywords)) return true;
+                $text = strtolower($u->name . ' ' . ($u->about_organisation ?? '') . ' ' . ($u->meta_title ?? ''));
+                foreach ($keywords as $kw) {
+                    if (!empty($kw) && str_contains($text, strtolower($kw))) return true;
+                }
+                return false;
+            })->take(12);
+
+            if ($filteredUnivs->count() < 4) {
+                $filteredUnivs = $allActiveUnivs->take(12);
+            }
+
+            $streamData[$tab->key] = [
+                'name' => $tab->name,
+                'colleges' => $filteredUnivs,
+                'exams' => $exams ?? [],
+                'states' => $states ?? [],
+                'courses' => $courses ?? [],
+            ];
+        }
 
         $homepageSections = \Illuminate\Support\Facades\DB::table('homepage_sections')->get()->keyBy('section_key');
         $heroSliders = \Illuminate\Support\Facades\DB::table('hero_sliders')->where('is_active', 1)->orderBy('sort_order')->get();
@@ -53,7 +88,7 @@ class PageController extends Controller
             'top_exams', 'video_testimonials', 'blogs', 'testimonials', 
             'schoolsCount', 'coachingCount', 'universitiesCount', 'collegesCount', 'examBodiesCount',
             'counsellingBodiesCount', 'regulatoryBodiesCount', 'govAgenciesCount', 'totalInstitutionsCount',
-            'totalLeadsCount', 'totalExamsCount', 'mentorsCount', 'scholarshipsCount', 'internshipsCount', 'blogsCount', 'coachingInstitutes', 
+            'totalLeadsCount', 'totalExamsCount', 'mentorsCount', 'scholarshipsCount', 'internshipsCount', 'blogsCount', 'coachingInstitutes', 'featuredUniversities', 'streamData', 'dbStreamTabs', 'trendingCourses',
             'mentors', 'heroSliders', 'firstHero', 'homepageSections'
         ));
     }
@@ -231,9 +266,32 @@ class PageController extends Controller
             $types = (array) $request->school_type;
             $query->where(function($q) use ($types) {
                 foreach ($types as $tp) {
-                    $q->orWhere('minority_type', 'like', "%{$tp}%")
-                      ->orWhere('brand_type', 'like', "%{$tp}%")
-                      ->orWhere('about_organisation', 'like', "%{$tp}%");
+                    $tpLower = strtolower($tp);
+                    if (str_contains($tpLower, 'girl')) {
+                        $q->orWhere('minority_type', 'like', '%Girl%')
+                          ->orWhere('brand_type', 'like', '%Girl%')
+                          ->orWhere('about_organisation', 'like', '%girl%')
+                          ->orWhere('name', 'like', '%Girl%');
+                    } elseif (str_contains($tpLower, 'boy')) {
+                        $q->orWhere('minority_type', 'like', '%Boy%')
+                          ->orWhere('brand_type', 'like', '%Boy%')
+                          ->orWhere('about_organisation', 'like', '%boy%')
+                          ->orWhere('name', 'like', '%Boy%');
+                    } elseif (str_contains($tpLower, 'co-ed') || str_contains($tpLower, 'coed') || str_contains($tpLower, 'coed')) {
+                        $q->orWhere('minority_type', 'like', '%Coed%')
+                          ->orWhere('brand_type', 'like', '%Coed%')
+                          ->orWhere('about_organisation', 'like', '%co-ed%')
+                          ->orWhere('about_organisation', 'like', "%co-educational%")
+                          ->orWhere('about_organisation', 'like', "%coeducational%");
+                    } elseif (str_contains($tpLower, 'residential')) {
+                        $q->orWhere('about_organisation', 'like', '%residential%')
+                          ->orWhere('about_organisation', 'like', '%boarding%');
+                    } else {
+                        $q->orWhere('minority_type', 'like', "%{$tp}%")
+                          ->orWhere('brand_type', 'like', "%{$tp}%")
+                          ->orWhere('about_organisation', 'like', "%{$tp}%")
+                          ->orWhere('name', 'like', "%{$tp}%");
+                    }
                 }
             });
         }
@@ -243,8 +301,25 @@ class PageController extends Controller
             $genders = (array) $request->gender;
             $query->where(function($q) use ($genders) {
                 foreach ($genders as $gen) {
-                    $q->orWhere('minority_type', 'like', "%{$gen}%")
-                      ->orWhere('about_organisation', 'like', "%{$gen}%");
+                    $genLower = strtolower($gen);
+                    if (str_contains($genLower, 'girl')) {
+                        $q->orWhere('minority_type', 'like', '%Girl%')
+                          ->orWhere('about_organisation', 'like', '%girl%')
+                          ->orWhere('name', 'like', '%Girl%');
+                    } elseif (str_contains($genLower, 'boy')) {
+                        $q->orWhere('minority_type', 'like', '%Boy%')
+                          ->orWhere('about_organisation', 'like', '%boy%')
+                          ->orWhere('name', 'like', '%Boy%');
+                    } elseif (str_contains($genLower, 'coed') || str_contains($genLower, 'co-ed')) {
+                        $q->orWhere('minority_type', 'like', '%Coed%')
+                          ->orWhere('about_organisation', 'like', '%co-ed%')
+                          ->orWhere('about_organisation', 'like', '%co-educational%')
+                          ->orWhere('about_organisation', 'like', '%coeducational%');
+                    } else {
+                        $q->orWhere('minority_type', 'like', "%{$gen}%")
+                          ->orWhere('about_organisation', 'like', "%{$gen}%")
+                          ->orWhere('name', 'like', "%{$gen}%");
+                    }
                 }
             });
         }
@@ -261,9 +336,19 @@ class PageController extends Controller
 
         $this->applyOrganisationFilters($query, $request);
 
+        $heroPillLabel = null;
+        if ($request->has('is_top') && ($request->is_top == '1' || $request->is_top == 'true')) {
+            $heroPillLabel = \Illuminate\Support\Facades\DB::table('hero_sliders')
+                ->where('is_active', 1)
+                ->whereNotNull('pill_2_label')
+                ->where('pill_2_label', '!=', '')
+                ->orderBy('sort_order')
+                ->value('pill_2_label');
+        }
+
         $schools = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
             
-        return view('all-schools', compact('schools'));
+        return view('all-schools', compact('schools', 'heroPillLabel'));
     }
     public function topExams(\Illuminate\Http\Request $request) {
         $query = \App\Models\DynamicExam::where('status', 'Active');
@@ -359,6 +444,7 @@ class PageController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
+            'programme' => 'nullable|string|max:100',
             'email' => 'nullable|email|max:255',
             'company' => 'nullable|string|max:255',
             'organisation_name' => 'nullable|string|max:255',
@@ -369,21 +455,22 @@ class PageController extends Controller
             'message' => 'nullable|string',
         ]);
 
-        $businessType = $request->type ?? $request->business_type ?? $request->looking_for;
+        $prog = $request->programme ?? $request->type ?? $request->business_type ?? $request->looking_for;
         $orgName = $request->organisation_name ?? $request->company;
 
-        $subjectParts = ['Callback Inquiry'];
+        $subjectParts = ['Student Lead Inquiry'];
+        if ($prog) $subjectParts[] = 'Programme: ' . $prog;
         if ($orgName) $subjectParts[] = 'Institute/School: ' . $orgName;
-        if ($businessType) $subjectParts[] = 'Type: ' . $businessType;
         
         $subject = implode(' | ', $subjectParts);
 
         $messageContent = $request->message;
         if (empty($messageContent)) {
             $details = [];
+            if ($prog) $details[] = 'Programme Interested In: ' . $prog;
             if ($orgName) $details[] = 'Institute/School Name: ' . $orgName;
             if ($request->session_time) $details[] = 'Preferred Session Time: ' . $request->session_time;
-            $messageContent = !empty($details) ? implode("\n", $details) : 'Request a callback from website.';
+            $messageContent = !empty($details) ? implode("\n", $details) : 'Student Lead Inquiry from website.';
         }
 
         \Illuminate\Support\Facades\DB::table('leads')->insert([
@@ -468,9 +555,19 @@ class PageController extends Controller
 
         $this->applyOrganisationFilters($query, $request);
 
+        $heroPillLabel = null;
+        if ($request->has('is_top') && ($request->is_top == '1' || $request->is_top == 'true')) {
+            $heroPillLabel = \Illuminate\Support\Facades\DB::table('hero_sliders')
+                ->where('is_active', 1)
+                ->whereNotNull('pill_4_label')
+                ->where('pill_4_label', '!=', '')
+                ->orderBy('sort_order')
+                ->value('pill_4_label');
+        }
+
         $coachings = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
             
-        return view('all-coaching', compact('coachings'));
+        return view('all-coaching', compact('coachings', 'heroPillLabel'));
     }
     
     public function coachingDetail($slug) {
@@ -601,9 +698,19 @@ class PageController extends Controller
             });
         }
 
+        $heroPillLabel = null;
+        if ($request->has('is_top') && ($request->is_top == '1' || $request->is_top == 'true')) {
+            $heroPillLabel = \Illuminate\Support\Facades\DB::table('hero_sliders')
+                ->where('is_active', 1)
+                ->whereNotNull('pill_1_label')
+                ->where('pill_1_label', '!=', '')
+                ->orderBy('sort_order')
+                ->value('pill_1_label');
+        }
+
         $universities = $query->orderBy('is_top', 'desc')->orderBy('nirf_rank_overall', 'asc')->paginate(12)->withQueryString();
 
-        return view('university', compact('universities'));
+        return view('university', compact('universities', 'heroPillLabel'));
     }
 
     public function topUniversities(\Illuminate\Http\Request $request) {
@@ -649,8 +756,20 @@ class PageController extends Controller
         return view('university-detail', compact('university', 'location', 'boards', 'grades'));
     }
 
-    public function mentors() {
-        $mentors = \App\Models\MentorProfile::with('user')->latest()->get();
+    public function mentors(\Illuminate\Http\Request $request) {
+        $query = \App\Models\MentorProfile::with('user');
+
+        if ($request->filled('search') || $request->filled('q')) {
+            $search = trim($request->input('search', $request->input('q')));
+            $query->where(function($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('professional_headline', 'like', "%{$search}%")
+                  ->orWhere('short_bio', 'like', "%{$search}%");
+            });
+        }
+
+        $mentors = $query->latest()->get();
 
         $dbTestimonials = \App\Models\Testimonial::latest()->get();
         $testimonials = [];
@@ -907,22 +1026,80 @@ class PageController extends Controller
         $type = strtolower(trim($request->input('type', '')));
         $q = trim($request->input('q', ''));
 
+        $params = array_filter(['search' => $q]);
+
         if ($type === 'colleges') {
-            return redirect()->route('university', array_filter(['search' => $q]));
-        } elseif ($type === 'courses') {
-            return redirect()->route('all.coaching', array_filter(['search' => $q]));
+            return redirect()->route('university', $params);
+        } elseif ($type === 'courses' || $type === 'coaching') {
+            return redirect()->route('all.coaching', $params);
         } elseif ($type === 'mentors') {
-            return redirect()->route('mentors', array_filter(['q' => $q]));
+            return redirect()->route('mentors', array_filter(['search' => $q, 'q' => $q]));
         } elseif ($type === 'schools') {
-            return redirect()->route('all-schools', array_filter(['search' => $q]));
+            return redirect()->route('all-schools', $params);
         }
 
+        // All Categories — show combined search results page
         if (!empty($q)) {
-            return redirect()->route('university', ['search' => $q]);
+            return redirect()->route('search.results', ['q' => $q]);
         }
 
         return redirect()->route('home');
     }
+
+    public function searchResults(\Illuminate\Http\Request $request) {
+        $q = trim($request->input('q', ''));
+
+        if (empty($q)) {
+            return redirect()->route('home');
+        }
+
+        // Colleges / Universities
+        $colleges = \App\Models\Organisation::where('status', 1)
+            ->where('organisation_type_id', 1)
+            ->where(function($query) use ($q) {
+                $query->where('name', 'like', "%{$q}%")
+                      ->orWhere('short_name', 'like', "%{$q}%")
+                      ->orWhere('cities_present_in', 'like', "%{$q}%")
+                      ->orWhere('states_present_in', 'like', "%{$q}%");
+            })
+            ->limit(6)->get();
+
+        // Schools
+        $schools = \App\Models\Organisation::where('status', 1)
+            ->where('organisation_type_id', 4)
+            ->where(function($query) use ($q) {
+                $query->where('name', 'like', "%{$q}%")
+                      ->orWhere('short_name', 'like', "%{$q}%")
+                      ->orWhere('cities_present_in', 'like', "%{$q}%")
+                      ->orWhere('states_present_in', 'like', "%{$q}%");
+            })
+            ->limit(6)->get();
+
+        // Coaching
+        $coachings = \App\Models\Organisation::where('status', 1)
+            ->where('organisation_type_id', 3)
+            ->where(function($query) use ($q) {
+                $query->where('name', 'like', "%{$q}%")
+                      ->orWhere('short_name', 'like', "%{$q}%")
+                      ->orWhere('cities_present_in', 'like', "%{$q}%");
+            })
+            ->limit(6)->get();
+
+        // Mentors
+        $mentors = \App\Models\MentorProfile::with('user')
+            ->where(function($query) use ($q) {
+                $query->where('first_name', 'like', "%{$q}%")
+                      ->orWhere('last_name', 'like', "%{$q}%")
+                      ->orWhere('professional_headline', 'like', "%{$q}%")
+                      ->orWhere('short_bio', 'like', "%{$q}%");
+            })
+            ->limit(6)->get();
+
+        $totalResults = $colleges->count() + $schools->count() + $coachings->count() + $mentors->count();
+
+        return view('search-results', compact('q', 'colleges', 'schools', 'coachings', 'mentors', 'totalResults'));
+    }
+
 
     public function liveSearch(\Illuminate\Http\Request $request) {
         $q = trim($request->input('q', ''));
@@ -993,7 +1170,7 @@ class PageController extends Controller
         }
 
         // 3. Coaching / Courses
-        if (empty($type) || $type === 'courses') {
+        if (empty($type) || $type === 'courses' || $type === 'coaching') {
             $coachings = \App\Models\Organisation::where('status', 1)
                 ->where('organisation_type_id', 3)
                 ->where(function($query) use ($q) {

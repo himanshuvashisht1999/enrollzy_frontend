@@ -3,6 +3,26 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\AuthController;
+
+// ✅ Auth Routes
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/login-otp', function () {
+    return view('auth.login-otp');
+})->name('login-otp');
+
+Route::get('/verify-otp', [AuthController::class, 'showVerifyOtp'])->name('otp.verify');
+Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('send.otp');
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('otp.verify.submit');
+
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/site-login', function () {
     return view('simple-login');
@@ -43,6 +63,7 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/ask-enrollzy/question/{id}', [PageController::class, 'questionDetail'])->name('ask.enrollzy.detail');
     Route::post('/ask-enrollzy/reply/store', [PageController::class, 'storeReply'])->name('ask.enrollzy.reply.store');
     Route::post('/ask-enrollzy/like', [PageController::class, 'toggleLike'])->name('ask.enrollzy.like');
+    Route::get('/search', [PageController::class, 'searchResults'])->name('search.results');
     Route::get('/global-search', [PageController::class, 'globalSearch'])->name('global.search');
     Route::get('/live-search', [PageController::class, 'liveSearch'])->name('live.search');
     Route::get('/top-universities', [PageController::class, 'topUniversities'])->name('top.universities');
