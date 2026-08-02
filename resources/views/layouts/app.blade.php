@@ -9,5 +9,6 @@
     @yield('content')
     @include('common.footer')
     @include('common.script')
+    @stack('scripts')
 </body>
 </html>

@@ -1,17 +1,21 @@
 @extends('layouts.app')
 @section('content')
+@php
+  $pageTitle = isset($heroPillLabel) && !empty($heroPillLabel) ? $heroPillLabel : ((request('is_top') == '1' || request('is_top') == 'true') ? 'Top Schools' : 'All Schools');
+  $pageSubtitle = (request('is_top') == '1' || request('is_top') == 'true') ? 'Explore top schools across India.' : 'Explore our complete list of schools across India.';
+@endphp
 <main class="about-hero-section ptb-70">
       <div class="bg-square">
         <img src="{{ asset('assets/images/banner-square-img.svg') }}" alt="" />
       </div>
       <div class="container">
         <div class="about-hero-container">
-          <img src="{{ asset('assets/images/school-banner-img.png') }}" alt="All Schools" />
+          <img src="{{ asset('assets/images/school-banner-img.png') }}" alt="{{ $pageTitle }}" />
 
           <!-- Centered Badge -->
           <div class="about-us-badge-wrapper">
-            <button class="about-us-badge">All Schools</button>
-            <p>Explore our complete list of schools across India.</p>
+            <button class="about-us-badge">{{ $pageTitle }}</button>
+            <p>{{ $pageSubtitle }}</p>
           </div>
 
           <!-- Green Down Arrow Button -->
@@ -28,7 +32,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0" style="font-size: 13.5px; font-weight: 500;">
                     <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none text-muted"><i class="fa-solid fa-house me-1"></i> Home</a></li>
-                    <li class="breadcrumb-item active text-primary" aria-current="page">Schools</li>
+                    <li class="breadcrumb-item active text-primary" aria-current="page">{{ $pageTitle }}</li>
                 </ol>
             </nav>
         </div>
@@ -46,7 +50,10 @@
 
             <!-- Global Search Bar & Filter Summary Bar -->
             <div class="bg-white rounded-4 p-4 border shadow-sm mb-4">
-                <form action="{{ route('all-schools') }}" method="GET" class="row g-3 align-items-center">
+                <form action="{{ request('is_top') ? route('top.schools') : route('all-schools') }}" method="GET" class="row g-3 align-items-center">
+                    @if(request('is_top'))
+                        <input type="hidden" name="is_top" value="{{ request('is_top') }}">
+                    @endif
                     <div class="col-md-9">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
@@ -58,7 +65,7 @@
                             Search Schools
                         </button>
                         @if(request()->hasAny(['search', 'region', 'state', 'city', 'board', 'class', 'ownership', 'school_type', 'gender']))
-                        <a href="{{ route('all-schools') }}" class="btn btn-outline-danger text-nowrap rounded-pill px-3" title="Clear All Filters">
+                        <a href="{{ request('is_top') ? route('top.schools') : route('all-schools') }}" class="btn btn-outline-danger text-nowrap rounded-pill px-3" title="Clear All Filters">
                             <i class="fa-solid fa-rotate-left"></i> Reset
                         </a>
                         @endif
@@ -103,9 +110,12 @@
             <div class="row g-4">
                 <!-- Left Sidebar Filters Form -->
                 <div class="col-lg-3 col-md-4">
-                    <form action="{{ route('all-schools') }}" method="GET" id="schoolsFilterSidebarForm">
+                    <form action="{{ request('is_top') ? route('top.schools') : route('all-schools') }}" method="GET" id="schoolsFilterSidebarForm">
                         @if(request('search'))
                             <input type="hidden" name="search" value="{{ request('search') }}">
+                        @endif
+                        @if(request('is_top'))
+                            <input type="hidden" name="is_top" value="{{ request('is_top') }}">
                         @endif
 
                         <div class="filter-sidebar-wrapper">
