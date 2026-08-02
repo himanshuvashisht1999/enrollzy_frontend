@@ -1,5 +1,9 @@
 @extends('layouts.app')
 @section('content')
+@php
+  $pageTitle = isset($heroPillLabel) && !empty($heroPillLabel) ? $heroPillLabel : ((request('is_top') == '1' || request('is_top') == 'true') ? 'Top Universities' : 'All University');
+  $pageSubtitle = (request('is_top') == '1' || request('is_top') == 'true') ? 'Explore top universities across India.' : 'Explore our complete list of universities.';
+@endphp
   <!-- Main Content Section -->
   <main class="about-hero-section ptb-70">
     <div class="bg-square">
@@ -11,8 +15,8 @@
 
         <!-- Centered Badge (Placed outside card to prevent clipping) -->
         <div class="about-us-badge-wrapper">
-          <button class="about-us-badge">All University</button>
-          <p>Explore our complete list of universities.</p>
+          <button class="about-us-badge">{{ $pageTitle }}</button>
+          <p>{{ $pageSubtitle }}</p>
         </div>
 
         <!-- Green Down Arrow Button -->
@@ -72,10 +76,10 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0" style="font-size: 13.5px; font-weight: 500; color: #000">
           <li class="breadcrumb-item">
-            <a href="#" class="text-decoration-none" style="color: #000"><i class="fa-solid fa-house me-1"></i> Home</a>
+            <a href="{{ route('home') }}" class="text-decoration-none" style="color: #000"><i class="fa-solid fa-house me-1"></i> Home</a>
           </li>
           <li class="breadcrumb-item active text-primary" aria-current="page">
-            Universities
+            {{ $pageTitle }}
           </li>
         </ol>
       </nav>
@@ -89,20 +93,21 @@
 
         <!-- Left Sidebar Filters -->
         <div class="col-lg-3 col-md-4">
-          <!-- Showing Count Card -->
           <div class="showing-count-card mb-3">
-            Showing <span class="text-primary fw-bold">{{ $universities->total() }}</span> Universities
+            Showing <span class="text-primary fw-bold">{{ $universities->total() }}</span> {{ $pageTitle }}
           </div>
 
-          <form action="{{ route('university') }}" method="GET" id="univFilterForm">
+          <form action="{{ request('is_top') ? route('top.universities') : route('university') }}" method="GET" id="univFilterForm">
             @if(request('search'))
               <input type="hidden" name="search" value="{{ request('search') }}">
             @endif
-
+            @if(request('is_top'))
+              <input type="hidden" name="is_top" value="{{ request('is_top') }}">
+            @endif
             <div class="filter-sidebar-wrapper">
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4 class="fw-bold mb-0" style="font-size: 15px; color: #0d1b2a">Filters By</h4>
-                <a href="{{ route('university') }}" class="text-decoration-none text-primary fw-bold"
+                <a href="{{ request('is_top') ? route('top.universities') : route('university') }}" class="text-decoration-none text-primary fw-bold"
                   style="font-size: 13px">Reset All</a>
               </div>
 
@@ -376,10 +381,10 @@
 
                   {{-- Action Buttons --}}
                   <div class="univ-card-actions">
-                    <button class="btn-action-compare" style="background-color:#f3f3f3;border:1px solid #dcdcdc;"
+                    <a href="{{ route('compare') }}" class="btn-action-compare text-decoration-none d-inline-flex align-items-center justify-content-center" style="background-color:#f3f3f3;border:1px solid #dcdcdc;color:#333;"
                       onclick="event.stopPropagation();">
-                      <img src="{{ asset('assets/images/compare-icon.png') }}" alt="" /> Compare
-                    </button>
+                      <img src="{{ asset('assets/images/compare-icon.png') }}" alt="" class="me-1" /> Compare
+                    </a>
                     <a href="{{ route('contact', ['from_org' => $university->brand_name ?? $university->name]) }}#contact-form"
                       class="btn-action-brochure text-decoration-none text-white d-inline-flex align-items-center justify-content-center"
                       onclick="event.stopPropagation();" style="background-color: #f39c12; color: #fff !important;">

@@ -3,6 +3,26 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\AuthController;
+
+// ✅ Auth Routes
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/login-otp', function () {
+    return view('auth.login-otp');
+})->name('login-otp');
+
+Route::get('/verify-otp', [AuthController::class, 'showVerifyOtp'])->name('otp.verify');
+Route::post('/send-otp', [AuthController::class, 'sendOtp'])->name('send.otp');
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('otp.verify.submit');
+
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/site-login', function () {
     return view('simple-login');
@@ -19,6 +39,7 @@ Route::post('/site-login', function (\Illuminate\Http\Request $request) {
 Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(function () {
     Route::get('/', [PageController::class, 'index'])->name('home');
     Route::get('/about', [PageController::class, 'about']);
+    Route::get('/compare', [PageController::class, 'compare'])->name('compare');
     Route::get('/all-schools', [PageController::class, 'allSchools'])->name('all-schools');
     Route::get('/blogs', [PageController::class, 'blogs'])->name('blogs');
     Route::get('/blog/{slug}', [PageController::class, 'blogDetail'])->name('blog.detail');
@@ -29,6 +50,7 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/faq', [App\Http\Controllers\PageController::class, 'faq'])->name('faq');
     Route::get('/about-us', [App\Http\Controllers\PageController::class, 'aboutUs'])->name('about-us');
     Route::get('/scholarships-and-benefits', [PageController::class, 'scholarships'])->name('scholarships');
+    Route::get('/scholarship-detail/{id}', [PageController::class, 'scholarshipDetail'])->name('scholarship.detail');
     Route::get('/school-detail/{slug}', [PageController::class, 'schoolDetail'])->name('school.detail');
     Route::get('/all-coaching', [PageController::class, 'allCoaching'])->name('all.coaching');
     Route::get('/coaching-detail/{slug}', [PageController::class, 'coachingDetail'])->name('coaching.detail');
@@ -42,5 +64,10 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/ask-enrollzy/question/{id}', [PageController::class, 'questionDetail'])->name('ask.enrollzy.detail');
     Route::post('/ask-enrollzy/reply/store', [PageController::class, 'storeReply'])->name('ask.enrollzy.reply.store');
     Route::post('/ask-enrollzy/like', [PageController::class, 'toggleLike'])->name('ask.enrollzy.like');
+    Route::get('/search', [PageController::class, 'searchResults'])->name('search.results');
     Route::get('/global-search', [PageController::class, 'globalSearch'])->name('global.search');
+    Route::get('/live-search', [PageController::class, 'liveSearch'])->name('live.search');
+    Route::get('/top-universities', [PageController::class, 'topUniversities'])->name('top.universities');
+    Route::get('/top-schools', [PageController::class, 'topSchools'])->name('top.schools');
+    Route::get('/top-coaching', [PageController::class, 'topCoaching'])->name('top.coaching');
 });

@@ -10,7 +10,7 @@
                     <!-- Left Column: Branding, Contact & Socials -->
                     <div class="col-lg-4">
                         <!-- Brand Logo -->
-                        <a href="#" class="d-flex align-items-center mb-3 text-decoration-none">
+                        <a href="{{ route('home') }}" class="d-flex align-items-center mb-3 text-decoration-none">
                             <img src="{{ asset('assets/images/logo.svg') }}" alt="" style="    width: 246px;">
                         </a>
                         <!-- Tech description -->
@@ -37,22 +37,22 @@
                             <span class="footer-contact-label">CONNECT US:</span>
                             <div class="social-icons-list">
                                 @if(!empty($siteSettings->twitter_url))
-                                <a href="{{ $siteSettings->twitter_url }}" class="social-icon-circle social-twitter">
+                                <a href="{{ $siteSettings->twitter_url }}" class="social-icon-circle social-twitter" target="_blank" rel="noopener">
                                     <img src="{{ asset('assets/images/twitter-icon.png') }}" alt="Twitter">
                                 </a>
                                 @endif
                                 @if(!empty($siteSettings->instagram_url))
-                                <a href="{{ $siteSettings->instagram_url }}" class="social-icon-circle social-instagram">
+                                <a href="{{ $siteSettings->instagram_url }}" class="social-icon-circle social-instagram" target="_blank" rel="noopener">
                                     <img src="{{ asset('assets/images/footer-insta-icon.png') }}" alt="Instagram">
                                 </a>
                                 @endif
                                 @if(!empty($siteSettings->facebook_url))
-                                <a href="{{ $siteSettings->facebook_url }}" class="social-icon-circle social-facebook">
+                                <a href="{{ $siteSettings->facebook_url }}" class="social-icon-circle social-facebook" target="_blank" rel="noopener">
                                     <img src="{{ asset('assets/images/footer-facebook-icon.png') }}" alt="Facebook">
                                 </a>
                                 @endif
                                 @if(!empty($siteSettings->linkedin_url))
-                                <a href="{{ $siteSettings->linkedin_url }}" class="social-icon-circle social-linkedin">
+                                <a href="{{ $siteSettings->linkedin_url }}" class="social-icon-circle social-linkedin" target="_blank" rel="noopener">
                                     <img src="{{ asset('assets/images/footer-linkdin-icon.png') }}" alt="LinkedIn">
                                 </a>
                                 @endif
@@ -76,13 +76,43 @@
                                 </h3>
                                 <ul class="footer-links">
                                     @foreach($column->children as $link)
-                                    <li><a href="{{ $link->url }}">{{ $link->title }}</a></li>
+                                        @php
+                                            $linkUrl = trim($link->url ?? '');
+                                            if (empty($linkUrl) || str_contains($linkUrl, 'enrollzy.com') || $linkUrl === '#') {
+                                                $t = strtolower($link->title);
+                                                if (str_contains($t, 'about')) { $linkUrl = route('about-us'); }
+                                                elseif (str_contains($t, 'contact') || str_contains($t, 'advisor') || str_contains($t, 'speak') || str_contains($t, 'ticket')) { $linkUrl = route('contact'); }
+                                                elseif (str_contains($t, 'school') || str_contains($t, 'boarding')) { $linkUrl = route('all-schools'); }
+                                                elseif (str_contains($t, 'coaching') || str_contains($t, 'neet') || str_contains($t, 'jee') || str_contains($t, 'institute')) { $linkUrl = route('all.coaching'); }
+                                                elseif (str_contains($t, 'university') || str_contains($t, 'college') || str_contains($t, 'roadmap') || str_contains($t, 'career')) { $linkUrl = route('university'); }
+                                                elseif (str_contains($t, 'exam')) { $linkUrl = route('top-exams'); }
+                                                elseif (str_contains($t, 'blog') || str_contains($t, 'media') || str_contains($t, 'news')) { $linkUrl = route('blogs'); }
+                                                elseif (str_contains($t, 'faq')) { $linkUrl = route('faq'); }
+                                                elseif (!empty($linkUrl) && !str_contains($linkUrl, 'enrollzy.com') && $linkUrl !== '#') { $linkUrl = url($linkUrl); }
+                                                else { $linkUrl = route('about-us'); }
+                                            } else {
+                                                $linkUrl = str_starts_with($linkUrl, 'http') ? $linkUrl : url($linkUrl);
+                                            }
+                                        @endphp
+                                        <li><a href="{{ $linkUrl }}">{{ $link->title }}</a></li>
                                     @endforeach
                                 </ul>
                             </div>
-                            @endforeach
+                                @endforeach
+                                @if(isset($generalLinks) && $generalLinks->count() > 0)
+                                    <div class="col">
+                                        <h3 class="footer-link-heading mb-3">
+                                            {{ $siteSettings->footer_general_title ?? 'General' }} <span class="footer-heading-line"></span>
+                                        </h3>
+                                        <ul class="footer-links">
+                                            @foreach($generalLinks as $gLink)
+                                                <li><a href="{{ str_starts_with($gLink->url ?? '', 'http') ? $gLink->url : url($gLink->url ?? '#') }}">{{ $gLink->title }}</a></li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
-                    </div>
                 </div>
 
                 <!-- Footer Divider -->

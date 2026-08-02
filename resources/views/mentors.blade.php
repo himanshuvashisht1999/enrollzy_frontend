@@ -269,6 +269,15 @@
                     <button class="filter-pill-btn" data-filter="university">University</button>
                 </div>
 
+                {{-- Search filter notice --}}
+                @php $mentorSearch = trim(request('search', request('q', ''))); @endphp
+                @if(!empty($mentorSearch))
+                <div class="alert d-flex align-items-center justify-content-between py-2 px-3 mb-3 rounded-3" style="background:#fff7e6;border:1px solid #f9ad0b;font-size:14px;">
+                    <span><i class="fa-solid fa-magnifying-glass me-2" style="color:#f9ad0b;"></i>Showing results for <strong>"{{ $mentorSearch }}"</strong> &mdash; {{ $mentors->count() }} mentor{{ $mentors->count() == 1 ? '' : 's' }} found</span>
+                    <a href="{{ route('mentors') }}" class="text-decoration-none ms-3" style="color:#f9ad0b;font-weight:600;white-space:nowrap;">Clear <i class="fa-solid fa-xmark"></i></a>
+                </div>
+                @endif
+
                 <!-- Mentors Grid -->
                 <div class="row g-4 justify-content-center" id="mentor-grid-row">
                     @forelse($mentors as $index => $mentor)
@@ -346,7 +355,14 @@
                         </div>
                     @empty
                         <div class="col-12 text-center py-5">
-                            <p class="text-muted fs-5">No mentors found at the moment.</p>
+                            <p class="text-muted fs-5">No mentors found
+                                @if(!empty($mentorSearch))
+                                    for "{{ $mentorSearch }}".
+                                    <br><a href="{{ route('mentors') }}" class="btn btn-outline-warning mt-2">View All Mentors</a>
+                                @else
+                                    at the moment.
+                                @endif
+                            </p>
                         </div>
                     @endforelse
                 </div>
