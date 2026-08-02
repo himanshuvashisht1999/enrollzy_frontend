@@ -89,6 +89,7 @@
             <button class="sd-tab-pill-btn" data-tab-target="fee-structure">Fee Structure</button>
             <button class="sd-tab-pill-btn" data-tab-target="photos">Photos & Gallery</button>
             <button class="sd-tab-pill-btn" data-tab-target="reviews">Reviews</button>
+            
         </div>
     </div>
 
