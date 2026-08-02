@@ -1343,14 +1343,15 @@
                         </div>
                     </div>
                     <div class="col-md-4 text-md-end">
-                        <a href="#" class="btn btn-enrollzy btn-enrollzy-white btn-enrollzy-md">
+                        <button type="button" class="btn btn-enrollzy btn-enrollzy-white btn-enrollzy-md" data-bs-toggle="modal" data-bs-target="#courseSelectionModal">
                             Compare Now
                             <i class="fa-solid fa-arrow-right-long" style="color: #000;"></i>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+        @include('partials.compare-modal')
 
         @php $secTrendingCourses = $homepageSections['trending_courses'] ?? null; @endphp
         @if(!isset($secTrendingCourses) || (isset($secTrendingCourses->is_visible) && $secTrendingCourses->is_visible))
@@ -1497,5 +1498,9 @@
             </div>
         </section>
     @endif
+
+@push('scripts')
+    <script src="{{ asset('assets/js/compare-modal.js') }}"></script>
+@endpush
 
 @endsection

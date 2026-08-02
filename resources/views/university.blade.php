@@ -381,10 +381,10 @@
 
                   {{-- Action Buttons --}}
                   <div class="univ-card-actions">
-                    <button class="btn-action-compare" style="background-color:#f3f3f3;border:1px solid #dcdcdc;"
+                    <a href="{{ route('compare') }}" class="btn-action-compare text-decoration-none d-inline-flex align-items-center justify-content-center" style="background-color:#f3f3f3;border:1px solid #dcdcdc;color:#333;"
                       onclick="event.stopPropagation();">
-                      <img src="{{ asset('assets/images/compare-icon.png') }}" alt="" /> Compare
-                    </button>
+                      <img src="{{ asset('assets/images/compare-icon.png') }}" alt="" class="me-1" /> Compare
+                    </a>
                     <a href="{{ route('contact', ['from_org' => $university->brand_name ?? $university->name]) }}#contact-form"
                       class="btn-action-brochure text-decoration-none text-white d-inline-flex align-items-center justify-content-center"
                       onclick="event.stopPropagation();" style="background-color: #f39c12; color: #fff !important;">

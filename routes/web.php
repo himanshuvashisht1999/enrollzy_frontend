@@ -39,6 +39,7 @@ Route::post('/site-login', function (\Illuminate\Http\Request $request) {
 Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(function () {
     Route::get('/', [PageController::class, 'index'])->name('home');
     Route::get('/about', [PageController::class, 'about']);
+    Route::get('/compare', [PageController::class, 'compare'])->name('compare');
     Route::get('/all-schools', [PageController::class, 'allSchools'])->name('all-schools');
     Route::get('/blogs', [PageController::class, 'blogs'])->name('blogs');
     Route::get('/blog/{slug}', [PageController::class, 'blogDetail'])->name('blog.detail');

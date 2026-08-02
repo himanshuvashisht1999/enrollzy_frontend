@@ -389,7 +389,7 @@
                                             <span
                                                 class="school-gender-badge">{{ $coaching->minority_type ?? $coaching->brand_type }}</span>
                                         @endif
-                                        <button class="btn-school-compare">Compare</button>
+                                        <a href="{{ route('compare') }}" class="btn-school-compare text-decoration-none d-inline-flex align-items-center justify-content-center">Compare</a>
                                     </div>
                                     <div class="school-info-body">
                                         <div class="school-identity-row">

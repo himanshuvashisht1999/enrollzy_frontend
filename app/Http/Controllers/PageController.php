@@ -83,13 +83,29 @@ class PageController extends Controller
         $heroSliders = \Illuminate\Support\Facades\DB::table('hero_sliders')->where('is_active', 1)->orderBy('sort_order')->get();
         $firstHero = $heroSliders->first();
 
+        $campuses = \App\Models\Campus::with([
+            'organisation.organisationType',
+            'departments' => function ($q) {
+                $q->whereIn('status', [1, '1', 'Active', true]);
+            },
+            'departments.courses' => function ($q) {
+                $q->whereIn('status', [1, '1', 'Active', true])->with(['course', 'programLevel', 'specialization']);
+            }
+        ])->whereIn('status', [1, '1', 'Active', true])->get();
+
+        if ($campuses->isEmpty()) {
+            $campuses = \App\Models\Campus::with(['organisation', 'departments.courses.course'])->get();
+        }
+
+        $allFacilities = \App\Models\Facility::where('status', 'Active')->get();
+
         return view('index', compact(
             'boardingSchools', 'noteworthy_categories', 'faqs', 'home_services', 'home_benefits', 'trending_skills',
             'top_exams', 'video_testimonials', 'blogs', 'testimonials', 
             'schoolsCount', 'coachingCount', 'universitiesCount', 'collegesCount', 'examBodiesCount',
             'counsellingBodiesCount', 'regulatoryBodiesCount', 'govAgenciesCount', 'totalInstitutionsCount',
             'totalLeadsCount', 'totalExamsCount', 'mentorsCount', 'scholarshipsCount', 'internshipsCount', 'blogsCount', 'coachingInstitutes', 'featuredUniversities', 'streamData', 'dbStreamTabs', 'trendingCourses',
-            'mentors', 'heroSliders', 'firstHero', 'homepageSections'
+            'mentors', 'heroSliders', 'firstHero', 'homepageSections', 'campuses', 'allFacilities'
         ));
     }
     public function about() { return view('about'); }
@@ -1234,5 +1250,26 @@ class PageController extends Controller
         }
 
         return response()->json($results->take(5)->values());
+    }
+
+    public function compare()
+    {
+        $campuses = \App\Models\Campus::with([
+            'organisation.organisationType',
+            'departments' => function ($q) {
+                $q->whereIn('status', [1, '1', 'Active', true]);
+            },
+            'departments.courses' => function ($q) {
+                $q->whereIn('status', [1, '1', 'Active', true])->with(['course', 'programLevel', 'specialization']);
+            }
+        ])->whereIn('status', [1, '1', 'Active', true])->get();
+
+        if ($campuses->isEmpty()) {
+            $campuses = \App\Models\Campus::with(['organisation', 'departments.courses.course'])->get();
+        }
+
+        $allFacilities = \App\Models\Facility::where('status', 'Active')->get();
+
+        return view('compare', compact('campuses', 'allFacilities'));
     }
 }
