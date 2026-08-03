@@ -45,7 +45,7 @@
     </div>
 
     <!-- Main Content Section -->
-    <section class="py-5" id="coaching-catalog" style="background-color: #FAFBFD;">
+    <section class="py-5" id="coaching-catalog" >
         <div class="container">
             <!-- Hero Intro Card -->
             <div class="school-hero-card mb-4">

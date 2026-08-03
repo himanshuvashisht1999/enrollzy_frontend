@@ -242,6 +242,8 @@
             </div>
         </div>
         </div>
+        <div class="grad-main"
+        style="background: linear-gradient(180deg, rgba(191, 219, 247, 0) 0%, rgb(191 219 247 / 17%) 50%, rgba(191, 219, 247, 0) 100%);">
 
         <!-- 5. EXPERT MENTORS GRID SECTION -->
         <section class="expert-mentors-sec ptb-70" id="expert-grid-section">
@@ -315,7 +317,7 @@
                             $sessionNum = $mentor->sessions_count ?? (180 + ($index * 65));
                             $priceMin = $mentor->price_per_min ?? (300 + ($index * 100));
                         @endphp
-                        <div class="col-lg-3 col-md-6 col-12 mentor-card-col" data-categories="{{ $catAttr }}">
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-12 mentor-card-col" data-categories="{{ $catAttr }}">
                             <div class="mentor-grid-card">
                                 <div class="mentor-card-img-wrapper">
                                     <img src="{{ $mPhoto }}" alt="{{ $mName }}" onError="this.src='{{ asset('assets/images/mentor_1.png') }}'">
@@ -369,7 +371,7 @@
             </div>
         </section>
         <!-- Testimonials Section -->
-        <section class="testimonials-section ptb-70" id="video-testimonials-sec" style="background-color: #FFFCF8;">
+        <section class="testimonials-section ptb-70" id="video-testimonials-sec" >
             <div class="container">
                 <!-- Section Header -->
                 <div class="text-center mb-5">
@@ -433,6 +435,7 @@
                 @endif
             </div>
         </section>
+        </div>
 
         <!-- 6. FAQ ACCORDION SECTION -->
         <section class="faq-accordion-sec ptb-70">
