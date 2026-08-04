@@ -79,9 +79,12 @@ class PageController extends Controller
             ];
         }
 
-        $homepageSections = \Illuminate\Support\Facades\DB::table('homepage_sections')->get()->keyBy('section_key');
+        $homepageSectionsOrdered = \Illuminate\Support\Facades\DB::table('homepage_sections')->orderBy('sort_order', 'asc')->get();
+        $homepageSections = $homepageSectionsOrdered->keyBy('section_key');
         $heroSliders = \Illuminate\Support\Facades\DB::table('hero_sliders')->where('is_active', 1)->orderBy('sort_order')->get();
         $firstHero = $heroSliders->first();
+
+        $featuredScholarships = \App\Models\Scholarship::where('featured_on_homepage', 1)->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('id', 'desc')->get();
 
         $campuses = \App\Models\Campus::with([
             'organisation.organisationType',
@@ -105,7 +108,7 @@ class PageController extends Controller
             'schoolsCount', 'coachingCount', 'universitiesCount', 'collegesCount', 'examBodiesCount',
             'counsellingBodiesCount', 'regulatoryBodiesCount', 'govAgenciesCount', 'totalInstitutionsCount',
             'totalLeadsCount', 'totalExamsCount', 'mentorsCount', 'scholarshipsCount', 'internshipsCount', 'blogsCount', 'coachingInstitutes', 'featuredUniversities', 'streamData', 'dbStreamTabs', 'trendingCourses',
-            'mentors', 'heroSliders', 'firstHero', 'homepageSections', 'campuses', 'allFacilities'
+            'mentors', 'heroSliders', 'firstHero', 'homepageSections', 'homepageSectionsOrdered', 'featuredScholarships', 'campuses', 'allFacilities'
         ));
     }
     public function about() { return view('about'); }
