@@ -79,9 +79,12 @@ class PageController extends Controller
             ];
         }
 
-        $homepageSections = \Illuminate\Support\Facades\DB::table('homepage_sections')->get()->keyBy('section_key');
+        $homepageSectionsOrdered = \Illuminate\Support\Facades\DB::table('homepage_sections')->orderBy('sort_order', 'asc')->get();
+        $homepageSections = $homepageSectionsOrdered->keyBy('section_key');
         $heroSliders = \Illuminate\Support\Facades\DB::table('hero_sliders')->where('is_active', 1)->orderBy('sort_order')->get();
         $firstHero = $heroSliders->first();
+
+        $featuredScholarships = \App\Models\Scholarship::where('featured_on_homepage', 1)->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('id', 'desc')->get();
 
         $campuses = \App\Models\Campus::with([
             'organisation.organisationType',
@@ -105,7 +108,7 @@ class PageController extends Controller
             'schoolsCount', 'coachingCount', 'universitiesCount', 'collegesCount', 'examBodiesCount',
             'counsellingBodiesCount', 'regulatoryBodiesCount', 'govAgenciesCount', 'totalInstitutionsCount',
             'totalLeadsCount', 'totalExamsCount', 'mentorsCount', 'scholarshipsCount', 'internshipsCount', 'blogsCount', 'coachingInstitutes', 'featuredUniversities', 'streamData', 'dbStreamTabs', 'trendingCourses',
-            'mentors', 'heroSliders', 'firstHero', 'homepageSections', 'campuses', 'allFacilities'
+            'mentors', 'heroSliders', 'firstHero', 'homepageSections', 'homepageSectionsOrdered', 'featuredScholarships', 'campuses', 'allFacilities'
         ));
     }
     public function about() { return view('about'); }
@@ -469,16 +472,21 @@ class PageController extends Controller
             'looking_for' => 'nullable|string|max:255',
             'session_time' => 'nullable|string|max:255',
             'message' => 'nullable|string',
+            'subject' => 'nullable|string|max:255',
         ]);
 
         $prog = $request->programme ?? $request->type ?? $request->business_type ?? $request->looking_for;
         $orgName = $request->organisation_name ?? $request->company;
 
-        $subjectParts = ['Student Lead Inquiry'];
-        if ($prog) $subjectParts[] = 'Programme: ' . $prog;
-        if ($orgName) $subjectParts[] = 'Institute/School: ' . $orgName;
-        
-        $subject = implode(' | ', $subjectParts);
+        if ($request->filled('subject')) {
+            $subject = $request->subject;
+        } else {
+            $subjectParts = ['Student Lead Inquiry'];
+            if ($prog) $subjectParts[] = 'Programme: ' . $prog;
+            if ($orgName) $subjectParts[] = 'Institute/School: ' . $orgName;
+            
+            $subject = implode(' | ', $subjectParts);
+        }
 
         $messageContent = $request->message;
         if (empty($messageContent)) {
@@ -531,14 +539,121 @@ class PageController extends Controller
         return view('about-us', compact('about_page', 'offers', 'features', 'impacts', 'teams', 'advisory_boards'));
     }
     
-    public function scholarships() {
-        $benefits = \App\Models\HomeBenefit::where('status', 1)->orderBy('sort_order')->get();
-        return view('scholarships-and-benefits', compact('benefits'));
+    public function scholarships(\Illuminate\Http\Request $request) {
+        $query = \App\Models\Scholarship::with(['eligibility', 'dates'])
+            ->where('status', 1);
+
+        // Keyword Search Filter
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('short_description', 'like', "%{$search}%")
+                  ->orWhere('overview', 'like', "%{$search}%")
+                  ->orWhere('provider_name', 'like', "%{$search}%")
+                  ->orWhere('category', 'like', "%{$search}%");
+            });
+        }
+
+        // Apply Class/Level Filter
+        if ($request->filled('class')) {
+            $cls = trim($request->class);
+            $query->whereHas('eligibility', function($q) use ($cls) {
+                $q->where('minimum_class', 'like', "%{$cls}%")
+                  ->orWhere('maximum_class', 'like', "%{$cls}%")
+                  ->orWhere('course_level', 'like', "%{$cls}%");
+            });
+        }
+
+        // Apply Gender Filter
+        if ($request->filled('gender')) {
+            $gen = trim($request->gender);
+            $query->whereHas('eligibility', function($q) use ($gen) {
+                if (strtolower($gen) === 'girls' || strtolower($gen) === 'female') {
+                    $q->whereIn('gender', ['Female', 'Girls', 'Any', 'Coed', 'Co-ed']);
+                } elseif (strtolower($gen) === 'boys' || strtolower($gen) === 'male') {
+                    $q->whereIn('gender', ['Male', 'Boys', 'Any', 'Coed', 'Co-ed']);
+                } else {
+                    $q->where('gender', 'like', "%{$gen}%");
+                }
+            });
+        }
+
+        // Apply State Filter
+        if ($request->filled('state')) {
+            $st = trim($request->state);
+            $query->whereHas('eligibility', function($q) use ($st) {
+                $q->where('state', 'like', "%{$st}%");
+            });
+        }
+
+        // Apply Status Filter
+        if ($request->filled('status')) {
+            $stVal = strtolower(trim($request->status));
+            $now = now();
+            if ($stVal === 'live') {
+                $query->where(function($q) use ($now) {
+                    $q->whereDoesntHave('dates')
+                      ->orWhereHas('dates', function($dq) use ($now) {
+                          $dq->where(function($sub) use ($now) {
+                              $sub->whereNull('application_end_date')
+                                  ->orWhere('application_end_date', '>=', $now->startOfDay());
+                          });
+                      });
+                });
+            } elseif ($stVal === 'upcoming') {
+                $query->whereHas('dates', function($dq) use ($now) {
+                    $dq->where('application_start_date', '>', $now);
+                });
+            } elseif ($stVal === 'closed') {
+                $query->whereHas('dates', function($dq) use ($now) {
+                    $dq->where('application_end_date', '<', $now->startOfDay());
+                });
+            }
+        }
+
+        // Apply Year Filter
+        if ($request->filled('year')) {
+            $yr = trim($request->year);
+            $query->whereHas('dates', function($q) use ($yr) {
+                $q->whereYear('application_end_date', $yr)
+                  ->orWhereYear('application_start_date', $yr);
+            });
+        }
+
+        $benefits = $query->orderBy('sort_order', 'asc')->orderBy('id', 'desc')->get();
+
+        // Dynamically extract filter dropdown options from DB
+        $dbStates = \App\Models\ScholarshipEligibility::whereNotNull('state')
+            ->where('state', '!=', '')
+            ->pluck('state')
+            ->flatMap(function($s) { return array_map('trim', explode(',', $s)); })
+            ->unique()->sort()->values()->all();
+
+        $dbClasses = ['Class 9', 'Class 10', 'Class 11', 'Class 12', 'Higher Education / Degrees'];
+        
+        $dbYears = \App\Models\ScholarshipDate::whereNotNull('application_end_date')
+            ->pluck('application_end_date')
+            ->map(function($d) { return $d->format('Y'); })
+            ->merge([date('Y'), date('Y')+1])
+            ->unique()->sort()->values()->all();
+
+        return view('scholarships-and-benefits', compact('benefits', 'dbStates', 'dbClasses', 'dbYears'));
     }
 
     public function scholarshipDetail($id) {
-        $benefit = \App\Models\HomeBenefit::where('id', $id)->where('status', 1)->firstOrFail();
-        $relatedBenefits = \App\Models\HomeBenefit::where('id', '!=', $id)->where('status', 1)->take(3)->get();
+        $benefit = \App\Models\Scholarship::with(['eligibility', 'benefits', 'dates', 'documents', 'faqs', 'gallery', 'courses', 'universities'])
+            ->where(function($query) use ($id) {
+                $query->where('id', $id)->orWhere('slug', $id);
+            })
+            ->where('status', 1)
+            ->first();
+
+        if (!$benefit) {
+            return redirect()->route('scholarships')->with('error', 'Scholarship not found or no longer active.');
+        }
+
+        $relatedBenefits = \App\Models\Scholarship::where('id', '!=', $benefit->id)->where('status', 1)->take(3)->get();
         return view('scholarship-detail', compact('benefit', 'relatedBenefits'));
     }
     public function schoolDetail($slug) {
@@ -635,6 +750,8 @@ class PageController extends Controller
             $search = trim($request->search);
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('short_name', 'like', "%{$search}%")
+                  ->orWhere('brand_name', 'like', "%{$search}%")
                   ->orWhere('about_university', 'like', "%{$search}%")
                   ->orWhere('head_office_location', 'like', "%{$search}%")
                   ->orWhere('states_present_in', 'like', "%{$search}%")
@@ -1071,10 +1188,11 @@ class PageController extends Controller
 
         // Colleges / Universities
         $colleges = \App\Models\Organisation::where('status', 1)
-            ->where('organisation_type_id', 1)
+            ->whereIn('organisation_type_id', [1, 2])
             ->where(function($query) use ($q) {
                 $query->where('name', 'like', "%{$q}%")
                       ->orWhere('short_name', 'like', "%{$q}%")
+                      ->orWhere('brand_name', 'like', "%{$q}%")
                       ->orWhere('cities_present_in', 'like', "%{$q}%")
                       ->orWhere('states_present_in', 'like', "%{$q}%");
             })
@@ -1086,6 +1204,7 @@ class PageController extends Controller
             ->where(function($query) use ($q) {
                 $query->where('name', 'like', "%{$q}%")
                       ->orWhere('short_name', 'like', "%{$q}%")
+                      ->orWhere('brand_name', 'like', "%{$q}%")
                       ->orWhere('cities_present_in', 'like', "%{$q}%")
                       ->orWhere('states_present_in', 'like', "%{$q}%");
             })
@@ -1097,7 +1216,9 @@ class PageController extends Controller
             ->where(function($query) use ($q) {
                 $query->where('name', 'like', "%{$q}%")
                       ->orWhere('short_name', 'like', "%{$q}%")
-                      ->orWhere('cities_present_in', 'like', "%{$q}%");
+                      ->orWhere('brand_name', 'like', "%{$q}%")
+                      ->orWhere('cities_present_in', 'like', "%{$q}%")
+                      ->orWhere('states_present_in', 'like', "%{$q}%");
             })
             ->limit(6)->get();
 
@@ -1130,10 +1251,11 @@ class PageController extends Controller
         // 1. Colleges / Universities
         if (empty($type) || $type === 'colleges') {
             $colleges = \App\Models\Organisation::where('status', 1)
-                ->where('organisation_type_id', 1)
+                ->whereIn('organisation_type_id', [1, 2])
                 ->where(function($query) use ($q) {
                     $query->where('name', 'like', "%{$q}%")
                           ->orWhere('short_name', 'like', "%{$q}%")
+                          ->orWhere('brand_name', 'like', "%{$q}%")
                           ->orWhere('cities_present_in', 'like', "%{$q}%")
                           ->orWhere('states_present_in', 'like', "%{$q}%");
                 })
@@ -1148,7 +1270,7 @@ class PageController extends Controller
                 if (!empty($states[0])) $location .= ($location ? ', ' : '') . $states[0];
 
                 $results->push([
-                    'title' => $c->name,
+                    'title' => $c->brand_name ?? $c->name,
                     'subtitle' => $location ?: 'University',
                     'type' => 'University',
                     'url' => route('university.detail', $c->slug ?? $c->id)
@@ -1163,6 +1285,7 @@ class PageController extends Controller
                 ->where(function($query) use ($q) {
                     $query->where('name', 'like', "%{$q}%")
                           ->orWhere('short_name', 'like', "%{$q}%")
+                          ->orWhere('brand_name', 'like', "%{$q}%")
                           ->orWhere('cities_present_in', 'like', "%{$q}%")
                           ->orWhere('states_present_in', 'like', "%{$q}%");
                 })
@@ -1177,7 +1300,7 @@ class PageController extends Controller
                 if (!empty($states[0])) $location .= ($location ? ', ' : '') . $states[0];
 
                 $results->push([
-                    'title' => $s->name,
+                    'title' => $s->brand_name ?? $s->name,
                     'subtitle' => $location ?: 'Boarding School',
                     'type' => 'School',
                     'url' => route('school.detail', $s->slug ?? $s->id)
@@ -1192,14 +1315,16 @@ class PageController extends Controller
                 ->where(function($query) use ($q) {
                     $query->where('name', 'like', "%{$q}%")
                           ->orWhere('short_name', 'like', "%{$q}%")
-                          ->orWhere('cities_present_in', 'like', "%{$q}%");
+                          ->orWhere('brand_name', 'like', "%{$q}%")
+                          ->orWhere('cities_present_in', 'like', "%{$q}%")
+                          ->orWhere('states_present_in', 'like', "%{$q}%");
                 })
                 ->limit(5)
                 ->get();
 
             foreach ($coachings as $co) {
                 $results->push([
-                    'title' => $co->name,
+                    'title' => $co->brand_name ?? $co->name,
                     'subtitle' => 'Integrated Coaching',
                     'type' => 'Coaching',
                     'url' => route('coaching.detail', $co->slug ?? $co->id)

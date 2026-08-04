@@ -328,21 +328,17 @@
                 }
             });
 
-            // On Search button click — trigger search and show results
-            if (searchBtn) {
-                searchBtn.addEventListener('click', function() {
-                    performHeroSearch();
-                    searchInput.focus();
+            // On Search button / Form submit — navigate to global search if query exists
+            const searchForm = document.getElementById('heroSearchForm');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    const q = searchInput.value.trim();
+                    if (!q) {
+                        e.preventDefault();
+                        searchInput.focus();
+                    }
                 });
             }
-
-            // On Enter key — same as clicking Search
-            searchInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    performHeroSearch();
-                }
-            });
 
             // Hide liveSearchResults only when clicking truly outside
             // — NOT when clicking the category filter dropdown or its items
