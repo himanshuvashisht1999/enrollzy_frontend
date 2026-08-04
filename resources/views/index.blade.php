@@ -31,8 +31,7 @@
                         @endif
 
                         <!-- Search Capsule -->
-                        <form class="search-bar-container position-relative mx-auto mx-lg-0"
-                            onsubmit="return false;">
+                        <form action="{{ route('global.search') }}" method="GET" class="search-bar-container position-relative mx-auto mx-lg-0" id="heroSearchForm">
                             <div class="dropdown">
                                 <button class="search-dropdown" type="button" id="searchFilterDropdown"
                                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -57,12 +56,12 @@
                                             onclick="setSearchType('schools', 'Schools');">Schools</a>
                                     </li>
                                 </ul>
-                                <input type="hidden" id="searchType" value="">
+                                <input type="hidden" name="type" id="searchType" value="">
                             </div>
 
-                            <input type="text" id="heroSearchInput" class="search-input" placeholder="Search coaching, colleges, mentor..."
+                            <input type="text" name="q" id="heroSearchInput" class="search-input" placeholder="Search coaching, colleges, mentor..."
                                 aria-label="Search text" autocomplete="off">
-                            <button class="search-btn" type="button" id="heroSearchBtn" aria-label="Submit Search">
+                            <button class="search-btn" type="submit" id="heroSearchBtn" aria-label="Submit Search">
                                 Search
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-arrow-right" viewBox="0 0 16 16">
@@ -760,9 +759,9 @@
 
                                     <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
                                         <div class="mentor-price">
-                                            <span class="price-amount">₹500</span><span class="price-unit">/min</span>
+                                            <span class="price-amount">₹{{ number_format($mentor->price_per_min ?? 500, 0) }}</span><span class="price-unit">/min</span>
                                         </div>
-                                        <a href="#" class="btn btn-enrollzy btn-enrollzy-sm px-3 rounded-pill">Book session <i
+                                        <a href="{{ route('mentor.detail', $mentor->id) }}" class="btn btn-enrollzy btn-enrollzy-sm px-3 rounded-pill">Book session <i
                                                 class="fa-solid fa-arrow-right-long ms-1"
                                                 style="color: #fff; font-size: 10px;"></i></a>
                                     </div>

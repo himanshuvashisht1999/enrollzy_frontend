@@ -50,6 +50,8 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/faq', [App\Http\Controllers\PageController::class, 'faq'])->name('faq');
     Route::get('/about-us', [App\Http\Controllers\PageController::class, 'aboutUs'])->name('about-us');
     Route::get('/scholarships-and-benefits', [PageController::class, 'scholarships'])->name('scholarships');
+    Route::get('/scholarships', [PageController::class, 'scholarships']);
+    Route::get('/scholarship', [PageController::class, 'scholarships']);
     Route::get('/scholarship-detail/{id}', [PageController::class, 'scholarshipDetail'])->name('scholarship.detail');
     Route::get('/school-detail/{slug}', [PageController::class, 'schoolDetail'])->name('school.detail');
     Route::get('/all-coaching', [PageController::class, 'allCoaching'])->name('all.coaching');
