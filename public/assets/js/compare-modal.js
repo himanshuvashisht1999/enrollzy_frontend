@@ -37,6 +37,10 @@ window.switchToEmpty = function(slot) {
     
     if (window.selections) {
         window.selections[slot] = null;
+        sessionStorage.setItem('enrollzy_compare_slots', JSON.stringify(window.selections));
+        if (typeof window.updateComparison === 'function') {
+            window.updateComparison();
+        }
     }
 };
 
@@ -170,6 +174,15 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 if (typeof window.updateComparison === 'function') {
                     window.updateComparison();
+                }
+                const modalEl = document.getElementById('courseSelectionModal');
+                if (modalEl) {
+                    if (window.jQuery) {
+                        $(modalEl).modal('hide');
+                    } else if (window.bootstrap && bootstrap.Modal) {
+                        var m = bootstrap.Modal.getInstance(modalEl);
+                        if (m) m.hide();
+                    }
                 }
             }
         });

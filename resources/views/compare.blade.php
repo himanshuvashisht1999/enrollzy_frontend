@@ -51,8 +51,8 @@
             </div>
 
             <div class="text-center mb-3">
-                <button type="button" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm" data-bs-toggle="modal" data-bs-target="#courseSelectionModal">
-                    <i class="fas fa-layer-group me-2"></i> Select Courses to Compare
+                <button type="button" id="btnOpenCompareModal" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm" data-bs-toggle="modal" data-bs-target="#courseSelectionModal">
+                    <i class="fas fa-layer-group me-2"></i> SELECT COURSES TO COMPARE
                 </button>
             </div>
 
@@ -106,9 +106,24 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('assets/js/compare-modal.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const openModalBtn = document.getElementById('btnOpenCompareModal');
+            if (openModalBtn) {
+                openModalBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const modalEl = document.getElementById('courseSelectionModal');
+                    if (modalEl) {
+                        if (window.bootstrap && bootstrap.Modal) {
+                            var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                            modalInstance.show();
+                        } else if (window.jQuery) {
+                            $(modalEl).modal('show');
+                        }
+                    }
+                });
+            }
+
             const data = window.compareModalData || {};
 
             const campusSelectors = document.querySelectorAll('.campus-selector');
@@ -204,6 +219,7 @@
                             const courseData = dept.courses.find(c => c.id == sel.courseId);
                             if (courseData) {
                                 let rowData = { 
+                                    slot: i,
                                     campusName: campus.name,
                                     deptName: dept.name,
                                     location: campus.location,
@@ -310,8 +326,11 @@
                                 </th>`;
                 activeData.forEach(item => {
                     headHtml += `
-                        <th class="matrix-org-header" style="min-width: 200px;">
-                            <div class="matrix-org-badge text-truncate px-2" title="${item.campusName}">${item.campusName}</div>
+                        <th class="matrix-org-header position-relative" style="min-width: 200px;">
+                            <button type="button" class="btn btn-sm text-danger position-absolute top-0 end-0 m-1 p-1" onclick="switchToEmpty(${item.slot})" title="Remove">
+                                <i class="fas fa-times-circle fs-6"></i>
+                            </button>
+                            <div class="matrix-org-badge text-truncate px-2 pe-4" title="${item.campusName}">${item.campusName}</div>
                             <div class="matrix-dept-badge text-truncate px-2" title="${item.deptName}">${item.deptName}</div>
                             <div class="matrix-course-badge text-truncate px-2 mt-2" title="${item.name}">${item.name}</div>
                         </th>`;

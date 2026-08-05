@@ -15,16 +15,14 @@
     --hover-shadow: 0 30px 60px -15px rgba(236, 72, 153, 0.15);
 }
 
-body {
-    background-color: var(--compare-bg);
-    color: var(--compare-text);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-}
+/* body rules removed to preserve layout */
 
 .compare-section {
     padding: 30px 0 60px 0;
     background: linear-gradient(180deg, #f1f5f9 0%, #ffffff 100%);
     min-height: calc(100vh - 200px);
+    position: relative;
+    z-index: 10;
 }
 
 /* Beautiful main button */
