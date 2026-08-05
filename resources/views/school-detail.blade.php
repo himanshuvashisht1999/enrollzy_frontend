@@ -14,7 +14,8 @@
                 <div class="about-us-badge-wrapper">
                     <button class="about-us-badge">{{ mb_strtoupper($school->name) }}</button>
                     <p><i class="fa-solid fa-location-dot me-1"></i>
-                        {{ $location ?: ($school->head_office_location ?? 'India') }}</p>
+                        {{ $location ?: ($school->head_office_location ?? 'India') }}
+                    </p>
                 </div>
 
                 <!-- Green Down Arrow Button -->
@@ -433,7 +434,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="col-md-4 align-self-center">
+                                    <div class="col-md-4 align-self-center text-end">
                                         <button class="sd-cta-banner-btn" onclick="applyNowHandler('General Admission')">
                                             Check Eligibility Now <i class="fa-solid fa-arrow-right"></i>
                                         </button>
@@ -673,7 +674,8 @@
                                         <div>
                                             <h4 class="sd-course-university-title">{{ $school->name }} Courses & Fees</h4>
                                             <div class="sd-course-university-sub">
-                                                {{ $location ?: ($school->head_office_location ?? 'India') }}</div>
+                                                {{ $location ?: ($school->head_office_location ?? 'India') }}
+                                            </div>
                                         </div>
                                     </div>
                                     <button class="sd-btn-download" style="border-radius: 100px;">
@@ -681,7 +683,8 @@
                                     </button>
                                 </div>
 
-                                <div class="table-responsive" style="padding: 30px;border: 1px solid #dddddd;border-radius: 10px;">
+                                <div class="table-responsive"
+                                    style="padding: 30px;border: 1px solid #dddddd;border-radius: 10px;">
                                     <table class="table align-middle mb-0">
                                         <thead class="table-light">
                                             <tr>
@@ -693,7 +696,7 @@
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <a href="#" class="text-decoration-none fw-bold text-primary">B.A.</a>
+                                                    <a href="#" class="text-decoration-none  text-primary">B.A.</a>
                                                     <div class="text-muted" style="font-size: 11px;">5 courses</div>
                                                 </td>
                                                 <td class="text-center ">₹ 3.16 L - ₹ 5.17 L</td>
@@ -701,7 +704,7 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <a href="#" class="text-decoration-none fw-bold text-primary">B.Sc.</a>
+                                                    <a href="#" class="text-decoration-none  text-primary">B.Sc.</a>
                                                     <div class="text-muted" style="font-size: 11px;">8 courses</div>
                                                 </td>
                                                 <td class="text-center ">₹ 3.16 L - ₹ 5.17 L</td>
@@ -709,7 +712,7 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <a href="#" class="text-decoration-none fw-bold text-primary">B.Tech</a>
+                                                    <a href="#" class="text-decoration-none  text-primary">B.Tech</a>
                                                     <div class="text-muted" style="font-size: 11px;">12 courses</div>
                                                 </td>
                                                 <td class="text-center ">₹ 6.50 L - ₹ 12.80 L</td>
@@ -717,7 +720,7 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <a href="#" class="text-decoration-none fw-bold text-primary">B.B.A.</a>
+                                                    <a href="#" class="text-decoration-none  text-primary">B.B.A.</a>
                                                     <div class="text-muted" style="font-size: 11px;">3 courses</div>
                                                 </td>
                                                 <td class="text-center ">₹ 3.16 L - ₹ 5.17 L</td>
@@ -725,7 +728,7 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <a href="#" class="text-decoration-none fw-bold text-primary">B.Com</a>
+                                                    <a href="#" class="text-decoration-none  text-primary">B.Com</a>
                                                     <div class="text-muted" style="font-size: 11px;">4 courses</div>
                                                 </td>
                                                 <td class="text-center ">₹ 3.16 L - ₹ 5.17 L</td>
@@ -735,175 +738,200 @@
                                     </table>
                                 </div>
                             </div>
-                            <div style="padding: 30px;border: 1px solid #dddddd;border-radius: 10px;">  <h3 class="fw-bold fs-5 mb-4">All Courses at {{ $school->name }}</h3>
-                            <div class="sd-course-grid">
-                                @for ($i = 0; $i < 9; $i++)
-                                    <div class="sd-course-card">
-                                        <h4 class="sd-course-card-title">Bachelor of Computer Applications (BCA)</h4>
-                                        <div class="sd-course-meta-grid">
-                                            <div>
-                                                <div class="sd-course-meta-label">Total Fees</div>
-                                                <div class="sd-course-meta-value">₹ 5.12 L</div>
+                            <div style="padding: 30px;border: 1px solid #dddddd;border-radius: 10px;">
+                                <h3 class="fw-bold fs-5 mb-4">All Courses at {{ $school->name }}</h3>
+                                <div class="sd-course-grid">
+                                    @for ($i = 0; $i < 9; $i++)
+                                        <div class="sd-course-card">
+                                            <h4 class="sd-course-card-title">Bachelor of Computer Applications (BCA)</h4>
+                                            <div class="sd-course-meta-grid">
+                                                <div>
+                                                    <div class="sd-course-meta-label">Total Fees</div>
+                                                    <div class="sd-course-meta-value">₹ 5.12 L</div>
+                                                </div>
+                                                <div>
+                                                    <div class="sd-course-meta-label">Exam Accepted</div>
+                                                    <div class="sd-course-meta-value">--</div>
+                                                </div>
+                                                <div>
+                                                    <div class="sd-course-meta-label">Course Type</div>
+                                                    <div class="sd-course-meta-value">Full Time</div>
+                                                </div>
+                                                <div>
+                                                    <div class="sd-course-meta-label">Duration</div>
+                                                    <div class="sd-course-meta-value">3 Years</div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <div class="sd-course-meta-label">Exam Accepted</div>
-                                                <div class="sd-course-meta-value">--</div>
-                                            </div>
-                                            <div>
-                                                <div class="sd-course-meta-label">Course Type</div>
-                                                <div class="sd-course-meta-value">Full Time</div>
-                                            </div>
-                                            <div>
-                                                <div class="sd-course-meta-label">Duration</div>
-                                                <div class="sd-course-meta-value">3 Years</div>
-                                            </div>
+                                            <button class="sd-course-apply-btn" onclick="applyNowHandler('BCA')">
+                                                Apply Now <i class="fa-solid fa-arrow-right"></i>
+                                            </button>
                                         </div>
-                                        <button class="sd-course-apply-btn" onclick="applyNowHandler('BCA')">
-                                            Apply Now <i class="fa-solid fa-arrow-right"></i>
-                                        </button>
-                                    </div>
-                                @endfor
-                            </div></div>
+                                    @endfor
+                                </div>
+                            </div>
                             <!-- All Courses Grid -->
-                           
+
                         </div>
                     </div>
 
                     <!-- Scholarships Tab -->
-                    <div class="sd-section-card" data-tab-content="scholarships">
-                        <div class="sd-info-section">
-                            <h2 class="sd-info-title fs-4 mb-3">{{ $school->name }} Scholarships Overview</h2>
-                            <p class="sd-info-text text-muted">
-                                Scholarships at {{ $school->name }} are designed to reward merit, assist those in financial
-                                need, and encourage special categories of students through fee concessions and targeted
-                                awards. Most scholarships offer partial tuition fee waivers—typically ranging from 10% to
-                                40%—according to academic performance, sports achievements, or social backgrounds.
-                                Applicants can benefit from:
-                            </p>
-                            <ul class="sd-info-list text-muted">
-                                <li>Merit-based waivers (board/CUET/entrance scores)</li>
-                                <li>Need/EWS-based support (income thresholds, government post-matric)</li>
-                                <li>Category-based schemes (domicile, single girl child, sports, defense wards, alumni)</li>
-                            </ul>
-                        </div>
-
-                        <div class="sd-info-section">
-                            <h3 class="sd-info-title fs-5 mb-2">{{ $school->name }} Eligibility</h3>
-                            <p class="sd-info-text text-muted">
-                                Eligibility criteria for scholarships generally reflect a commitment to both excellence and
-                                inclusion. Most merit scholarships are awarded based on high scores in qualifying exams
-                                (e.g., above 75%, 85%, or 95% aggregate) or competitive entrance tests. Need-based schemes
-                                commonly consider annual family income thresholds set by government norms for EWS support.
-                                Specific category scholarships may require proof of being a single girl child, state
-                                domicile, or sports ranking at the state/national level. The university mandates maintenance
-                                of a minimum CGPA 7.0 for ongoing benefits in most cases.
-                            </p>
-                        </div>
-
-                        <div class="sd-info-section">
-                            <h3 class="sd-info-title fs-5 mb-2">{{ $school->name }} Required Documents</h3>
-                            <p class="sd-info-text text-muted">
-                                Applicants must submit official documents to substantiate their eligibility for
-                                scholarships. The following are typically required:
-                            </p>
-                            <ul class="sd-info-list text-muted">
-                                <li>Qualifying exam marksheet (Class 12 or equivalent)</li>
-                                <li>Entrance exam scorecard (if applicable)</li>
-                                <li>Income certificate (for need/EWS-based)</li>
-                                <li>Category certificate (SC/ST/OBC/EWS/sports/defense/single girl child)</li>
-                                <li>Government-issued identity proof</li>
-                            </ul>
-                        </div>
-
-                        <div class="sd-info-section">
-                            <h3 class="sd-info-title fs-5 mb-2">{{ $school->name }} Application Process</h3>
-                            <p class="sd-info-text text-muted">
-                                Scholarship applications at {{ $school->name }} are accepted via the online admission portal
-                                or directly through the institute's administrative office. Candidates should apply during
-                                the relevant admissions cycle or semester window, ensuring all required documentation is
-                                uploaded/attached before the published deadline. Failure to submit correct or complete
-                                documents may result in disqualification from consideration.
-                            </p>
-                        </div>
-
-                        <div class="sd-info-section">
-                            <h3 class="sd-info-title fs-5 mb-3">{{ $school->name }} Scholarship Details</h3>
-                            <p class="sd-info-text text-muted mb-3">
-                                The table below summarizes the main scholarships offered at the Dehradun campus, including
-                                key eligibility parameters and fee waiver benefits. Final awards may depend on document
-                                verification and seat-type availability.
-                            </p>
-
-                            <div class="table-responsive">
-                                <table class="table table-bordered align-middle mb-0">
-                                    <thead class="table-light">
-                                        <tr class="bg-primary text-white">
-                                            <th class="bg-primary text-white">Scholarship Name</th>
-                                            <th class="bg-primary text-white">Eligibility Criteria</th>
-                                            <th class="bg-primary text-white">Benefit</th>
-                                            <th class="bg-primary text-white">Notes (if any)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="fw-bold">Academic Merit Scholarship</td>
-                                            <td>Score >= 75% (some courses >= 85%/95%) in qualifying exam or top entrance
-                                                merit</td>
-                                            <td>10%-40% tuition fee waiver (fixed for entire course duration)</td>
-                                            <td>Maintaining minimum CGPA 7.0 each semester is mandatory</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-bold">Fee Concession for Female Candidates</td>
-                                            <td>Any female student admitted to any course</td>
-                                            <td>10% additional tuition fee waiver</td>
-                                            <td>Applicable along with other scholarships</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-bold">Fee Concession for Wards of Defense Personnel</td>
-                                            <td>Fee Concession for Wards of Defense Personnel</td>
-                                            <td>5% tuition fee waiver</td>
-                                            <td>NA</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-bold">Sports Scholarship</td>
-                                            <td>State/National level sports achievement certification</td>
-                                            <td>Tuition fee waiver percentage as per university discretion</td>
-                                            <td>NA</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-bold">Government Post Matric Scholarship</td>
-                                            <td>Reserved category (SC/ST/OBC/EWS) as per government norms, income cutoff as
-                                                notified</td>
-                                            <td>As per government notification</td>
-                                            <td>Renewal conditions apply</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-bold">Sibling Discount</td>
-                                            <td>Having a sibling currently enrolled at {{ $school->name }}</td>
-                                            <td>Tuition fee concession (exact % NA)</td>
-                                            <td>NA</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                    <div data-tab-content="scholarships">
+                        <div class="sd-section-card">
+                            <div class="sd-info-section">
+                                <h2 class="sd-info-title fs-4 mb-3">{{ $school->name }} Scholarships Overview</h2>
+                                <p class="sd-info-text text-muted">
+                                    Scholarships at {{ $school->name }} are designed to reward merit, assist those in
+                                    financial
+                                    need, and encourage special categories of students through fee concessions and targeted
+                                    awards. Most scholarships offer partial tuition fee waivers—typically ranging from 10%
+                                    to
+                                    40%—according to academic performance, sports achievements, or social backgrounds.
+                                    Applicants can benefit from:
+                                </p>
+                                <ul class="sd-info-list text-muted">
+                                    <li>Merit-based waivers (board/CUET/entrance scores)</li>
+                                    <li>Need/EWS-based support (income thresholds, government post-matric)</li>
+                                    <li>Category-based schemes (domicile, single girl child, sports, defense wards, alumni)
+                                    </li>
+                                </ul>
                             </div>
-                        </div>
 
-                        <!-- CTA Banner at Bottom -->
-                        <div class="sd-cta-banner mt-4 mb-0">
-                            <div class="sd-cta-banner-left">
-                                <div class="sd-cta-banner-logo">
-                                    <i class="fa-solid fa-route"></i>
+                            <div class="sd-info-section">
+                                <h3 class="sd-info-title fs-5 mb-2">{{ $school->name }} Eligibility</h3>
+                                <p class="sd-info-text text-muted">
+                                    Eligibility criteria for scholarships generally reflect a commitment to both excellence
+                                    and
+                                    inclusion. Most merit scholarships are awarded based on high scores in qualifying exams
+                                    (e.g., above 75%, 85%, or 95% aggregate) or competitive entrance tests. Need-based
+                                    schemes
+                                    commonly consider annual family income thresholds set by government norms for EWS
+                                    support.
+                                    Specific category scholarships may require proof of being a single girl child, state
+                                    domicile, or sports ranking at the state/national level. The university mandates
+                                    maintenance
+                                    of a minimum CGPA 7.0 for ongoing benefits in most cases.
+                                </p>
+                            </div>
+
+                            <div class="sd-info-section">
+                                <h3 class="sd-info-title fs-5 mb-2">{{ $school->name }} Required Documents</h3>
+                                <p class="sd-info-text text-muted">
+                                    Applicants must submit official documents to substantiate their eligibility for
+                                    scholarships. The following are typically required:
+                                </p>
+                                <ul class="sd-info-list text-muted">
+                                    <li>Qualifying exam marksheet (Class 12 or equivalent)</li>
+                                    <li>Entrance exam scorecard (if applicable)</li>
+                                    <li>Income certificate (for need/EWS-based)</li>
+                                    <li>Category certificate (SC/ST/OBC/EWS/sports/defense/single girl child)</li>
+                                    <li>Government-issued identity proof</li>
+                                </ul>
+                            </div>
+
+                            <div class="sd-info-section">
+                                <h3 class="sd-info-title fs-5 mb-2">{{ $school->name }} Application Process</h3>
+                                <p class="sd-info-text text-muted">
+                                    Scholarship applications at {{ $school->name }} are accepted via the online admission
+                                    portal
+                                    or directly through the institute's administrative office. Candidates should apply
+                                    during
+                                    the relevant admissions cycle or semester window, ensuring all required documentation is
+                                    uploaded/attached before the published deadline. Failure to submit correct or complete
+                                    documents may result in disqualification from consideration.
+                                </p>
+                            </div>
+
+                            <div class="sd-info-section">
+                                <h3 class="sd-info-title fs-5 mb-3">{{ $school->name }} Scholarship Details</h3>
+                                <p class="sd-info-text text-muted mb-3">
+                                    The table below summarizes the main scholarships offered at the Dehradun campus,
+                                    including
+                                    key eligibility parameters and fee waiver benefits. Final awards may depend on document
+                                    verification and seat-type availability.
+                                </p>
+
+                                <div class="table-responsive sd-scholar-table">
+                                    <table class="table table-bordered align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr class=" text-white">
+                                                <th class=" text-white">Scholarship Name</th>
+                                                <th class=" text-white">Eligibility Criteria</th>
+                                                <th class=" text-white">Benefit</th>
+                                                <th class=" text-white">Notes (if any)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="fw-bold">Academic Merit Scholarship</td>
+                                                <td>Score >= 75% (some courses >= 85%/95%) in qualifying exam or top
+                                                    entrance
+                                                    merit</td>
+                                                <td>10%-40% tuition fee waiver (fixed for entire course duration)</td>
+                                                <td>Maintaining minimum CGPA 7.0 each semester is mandatory</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Fee Concession for Female Candidates</td>
+                                                <td>Any female student admitted to any course</td>
+                                                <td>10% additional tuition fee waiver</td>
+                                                <td>Applicable along with other scholarships</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Fee Concession for Wards of Defense Personnel</td>
+                                                <td>Fee Concession for Wards of Defense Personnel</td>
+                                                <td>5% tuition fee waiver</td>
+                                                <td>NA</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Sports Scholarship</td>
+                                                <td>State/National level sports achievement certification</td>
+                                                <td>Tuition fee waiver percentage as per university discretion</td>
+                                                <td>NA</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Government Post Matric Scholarship</td>
+                                                <td>Reserved category (SC/ST/OBC/EWS) as per government norms, income cutoff
+                                                    as
+                                                    notified</td>
+                                                <td>As per government notification</td>
+                                                <td>Renewal conditions apply</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold">Sibling Discount</td>
+                                                <td>Having a sibling currently enrolled at {{ $school->name }}</td>
+                                                <td>Tuition fee concession (exact % NA)</td>
+                                                <td>NA</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <h3 class="sd-cta-banner-title">Your Journey to Success Begins Here</h3>
                             </div>
-                            <button class="sd-cta-banner-btn" onclick="applyNowHandler('General Admission')">
-                                Check Eligibility Now <i class="fa-solid fa-arrow-right-long"></i>
-                            </button>
+
+                        </div>
+                        <!-- CTA Banner at Bottom -->
+                        <div class="sd-cta-banner my-5">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="sd-cta-banner-left">
+                                            <div class="sd-cta-banner-logo">
+                                                <i class="fa-solid fa-route"></i>
+                                            </div>
+                                            <h3 class="sd-cta-banner-title">Your Journey to Success Begins Here</h3>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4 align-self-center text-end">
+                                        <button class="sd-cta-banner-btn" onclick="applyNowHandler('General Admission')">
+                                            Check Eligibility Now <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Rankings Tab -->
-                    <div class="sd-section-card" data-tab-content="rankings">
+                    <div class="sd-section-card nirf-ranking-tab" data-tab-content="rankings">
                         <div class="text-center mb-4">
                             <h2 class="sd-section-title fs-4 fw-bold mb-1">{{ $school->name }} Ranking 2026</h2>
                             <p class="text-muted" style="font-size: 13px;">Official placement data as reported in NIRF
@@ -918,7 +946,7 @@
 
                         <!-- NIRF Section -->
                         <div class="mb-4" data-ranking-section="nirf">
-                            <h3 class="fw-bold fs-5 mb-3">NIRF</h3>
+                            <h3 class=" fs-5 mb-3">NIRF</h3>
                             <div class="table-responsive">
                                 <table class="table table-bordered align-middle mb-0">
                                     <thead class="table-light">
@@ -931,25 +959,25 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td class="fw-bold">Engineering</td>
+                                            <td>Engineering</td>
                                             <td class="text-center">52</td>
                                             <td class="text-center">42</td>
                                             <td class="text-center">58</td>
                                         </tr>
                                         <tr>
-                                            <td class="fw-bold">Management</td>
+                                            <td>Management</td>
                                             <td class="text-center">52</td>
                                             <td class="text-center">42</td>
                                             <td class="text-center">58</td>
                                         </tr>
                                         <tr>
-                                            <td class="fw-bold">Overall</td>
+                                            <td>Overall</td>
                                             <td class="text-center">52</td>
                                             <td class="text-center">42</td>
                                             <td class="text-center">58</td>
                                         </tr>
                                         <tr>
-                                            <td class="fw-bold">University</td>
+                                            <td>University</td>
                                             <td class="text-center">52</td>
                                             <td class="text-center">42</td>
                                             <td class="text-center">58</td>
@@ -972,7 +1000,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td class="fw-bold">University</td>
+                                            <td>University</td>
                                             <td class="text-center">601 - 800</td>
                                         </tr>
                                     </tbody>
@@ -982,213 +1010,159 @@
                     </div>
 
                     <!-- NIRF Report Tab -->
-                    <div class="sd-section-card" data-tab-content="nirf">
-                        <!-- Approved Intake -->
-                        <div class="p-4 bg-white border rounded-4 mb-4 shadow-sm">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <h3 class="fw-bold fs-5 mb-1">NIRF Sanctioned (Approved) Intake</h3>
-                                    <p class="text-muted mb-0" style="font-size: 12px;">Official intake capacity as per NIRF
-                                        guidelines</p>
+                    <div data-tab-content="nirf">
+
+                        <div class="sd-section-card">
+                            <!-- Approved Intake -->
+                            <div class="p-4 bg-white border rounded-4 mb-4 shadow-sm">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h3 class="fw-bold fs-5 mb-1">NIRF Sanctioned (Approved) Intake</h3>
+                                        <p class="text-muted mb-0" style="font-size: 12px;">Official intake capacity as per
+                                            NIRF
+                                            guidelines</p>
+                                    </div>
+                                    <span class="border rounded px-3 py-1 font-monospace text-muted"
+                                        style="font-size: 12px;">IOGO</span>
                                 </div>
-                                <span class="border rounded px-3 py-1 font-monospace text-muted"
-                                    style="font-size: 12px;">IOGO</span>
-                            </div>
 
-                            <div class="sd-filter-pills-row justify-content-center mb-3">
-                                <button class="sd-filter-pill-btn active"
-                                    data-nirf-intake-filter="engineering">Engineering</button>
-                                <button class="sd-filter-pill-btn" data-nirf-intake-filter="management">Management</button>
-                                <button class="sd-filter-pill-btn" data-nirf-intake-filter="university">University</button>
-                            </div>
-
-                            <h4 class="fw-bold fs-6 mb-3 text-dark">{{ $school->name }} - Engineering Report</h4>
-
-                            <div class="table-responsive">
-                                <table class="table table-bordered text-center align-middle mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th class="text-start">Program</th>
-                                            <th>2020</th>
-                                            <th>2019</th>
-                                            <th>2018</th>
-                                            <th>2017</th>
-                                            <th>2016</th>
-                                            <th>2015</th>
-                                            <th>2014</th>
-                                            <th>2013</th>
-                                            <th>2012</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-start fw-bold">UG (4 Years)</td>
-                                            <td>1118</td>
-                                            <td>1188</td>
-                                            <td>924</td>
-                                            <td>527</td>
-                                            <td>815</td>
-                                            <td>650</td>
-                                            <td>815</td>
-                                            <td>815</td>
-                                            <td>815</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-start fw-bold">PG (2 Years)</td>
-                                            <td>1118</td>
-                                            <td>1188</td>
-                                            <td>924</td>
-                                            <td>527</td>
-                                            <td>815</td>
-                                            <td>650</td>
-                                            <td>815</td>
-                                            <td>815</td>
-                                            <td>815</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Student Strength Report -->
-                        <div class="p-4 bg-white border rounded-4 mb-4 shadow-sm">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <h3 class="fw-bold fs-5 mb-1">NIRF Student Strength Report</h3>
-                                    <p class="text-muted mb-0" style="font-size: 12px;">Total Actual Student Strength</p>
+                                <div class="sd-filter-pills-row justify-content-center mb-3">
+                                    <button class="sd-filter-pill-btn active"
+                                        data-nirf-intake-filter="engineering">Engineering</button>
+                                    <button class="sd-filter-pill-btn"
+                                        data-nirf-intake-filter="management">Management</button>
+                                    <button class="sd-filter-pill-btn"
+                                        data-nirf-intake-filter="university">University</button>
                                 </div>
-                                <span class="border rounded px-3 py-1 font-monospace text-muted"
-                                    style="font-size: 12px;">IOGO</span>
+
+                                <h4 class="fw-bold fs-6 mb-3 text-dark">{{ $school->name }} - Engineering Report</h4>
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered text-center align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="text-start">Program</th>
+                                                <th>2020</th>
+                                                <th>2019</th>
+                                                <th>2018</th>
+                                                <th>2017</th>
+                                                <th>2016</th>
+                                                <th>2015</th>
+                                                <th>2014</th>
+                                                <th>2013</th>
+                                                <th>2012</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-start fw-bold">UG (4 Years)</td>
+                                                <td>1118</td>
+                                                <td>1188</td>
+                                                <td>924</td>
+                                                <td>527</td>
+                                                <td>815</td>
+                                                <td>650</td>
+                                                <td>815</td>
+                                                <td>815</td>
+                                                <td>815</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-start fw-bold">PG (2 Years)</td>
+                                                <td>1118</td>
+                                                <td>1188</td>
+                                                <td>924</td>
+                                                <td>527</td>
+                                                <td>815</td>
+                                                <td>650</td>
+                                                <td>815</td>
+                                                <td>815</td>
+                                                <td>815</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
-                            <div class="sd-filter-pills-row justify-content-center mb-3">
-                                <button class="sd-filter-pill-btn active"
-                                    data-nirf-strength-filter="engineering">Engineering</button>
-                                <button class="sd-filter-pill-btn"
-                                    data-nirf-strength-filter="management">Management</button>
-                                <button class="sd-filter-pill-btn"
-                                    data-nirf-strength-filter="university">University</button>
+                            <!-- Student Strength Report -->
+                            <div class="p-4 bg-white border rounded-4 mb-4 shadow-sm">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h3 class="fw-bold fs-5 mb-1">NIRF Student Strength Report</h3>
+                                        <p class="text-muted mb-0" style="font-size: 12px;">Total Actual Student Strength
+                                        </p>
+                                    </div>
+                                    <span class="border rounded px-3 py-1 font-monospace text-muted"
+                                        style="font-size: 12px;">IOGO</span>
+                                </div>
+
+                                <div class="sd-filter-pills-row justify-content-center mb-3">
+                                    <button class="sd-filter-pill-btn active"
+                                        data-nirf-strength-filter="engineering">Engineering</button>
+                                    <button class="sd-filter-pill-btn"
+                                        data-nirf-strength-filter="management">Management</button>
+                                    <button class="sd-filter-pill-btn"
+                                        data-nirf-strength-filter="university">University</button>
+                                </div>
+
+                                <h4 class="fw-bold fs-6 mb-3 text-dark">{{ $school->name }} - Engineering Report</h4>
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered text-center align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="text-start">Program</th>
+                                                <th>2020</th>
+                                                <th>2019</th>
+                                                <th>2018</th>
+                                                <th>2017</th>
+                                                <th>2016</th>
+                                                <th>2015</th>
+                                                <th>2014</th>
+                                                <th>2013</th>
+                                                <th>2012</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-start fw-bold">UG (4 Years)</td>
+                                                <td>1118</td>
+                                                <td>1188</td>
+                                                <td>924</td>
+                                                <td>527</td>
+                                                <td>815</td>
+                                                <td>650</td>
+                                                <td>815</td>
+                                                <td>815</td>
+                                                <td>815</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-start fw-bold">PG (2 Years)</td>
+                                                <td>1118</td>
+                                                <td>1188</td>
+                                                <td>924</td>
+                                                <td>527</td>
+                                                <td>815</td>
+                                                <td>650</td>
+                                                <td>815</td>
+                                                <td>815</td>
+                                                <td>815</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
-                            <h4 class="fw-bold fs-6 mb-3 text-dark">{{ $school->name }} - Engineering Report</h4>
-
-                            <div class="table-responsive">
-                                <table class="table table-bordered text-center align-middle mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th class="text-start">Program</th>
-                                            <th>2020</th>
-                                            <th>2019</th>
-                                            <th>2018</th>
-                                            <th>2017</th>
-                                            <th>2016</th>
-                                            <th>2015</th>
-                                            <th>2014</th>
-                                            <th>2013</th>
-                                            <th>2012</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-start fw-bold">UG (4 Years)</td>
-                                            <td>1118</td>
-                                            <td>1188</td>
-                                            <td>924</td>
-                                            <td>527</td>
-                                            <td>815</td>
-                                            <td>650</td>
-                                            <td>815</td>
-                                            <td>815</td>
-                                            <td>815</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-start fw-bold">PG (2 Years)</td>
-                                            <td>1118</td>
-                                            <td>1188</td>
-                                            <td>924</td>
-                                            <td>527</td>
-                                            <td>815</td>
-                                            <td>650</td>
-                                            <td>815</td>
-                                            <td>815</td>
-                                            <td>815</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <!-- Trends Row (Visual representations) -->
                         </div>
-
-                        <!-- Trends Row (Visual representations) -->
                         <div class="sd-trend-row">
                             <!-- Placement Rate Trend -->
                             <div class="sd-trend-card">
-                                <div class="sd-trend-header">
-                                    <h4 class="sd-trend-title">Placement Rate Trend (%)</h4>
-                                    <span class="sd-trend-badge">Avg 46%</span>
-                                </div>
-                                <div class="sd-trend-chart-wrapper d-flex align-items-end justify-content-between pt-4"
-                                    style="border-bottom: 2px solid #E2E8F0; border-left: 2px solid #E2E8F0; padding-left: 10px; padding-bottom: 5px;">
-                                    <div class="d-flex flex-column align-items-center flex-grow-1">
-                                        <div class="bg-primary opacity-50 rounded-top" style="width: 30px; height: 60px;">
-                                        </div>
-                                        <span class="text-muted mt-2" style="font-size: 10px;">2021</span>
-                                    </div>
-                                    <div class="d-flex flex-column align-items-center flex-grow-1">
-                                        <div class="bg-primary opacity-60 rounded-top" style="width: 30px; height: 80px;">
-                                        </div>
-                                        <span class="text-muted mt-2" style="font-size: 10px;">2022</span>
-                                    </div>
-                                    <div class="d-flex flex-column align-items-center flex-grow-1">
-                                        <div class="bg-primary opacity-70 rounded-top" style="width: 30px; height: 50px;">
-                                        </div>
-                                        <span class="text-muted mt-2" style="font-size: 10px;">2023</span>
-                                    </div>
-                                    <div class="d-flex flex-column align-items-center flex-grow-1">
-                                        <div class="bg-primary opacity-80 rounded-top" style="width: 30px; height: 75px;">
-                                        </div>
-                                        <span class="text-muted mt-2" style="font-size: 10px;">2024</span>
-                                    </div>
-                                    <div class="d-flex flex-column align-items-center flex-grow-1">
-                                        <div class="bg-primary rounded-top" style="width: 30px; height: 95px;"></div>
-                                        <span class="text-muted mt-2" style="font-size: 10px;">2025</span>
-                                    </div>
-                                </div>
+                                <img src="/assets/images/nirf-graph-img-1.png" alt="">
                             </div>
-
+    
                             <!-- Median Salary Trend -->
                             <div class="sd-trend-card">
-                                <div class="sd-trend-header">
-                                    <h4 class="sd-trend-title">Median Salary Trend (₹ LPA)</h4>
-                                    <span class="sd-trend-badge" style="background-color: #FEF3C7; color: #D97706;">Avg 4.8
-                                        LPA</span>
-                                </div>
-                                <div class="sd-trend-chart-wrapper d-flex align-items-end justify-content-between pt-4"
-                                    style="border-bottom: 2px solid #E2E8F0; border-left: 2px solid #E2E8F0; padding-left: 10px; padding-bottom: 5px;">
-                                    <div class="d-flex flex-column align-items-center flex-grow-1">
-                                        <div class="bg-warning opacity-50 rounded-top" style="width: 30px; height: 50px;">
-                                        </div>
-                                        <span class="text-muted mt-2" style="font-size: 10px;">2021</span>
-                                    </div>
-                                    <div class="d-flex flex-column align-items-center flex-grow-1">
-                                        <div class="bg-warning opacity-60 rounded-top" style="width: 30px; height: 65px;">
-                                        </div>
-                                        <span class="text-muted mt-2" style="font-size: 10px;">2022</span>
-                                    </div>
-                                    <div class="d-flex flex-column align-items-center flex-grow-1">
-                                        <div class="bg-warning opacity-70 rounded-top" style="width: 30px; height: 80px;">
-                                        </div>
-                                        <span class="text-muted mt-2" style="font-size: 10px;">2023</span>
-                                    </div>
-                                    <div class="d-flex flex-column align-items-center flex-grow-1">
-                                        <div class="bg-warning opacity-80 rounded-top" style="width: 30px; height: 75px;">
-                                        </div>
-                                        <span class="text-muted mt-2" style="font-size: 10px;">2024</span>
-                                    </div>
-                                    <div class="d-flex flex-column align-items-center flex-grow-1">
-                                        <div class="bg-warning rounded-top" style="width: 30px; height: 110px;"></div>
-                                        <span class="text-muted mt-2" style="font-size: 10px;">2025</span>
-                                    </div>
-                                </div>
+                                <img src="/assets/images/nirf-graph-img-2.png" alt="">
                             </div>
                         </div>
                     </div>
@@ -1286,9 +1260,9 @@
 
                 <!-- Gallery Tab -->
                 <div class="sd-section-card" data-tab-content="gallery">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4"style="    border-bottom: 1px solid #dddddd;">
                         <h2 class="sd-section-title fs-4 fw-bold mb-0">Graphic Era University Gallery</h2>
-                        <span class="text-muted" style="font-size: 13px;">15 photos &bull; 0 videos</span>
+                        <span  style="font-size: 13px;color:3771C8;">15 photos &bull; 0 videos</span>
                     </div>
 
                     <!-- Album Filter Pills -->
@@ -1325,7 +1299,7 @@
                             @endphp
                             <div class="sd-gallery-card" data-gallery-album="{{ $albumKey }}">
                                 <div class="sd-gallery-img-wrapper">
-                                    <img class="sd-gallery-img" src="{{ asset('assets/images/school-detail-banner-img.png') }}"
+                                    <img class="sd-gallery-img" src="{{ asset('assets/images/blog_1.png') }}"
                                         alt="{{ $albumName }}" />
                                     <div class="sd-gallery-hover-overlay">
                                         <button class="sd-gallery-view-btn">View</button>
@@ -1350,15 +1324,15 @@
 
                 <!-- Faculty Tab -->
                 <div class="sd-section-card" data-tab-content="faculty">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4"style="    border-bottom: 1px solid #dddddd;">
                         <h2 class="sd-section-title fs-4 fw-bold mb-0">Graphic Era University Faculty Details</h2>
-                        <span class="text-primary fw-bold" style="font-size: 13px;">293 Members</span>
+                        <span class="text-primary " style="font-size: 14px;">293 Members</span>
                     </div>
 
                     <div class="sd-faculty-grid">
                         @for ($i = 0; $i < 20; $i++)
                             <div class="sd-faculty-card">
-                                <i class="fa-solid fa-circle-user fa-3x text-muted mb-2"></i>
+                                <img src="{{ asset('assets/images/mentor-img-1.png') }}" alt="">
                                 <h4 class="sd-faculty-name">Dr. Pushpendra Kumar</h4>
                                 <p class="sd-faculty-role mb-0">Professor</p>
                             </div>
@@ -1371,7 +1345,7 @@
                     <div class="sd-course-list-header mb-4">
                         <div class="sd-course-university-info">
                             <img class="sd-course-university-logo"
-                                src="{{ $school->logo_url ? (str_starts_with($school->logo_url, 'http') ? $school->logo_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($school->logo_url, '/')) : asset('assets/images/university-default-logo.png') }}"
+                                src="{{ asset('assets/images/boarding-school-logo.png') }}"
                                 alt="Logo" />
                             <h4 class="sd-course-university-title">GUA Admission Program</h4>
                         </div>
@@ -1380,7 +1354,7 @@
                         </button>
                     </div>
 
-                    <div class="table-responsive">
+                    <div class="table-responsive sd-adm-route-table">
                         <table class="table align-middle text-center mb-0">
                             <thead class="table-light">
                                 <tr>
@@ -1399,18 +1373,18 @@
                                     <td>26-27</td>
                                     <td>31.08.26</td>
                                     <td><span
-                                            class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 rounded-pill">Active</span>
+                                            class="badge bg-opacity-10   border-opacity-25 px-3 py-1 rounded-pill"style="background: #10B98115;color:#10B981;">Active</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">CAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">XAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">MAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">GEUCAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1">Graduation Merit
+                                        <span class="badge bg-white  text-dark  px-2 py-1 mb-1">CAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1 mb-1">XAT</span>
+                                        <span class="badge bg-white  text-dark  px-2 py-1 mb-1">MAT</span>
+                                        <span class="badge bg-white  text-dark  px-2 py-1 mb-1">GEUCAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1">Graduation Merit
                                             Basis</span>
                                     </td>
                                     <td class="fw-bold">14,500</td>
-                                    <td><button class="btn btn-primary btn-sm rounded-pill px-3 fw-bold"
+                                    <td><button class="btn  btn-sm rounded-pill px-3 fw-bold"style="background: #3771C8;color: #fff;"
                                             onclick="applyNowHandler('MBA')">Apply Now</button></td>
                                 </tr>
                                 <tr>
@@ -1418,33 +1392,33 @@
                                     <td>26-27</td>
                                     <td>31.08.26</td>
                                     <td><span
-                                            class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-1 rounded-pill">Closed</span>
+                                            class="badge  bg-opacity-10  border-opacity-25 px-3 py-1 rounded-pill"style="background: #DB410115;color:#DB4101;">Closed</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">CAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">XAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">MAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1">GEUCAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1 mb-1">CAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1 mb-1">XAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1 mb-1">MAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1">GEUCAT</span>
                                     </td>
                                     <td class="fw-bold">22,500</td>
-                                    <td><button class="btn btn-primary btn-sm rounded-pill px-3 fw-bold"
+                                    <td><button class="btn  btn-sm rounded-pill px-3 fw-bold"style="background: #3771C8;color: #fff;"
                                             onclick="applyNowHandler('B-tech')">Apply Now</button></td>
                                 </tr>
                                 <tr>
                                     <td class="text-start fw-bold text-primary">B pharma</td>
                                     <td>26-27</td>
                                     <td>31.08.26</td>
-                                    <td><span
-                                            class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 rounded-pill">Active</span>
+                                  <td><span
+                                            class="badge bg-opacity-10   border-opacity-25 px-3 py-1 rounded-pill"style="background: #10B98115;color:#10B981;">Active</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">CAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">XAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">MAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1">GEUCAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1 mb-1">CAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1 mb-1">XAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1 mb-1">MAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1">GEUCAT</span>
                                     </td>
                                     <td class="fw-bold">14,500</td>
-                                    <td><button class="btn btn-primary btn-sm rounded-pill px-3 fw-bold"
+                                    <td><button class="btn  btn-sm rounded-pill px-3 fw-bold"style="background: #3771C8;color: #fff;"
                                             onclick="applyNowHandler('B pharma')">Apply Now</button></td>
                                 </tr>
                                 <tr>
@@ -1452,16 +1426,16 @@
                                     <td>26-27</td>
                                     <td>31.08.26</td>
                                     <td><span
-                                            class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-1 rounded-pill">Closed</span>
+                                            class="badge  bg-opacity-10  border-opacity-25 px-3 py-1 rounded-pill"style="background: #DB410115;color:#DB4101;">Closed</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">CAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">XAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1 mb-1">MAT</span>
-                                        <span class="badge bg-light text-dark border px-2 py-1">GEUCAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1 mb-1">CAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1 mb-1">XAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1 mb-1">MAT</span>
+                                        <span class="badge bg-white text-dark  px-2 py-1">GEUCAT</span>
                                     </td>
                                     <td class="fw-bold">22,500</td>
-                                    <td><button class="btn btn-primary btn-sm rounded-pill px-3 fw-bold"
+                                    <td><button class="btn  btn-sm rounded-pill px-3 fw-bold"style="background: #3771C8;color: #fff;"
                                             onclick="applyNowHandler('M-tech')">Apply Now</button></td>
                                 </tr>
                             </tbody>
@@ -1478,7 +1452,8 @@
                                 <i class="fa-solid fa-location-dot text-primary fs-4 mb-2"></i>
                                 <h6 class="fw-bold mb-1">Location</h6>
                                 <p class="text-muted mb-0" style="font-size: 12px;">
-                                    {{ $school->head_office_location ?? $location ?: 'Dehradun, Uttarakhand' }}</p>
+                                    {{ $school->head_office_location ?? $location ?: 'Dehradun, Uttarakhand' }}
+                                </p>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
@@ -1501,7 +1476,8 @@
                                 <i class="fa-solid fa-phone text-warning fs-4 mb-2"></i>
                                 <h6 class="fw-bold mb-1">Phone Number</h6>
                                 <p class="text-muted mb-0" style="font-size: 12px;">
-                                    {{ $school->helpdesk_contact_number ?? 'Available On Request' }}</p>
+                                    {{ $school->helpdesk_contact_number ?? 'Available On Request' }}
+                                </p>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
@@ -1509,7 +1485,8 @@
                                 <i class="fa-solid fa-envelope text-info fs-4 mb-2"></i>
                                 <h6 class="fw-bold mb-1">Email ID</h6>
                                 <p class="text-muted mb-0" style="font-size: 12px;">
-                                    {{ $school->helpdesk_email ?? 'Available On Request' }}</p>
+                                    {{ $school->helpdesk_email ?? 'Available On Request' }}
+                                </p>
                             </div>
                         </div>
                     </div>
