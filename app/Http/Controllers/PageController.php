@@ -987,6 +987,20 @@ class PageController extends Controller
         return view('mentors', compact('mentors', 'testimonials', 'video_testimonials'));
     }
 
+    public function careerRoadmap(\Illuminate\Http\Request $request) {
+        // Career Roadmap page - URL managed from admin panel
+        $mentors = \App\Models\MentorProfile::with('user')->latest()->take(6)->get();
+        $video_testimonials = \App\Models\VideoTestimonial::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
+        $testimonials = [];
+
+        // Use dedicated career-roadmap view if it exists, otherwise fall back to mentors view
+        if (view()->exists('career-roadmap')) {
+            return view('career-roadmap', compact('mentors', 'testimonials', 'video_testimonials'));
+        }
+
+        return view('mentors', compact('mentors', 'testimonials', 'video_testimonials'));
+    }
+
     public function mentorDetail($id = null) {
         $mentor = null;
         if ($id) {

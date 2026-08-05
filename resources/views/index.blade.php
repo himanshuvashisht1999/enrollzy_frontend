@@ -863,8 +863,9 @@
                 </div>
                 <!-- View More Button -->
                 <div class="text-center">
-                    <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
-                        More <i class="fa-solid fa-arrow-right-long"></i></a>
+                    <a href="{{ !empty($secMentors->cta_url) ? (str_starts_with($secMentors->cta_url, 'http') ? $secMentors->cta_url : url($secMentors->cta_url)) : route('mentors') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">
+                        {{ !empty($secMentors->cta_title) ? $secMentors->cta_title : 'View More' }} <i class="fa-solid fa-arrow-right-long"></i>
+                    </a>
                 </div>
             </div>
         </section>
@@ -2311,8 +2312,9 @@
                 </div>
                 <!-- View More Button -->
                 <div class="text-center">
-                    <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
-                        More <i class="fa-solid fa-arrow-right-long"></i></a>
+                    <a href="{{ !empty($secMentors->cta_url) ? (str_starts_with($secMentors->cta_url, 'http') ? $secMentors->cta_url : url($secMentors->cta_url)) : route('mentors') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">
+                        {{ !empty($secMentors->cta_title) ? $secMentors->cta_title : 'View More' }} <i class="fa-solid fa-arrow-right-long"></i>
+                    </a>
                 </div>
             </div>
         </section>

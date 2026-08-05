@@ -59,6 +59,7 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/university', [PageController::class, 'university'])->name('university');
     Route::get('/university-detail/{slug}', [PageController::class, 'universityDetail'])->name('university.detail');
     Route::get('/mentors', [PageController::class, 'mentors'])->name('mentors');
+    Route::get('/career-roadmap', [PageController::class, 'careerRoadmap'])->name('career-roadmap.index');
     Route::get('/mentor-detail/{id?}', [PageController::class, 'mentorDetail'])->name('mentor.detail');
     Route::post('/mentor-detail/review', [PageController::class, 'submitMentorReview'])->name('mentor.review.submit');
     Route::get('/ask-enrollzy', [PageController::class, 'askEnrollzy'])->name('ask.enrollzy');
