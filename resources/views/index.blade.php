@@ -863,8 +863,9 @@
                 </div>
                 <!-- View More Button -->
                 <div class="text-center">
-                    <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
-                        More <i class="fa-solid fa-arrow-right-long"></i></a>
+                    <a href="{{ !empty($secMentors->cta_url) ? (str_starts_with($secMentors->cta_url, 'http') ? $secMentors->cta_url : url($secMentors->cta_url)) : route('mentors') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">
+                        {{ !empty($secMentors->cta_title) ? $secMentors->cta_title : 'View More' }} <i class="fa-solid fa-arrow-right-long"></i>
+                    </a>
                 </div>
             </div>
         </section>
@@ -1454,10 +1455,10 @@
                         @endif
                         @break
 
-                    @case('trending_courses')
-                        @if(!in_array('trending_courses', $renderedSectionKeys))
-                            @php $renderedSectionKeys[] = 'trending_courses'; @endphp
-<!-- Compare Banner & Trending Courses Section -->
+                    @case('university_comparison')
+                        @if(!in_array('university_comparison', $renderedSectionKeys))
+                            @php $renderedSectionKeys[] = 'university_comparison'; @endphp
+<!-- Compare Banner Section -->
     @php $secUnivComp = $homepageSections['university_comparison'] ?? null; @endphp
     @if(!isset($secUnivComp) || (isset($secUnivComp->is_visible) && $secUnivComp->is_visible))
         <div class="compare-banner">
@@ -1465,16 +1466,16 @@
                 <div class="row align-items-center g-4">
                     <div class="col-md-8 d-flex align-items-center gap-4 flex-wrap flex-md-nowrap">
                         <div class="qa-avatars-row">
-                            <img src="assets/images/compare-banner-img.png" alt="">
+                            <img src="{{ !empty($secUnivComp->image) ? asset($secUnivComp->image) : asset('assets/images/compare-banner-img.png') }}" alt="Compare Colleges">
                         </div>
                         <div>
-                            <h3 class="compare-banner-heading">Confused Between Colleges?</h3>
-                            <p class="compare-banner-sub mb-0">Compare fees, placements & courses in one-click!</p>
+                            <h3 class="compare-banner-heading">{{ !empty($secUnivComp->title) ? $secUnivComp->title : 'Confused Between Colleges?' }}</h3>
+                            <p class="compare-banner-sub mb-0">{!! !empty($secUnivComp->subtitle) ? $secUnivComp->subtitle : 'Compare fees, placements & courses in one-click!' !!}</p>
                         </div>
                     </div>
                     <div class="col-md-4 text-md-end">
                         <button type="button" class="btn btn-enrollzy btn-enrollzy-white btn-enrollzy-md" data-bs-toggle="modal" data-bs-target="#courseSelectionModal">
-                            Compare Now
+                            {{ !empty($secUnivComp->cta_title) ? $secUnivComp->cta_title : 'Compare Now' }}
                             <i class="fa-solid fa-arrow-right-long" style="color: #000;"></i>
                         </button>
                     </div>
@@ -1482,7 +1483,14 @@
             </div>
         </div>
         @include('partials.compare-modal')
+    @endif
+                        @endif
+                        @break
 
+                    @case('trending_courses')
+                        @if(!in_array('trending_courses', $renderedSectionKeys))
+                            @php $renderedSectionKeys[] = 'trending_courses'; @endphp
+<!-- Trending Courses Section -->
         @php $secTrendingCourses = $homepageSections['trending_courses'] ?? null; @endphp
         @if(!isset($secTrendingCourses) || (isset($secTrendingCourses->is_visible) && $secTrendingCourses->is_visible))
             <section class="compare-courses-section ptb-70">
@@ -1534,7 +1542,6 @@
                 </div>
             </section>
         @endif
-    @endif
                         @endif
                         @break
 
@@ -2311,8 +2318,9 @@
                 </div>
                 <!-- View More Button -->
                 <div class="text-center">
-                    <a href="{{ route('blogs') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">View
-                        More <i class="fa-solid fa-arrow-right-long"></i></a>
+                    <a href="{{ !empty($secMentors->cta_url) ? (str_starts_with($secMentors->cta_url, 'http') ? $secMentors->cta_url : url($secMentors->cta_url)) : route('mentors') }}" class="btn btn-enrollzy btn-enrollzy-lg text-decoration-none text-white">
+                        {{ !empty($secMentors->cta_title) ? $secMentors->cta_title : 'View More' }} <i class="fa-solid fa-arrow-right-long"></i>
+                    </a>
                 </div>
             </div>
         </section>

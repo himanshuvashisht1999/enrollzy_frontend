@@ -36,7 +36,8 @@
                                                             if ($path === '/all-coaching' || $path === '/institutes' || $path === '/coaching') return route('all.coaching');
                                                             if ($path === '/top-exams' || $path === '/exams') return route('top-exams');
                                                             if ($path === '/scholarships' || $path === '/scholarships-and-benefits') return route('scholarships');
-                                                            if ($path === '/career-roadmap' || $path === '/mentors') return route('mentors');
+                                                            if ($path === '/mentors') return route('mentors');
+                                                            // For /career-roadmap and any other paths, use the URL as-is from admin
                                                             return url($path ?? '/');
                                                         }
                                                         return str_starts_with($u, 'http') ? $u : url($u);
@@ -47,7 +48,7 @@
                                                     if (str_contains($t, 'COACH')) return route('all.coaching');
                                                     if (str_contains($t, 'EXAM')) return route('top-exams');
                                                     if (str_contains($t, 'SCHOLAR')) return route('scholarships');
-                                                    if (str_contains($t, 'ROADMAP') || str_contains($t, 'CAREER')) return route('mentors');
+                                                    if (str_contains($t, 'ROADMAP') || str_contains($t, 'CAREER')) return route('career-roadmap.index');
                                                     return route('home');
                                                 }
                                             }

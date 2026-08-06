@@ -26,7 +26,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title fw-bold">Select Courses to Compare</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="if(window.jQuery){ $('#courseSelectionModal').modal('hide'); } else if(window.bootstrap && bootstrap.Modal){ var m = bootstrap.Modal.getInstance(document.getElementById('courseSelectionModal')); if(m) m.hide(); }"></button>
             </div>
             <div class="modal-body">
                 <div class="row g-4 justify-content-center">
@@ -100,7 +100,7 @@
                 </div>
             </div>
             <div class="modal-footer justify-content-center border-top">
-                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal" onclick="if(window.jQuery){ $('#courseSelectionModal').modal('hide'); } else if(window.bootstrap && bootstrap.Modal){ var m = bootstrap.Modal.getInstance(document.getElementById('courseSelectionModal')); if(m) m.hide(); }">Cancel</button>
                 <button type="button" class="btn btn-primary rounded-pill px-5 shadow-sm" id="confirmSelectionBtn" data-bs-dismiss="modal">Compare Now</button>
             </div>
         </div>

@@ -27,6 +27,7 @@ body {
     position: absolute;
     height: 806px;
     top: 0;
+    pointer-events: none;
 }
 
 .bottom-gradient-div {
@@ -10771,4 +10772,45 @@ header {
     .hero-badge-container img {
         top: -38px;
     }
+}
+
+/* Compare Banner Section Styling */
+.compare-banner {
+    background: linear-gradient(90deg, #FCF5D8 0%, #D8E6F5 50%, #B6D0F2 100%);
+    padding: 35px 50px;
+    margin: 40px 0;
+    border-radius: 0px;
+    width: 100%;
+}
+
+.compare-banner-heading {
+    font-size: 32px;
+    font-weight: 800;
+    color: #000000;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.compare-banner-sub {
+    font-size: 18px;
+    font-weight: 500;
+    color: #222222;
+}
+
+.btn-enrollzy-white {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border: none !important;
+    padding: 12px 28px !important;
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-enrollzy-white:hover {
+    background-color: #F5F5F5 !important;
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.12) !important;
 }
