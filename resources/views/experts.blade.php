@@ -8,7 +8,7 @@
         <!-- 1. HERO BANNER SECTION -->
         <main class="about-hero-section ptb-70 pb-0">
             <div class="bg-square">
-                <img src="assets/images/banner-square-img.svg" alt="" />
+                <img src="{{ asset('assets/images/banner-square-img.svg') }}" alt="" />
             </div>
             <div class="container position-relative">
                 <div class="row align-items-center">
@@ -21,7 +21,7 @@
                         </div>
 
                         <h1 class="mentors-hero-title">
-                            <span class="highlight-orange">Meet Our</span> Mentors
+                            <span class="highlight-orange">Meet Our</span> Experts
                         </h1>
 
                         <p class="mentors-hero-desc">
@@ -38,7 +38,7 @@
                     <div class="col-lg-7 col-12 position-relative">
                         <div class="hero-image-container">
                             <img src="{{ asset('assets/images/mentor-banner-img.png') }}" 
-                                alt="Vinay Singh">
+                                alt="Experts">
 
                         </div>
                     </div>
@@ -50,7 +50,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0" style="font-size: 13.5px; font-weight: 500;">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none text-muted"><i
-                                    class="fa-solid fa-house me-1"></i> Home</a></li>
+                                     class="fa-solid fa-house me-1"></i> Home</a></li>
                         <li class="breadcrumb-item active text-primary" aria-current="page">Experts</li>
                     </ol>
                 </nav>
@@ -82,32 +82,10 @@
                             </a>
                         </div>
                         <div class="swiper-slide" style="width: auto;">
-                            <a href="{{ route('mentors') }}" class="category-badge-card cat-mentors active"style="border:1px solid #E6E6E6;background-color:#E6E6E612;">
-                                <img src="{{ asset('assets/images/top-exam-icon-2.png') }}" alt=""> Mentors
+                            <a href="{{ route('experts') }}" class="category-badge-card cat-mentors active"style="border:1px solid #E6E6E6;background-color:#E6E6E612;">
+                                <img src="{{ asset('assets/images/top-exam-icon-2.png') }}" alt=""> Experts
                             </a>
                         </div>
-                        <div class="swiper-slide" style="width: auto;">
-                            <a href="{{ route('all-schools') }}" class="category-badge-card cat-schools"style="border:1px solid #F9AD0B;background-color:#F9AD0B12;">
-                                <img src="{{ asset('assets/images/top-exam-icon-2.png') }}" alt=""> Schools
-                            </a>
-                        </div>
-                        <div class="swiper-slide" style="width: auto;">
-                            <a href="{{ route('university') }}" class="category-badge-card cat-universities"style="border:1px solid #3771C8;background-color:#3771C812;">
-                                <img src="{{ asset('assets/images/top-exam-icon-2.png') }}" alt=""> Universities
-                            </a>
-                        </div>
-                        <div class="swiper-slide" style="width: auto;">
-                            <a href="{{ route('all.coaching') }}" class="category-badge-card cat-coaching"style="border:1px solid #10B981;background-color:#10B98112;">
-                                <img src="{{ asset('assets/images/top-exam-icon-2.png') }}" alt=""> Coaching
-                            </a>
-                        </div>
-                        <div class="swiper-slide" style="width: auto;">
-                            <a href="{{ route('mentors') }}" class="category-badge-card cat-mentors active"style="border:1px solid #E6E6E6;background-color:#E6E6E612;">
-                                <img src="{{ asset('assets/images/top-exam-icon-2.png') }}" alt=""> Mentors
-                            </a>
-                        </div>
-                       
-                        
                     </div>
                 </div>
             </div>
@@ -120,7 +98,7 @@
                 <div class="text-center mb-5">
                     <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3">
                         <span class="heading-line-orange d-none d-md-block"></span>
-                        <h2>What mentees said!</h2>
+                        <h2>What students said!</h2>
                         <span class="heading-line-orange d-none d-md-block"></span>
                     </div>
                 </div>
@@ -204,7 +182,7 @@
         <div class="tilted-marquee-wrapper-main mb-5 mt-5">
         <div class="tilted-marquee-wrapper mb-5 mt-5">
             <div class="marquee-content">
-                <span class="marquee-item">Trusted Mentors  </span>
+                <span class="marquee-item">Trusted Experts  </span>
                 <span class="marquee-item"><img src="{{asset('assets/images/marquee-mentor-icon.png')}}" alt=""></span>
                 <span class="marquee-item">Real Guidance  </span>
                 <span class="marquee-item"><img src="{{asset('assets/images/marquee-mentor-icon.png')}}" alt=""></span>
@@ -212,7 +190,7 @@
                 <span class="marquee-item"><img src="{{asset('assets/images/marquee-mentor-icon.png')}}" alt=""></span>
                 <span class="marquee-item">Grow Smarter  </span>
                 <span class="marquee-item"><img src="{{asset('assets/images/marquee-mentor-icon.png')}}" alt=""></span>
-                <span class="marquee-item">Trusted Mentors  </span>
+                <span class="marquee-item">Trusted Experts  </span>
                 <span class="marquee-item"><img src="{{asset('assets/images/marquee-mentor-icon.png')}}" alt=""></span>
                 <span class="marquee-item">Real Guidance  </span>
                 <span class="marquee-item"><img src="{{asset('assets/images/marquee-mentor-icon.png')}}" alt=""></span>
@@ -223,7 +201,7 @@
             </div>
             <!-- Duplicate marquee content for seamless infinite scroll -->
             <div class="marquee-content" aria-hidden="true">
-                <span class="marquee-item">Trusted Mentors  </span>
+                <span class="marquee-item">Trusted Experts  </span>
                 <span class="marquee-item"><img src="{{asset('assets/images/marquee-mentor-icon.png')}}" alt=""></span>
                 <span class="marquee-item">Real Guidance  </span>
                 <span class="marquee-item"><img src="{{asset('assets/images/marquee-mentor-icon.png')}}" alt=""></span>
@@ -231,7 +209,7 @@
                 <span class="marquee-item"><img src="{{asset('assets/images/marquee-mentor-icon.png')}}" alt=""></span>
                 <span class="marquee-item">Grow Smarter  </span>
                 <span class="marquee-item"><img src="{{asset('assets/images/marquee-mentor-icon.png')}}" alt=""></span>
-                <span class="marquee-item">Trusted Mentors  </span>
+                <span class="marquee-item">Trusted Experts  </span>
                 <span class="marquee-item"><img src="{{asset('assets/images/marquee-mentor-icon.png')}}" alt=""></span>
                 <span class="marquee-item">Real Guidance  </span>
                 <span class="marquee-item"><img src="{{asset('assets/images/marquee-mentor-icon.png')}}" alt=""></span>
@@ -245,7 +223,7 @@
         <div class="grad-main"
         style="background: linear-gradient(180deg, rgba(191, 219, 247, 0) 0%, rgb(191 219 247 / 17%) 50%, rgba(191, 219, 247, 0) 100%);">
 
-        <!-- 5. EXPERT MENTORS GRID SECTION -->
+        <!-- 5. EXPERTS GRID SECTION -->
         <section class="expert-mentors-sec ptb-70" id="expert-grid-section">
             <div class="container">
                 <!-- Section Header -->
@@ -274,23 +252,23 @@
                 @php $mentorSearch = trim(request('search', request('q', ''))); @endphp
                 @if(!empty($mentorSearch))
                 <div class="alert d-flex align-items-center justify-content-between py-2 px-3 mb-3 rounded-3" style="background:#fff7e6;border:1px solid #f9ad0b;font-size:14px;">
-                    <span><i class="fa-solid fa-magnifying-glass me-2" style="color:#f9ad0b;"></i>Showing results for <strong>"{{ $mentorSearch }}"</strong> &mdash; {{ $mentors->count() }} mentor{{ $mentors->count() == 1 ? '' : 's' }} found</span>
-                    <a href="{{ route('mentors') }}" class="text-decoration-none ms-3" style="color:#f9ad0b;font-weight:600;white-space:nowrap;">Clear <i class="fa-solid fa-xmark"></i></a>
+                    <span><i class="fa-solid fa-magnifying-glass me-2" style="color:#f9ad0b;"></i>Showing results for <strong>"{{ $mentorSearch }}"</strong> &mdash; {{ $mentors->count() }} expert{{ $mentors->count() == 1 ? '' : 's' }} found</span>
+                    <a href="{{ route('experts') }}" class="text-decoration-none ms-3" style="color:#f9ad0b;font-weight:600;white-space:nowrap;">Clear <i class="fa-solid fa-xmark"></i></a>
                 </div>
                 @endif
 
-                <!-- Mentors Grid -->
+                <!-- Experts Grid -->
                 <div class="row g-4 justify-content-center" id="mentor-grid-row">
                     @forelse($mentors as $index => $mentor)
                         @php
                             $mName = $mentor->name ?? trim(($mentor->first_name ?? '') . ' ' . ($mentor->last_name ?? ''));
                             if (empty($mName)) {
-                                $mName = $mentor->user->name ?? 'Expert Mentor';
+                                $mName = $mentor->user->name ?? 'Expert Counselor';
                             }
 
                             $defaultAvatars = ['mentor_1.png', 'mentor_2.png', 'mentor_3.png', 'mentor_4.png'];
                             $mPhoto = asset('assets/images/' . $defaultAvatars[$index % count($defaultAvatars)]);
-                            $imgPath = $mentor->img ?? $mentor->profile_photo ?? null;
+                            $imgPath = $mentor->img ?? $mentor->profile_photo_url ?? $mentor->profile_photo ?? null;
                             if (!empty($imgPath)) {
                                 $backendUrl = rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/');
                                 if (str_starts_with($imgPath, 'http')) {
@@ -316,7 +294,9 @@
                             $catAttr = $mentor->categories ?? $catMapList[$index % count($catMapList)];
                             $ratingNum = $mentor->rating ?? number_format(4.7 + (($index % 3) * 0.1), 1);
                             $sessionNum = $mentor->sessions_count ?? (180 + ($index * 65));
-                            $priceMin = $mentor->price_per_min ?? (300 + ($index * 100));
+                            $priceMin = isset($mentor->price_per_min) && $mentor->price_per_min !== '' && $mentor->price_per_min !== null 
+                                ? number_format((float)$mentor->price_per_min, 2) 
+                                : '10.00';
                         @endphp
                         <div class="col-xl-3 col-lg-4 col-md-6 col-12 mentor-card-col" data-categories="{{ $catAttr }}">
                             <div class="mentor-grid-card">
@@ -358,10 +338,10 @@
                         </div>
                     @empty
                         <div class="col-12 text-center py-5">
-                            <p class="text-muted fs-5">No mentors found
+                            <p class="text-muted fs-5">No experts found
                                 @if(!empty($mentorSearch))
                                     for "{{ $mentorSearch }}".
-                                    <br><a href="{{ route('mentors') }}" class="btn btn-outline-warning mt-2">View All Mentors</a>
+                                    <br><a href="{{ route('experts') }}" class="btn btn-outline-warning mt-2">View All Experts</a>
                                 @else
                                     at the moment.
                                 @endif
@@ -455,13 +435,13 @@
                     <!-- FAQ Item 1 -->
                     <div class="faq-card-item active">
                         <button class="faq-question-header" onclick="toggleFaq(this)">
-                            What is Unstop Mentorship?
+                            What is Enrollzy Expert Guidance?
                             <i class="fa-solid fa-plus faq-toggle-icon"></i>
                         </button>
                         <div class="faq-answer-panel" style="max-height: 200px;">
                             <div class="faq-answer-content">
-                                Unstop Mentorship is a unique platform which connects top quality mentors from around the
-                                globe with ambitious mentees who are looking for guidance, all on a single platform.
+                                Enrollzy Expert Guidance is a unique platform which connects top quality experts and counselors from around the
+                                globe with ambitious students who are looking for guidance, all on a single platform.
                             </div>
                         </div>
                     </div>
@@ -469,13 +449,13 @@
                     <!-- FAQ Item 2 -->
                     <div class="faq-card-item">
                         <button class="faq-question-header" onclick="toggleFaq(this)">
-                            How does Unstop Mentorship work?
+                            How does Expert Guidance work?
                             <i class="fa-solid fa-plus faq-toggle-icon"></i>
                         </button>
                         <div class="faq-answer-panel">
                             <div class="faq-answer-content">
-                                Mentees can browse through profiles of verified mentors across various industries, fields,
-                                and exams. You can select your preferred mentor, choose a date and time slot that works for
+                                Students can browse through profiles of verified experts across various industries, fields,
+                                and exams. You can select your preferred expert, choose a date and time slot that works for
                                 you, and book a 1:1 video/audio call session directly through our booking calendar.
                             </div>
                         </div>
@@ -484,44 +464,14 @@
                     <!-- FAQ Item 3 -->
                     <div class="faq-card-item">
                         <button class="faq-question-header" onclick="toggleFaq(this)">
-                            What is the goal of 1:1 mentorship sessions?
+                            What is the goal of 1:1 sessions?
                             <i class="fa-solid fa-plus faq-toggle-icon"></i>
                         </button>
                         <div class="faq-answer-panel">
                             <div class="faq-answer-content">
-                                The primary goal is to provide personalized, focused guidance. This includes resume reviews,
-                                mock interviews, preparation strategy planning for top exams, career roadmap reviews, and
-                                deep-dive consulting on transitioning into specific corporate or technical roles.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- FAQ Item 4 -->
-                    <div class="faq-card-item">
-                        <button class="faq-question-header" onclick="toggleFaq(this)">
-                            Who is eligible to take 1:1 mentorship sessions?
-                            <i class="fa-solid fa-plus faq-toggle-icon"></i>
-                        </button>
-                        <div class="faq-answer-panel">
-                            <div class="faq-answer-content">
-                                Anyone seeking guidance is eligible! This includes students preparing for competitive exams
-                                (JEE, NEET, NDA, SSC), graduates aiming to secure admissions in top colleges, and working
-                                professionals planning to transition careers or upskill in their current fields.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- FAQ Item 5 -->
-                    <div class="faq-card-item">
-                        <button class="faq-question-header" onclick="toggleFaq(this)">
-                            Who are Unstop mentors?
-                            <i class="fa-solid fa-plus faq-toggle-icon"></i>
-                        </button>
-                        <div class="faq-answer-panel">
-                            <div class="faq-answer-content">
-                                Our mentors are experienced industry professionals, successful founders, top scorers in
-                                competitive exams, and alumni of top institutions like IITs, IIMs, and prestigious global
-                                universities. Every mentor profile undergoes strict verification before being listed.
+                                The primary goal is to provide personalized, focused guidance. This includes college guidance,
+                                preparation strategy planning for top exams, career roadmap reviews, and
+                                deep-dive consulting on transitioning into specific academic or technical fields.
                             </div>
                         </div>
                     </div>

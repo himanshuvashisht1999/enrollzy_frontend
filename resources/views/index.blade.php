@@ -807,7 +807,7 @@
                 <div class="text-center mb-5">
                     <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3 mb-3">
                         <span class="heading-line d-none d-md-block"></span>
-                        <h2 class="section-title mb-0">{{ !empty($secMentors->title) ? $secMentors->title : "Expert Mentors" }}
+                        <h2 class="section-title mb-0">{{ !empty($secMentors->title) ? $secMentors->title : "Experts" }}
                         </h2>
                         <span class="heading-line d-none d-md-block"></span>
                     </div>
@@ -816,24 +816,63 @@
                     </p>
                 </div>
 
-                <!-- Mentors Grid -->
+                <!-- Experts Grid -->
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
-                    @foreach($mentors as $mentor)
+                    @foreach(($experts ?? $mentors) as $expert)
+                        @php
+                            $expertName = $expert->name ?? (trim(($expert->first_name ?? '') . ' ' . ($expert->last_name ?? '')));
+                            $expertTitle = $expert->role ?? $expert->designation ?? $expert->professional_headline ?? 'Education Expert';
+                            
+                            $expertPhoto = asset('assets/images/mentor1.png');
+                            if (!empty($expert->profile_photo_url) && str_starts_with($expert->profile_photo_url, 'http')) {
+                                $expertPhoto = $expert->profile_photo_url;
+                            } elseif (!empty($expert->img)) {
+                                $expertPhoto = str_starts_with($expert->img, 'http')
+                                    ? $expert->img
+                                    : rtrim(env('BACKEND_URL', 'https://crm.enrollzy.com'), '/') . '/' . ltrim($expert->img, '/');
+                            } elseif (!empty($expert->profile_photo)) {
+                                $expertPhoto = str_starts_with($expert->profile_photo, 'http')
+                                    ? $expert->profile_photo
+                                    : rtrim(env('BACKEND_URL', 'https://crm.enrollzy.com'), '/') . '/' . ltrim($expert->profile_photo, '/');
+                            }
+
+                            $specs = [];
+                            if (!empty($expert->subject_specialization)) {
+                                $specs = is_array($expert->subject_specialization) ? $expert->subject_specialization : json_decode($expert->subject_specialization, true);
+                            }
+                            if (empty($specs) && !empty($expert->counseling_specialization)) {
+                                $specs = is_array($expert->counseling_specialization) ? $expert->counseling_specialization : json_decode($expert->counseling_specialization, true);
+                            }
+                            if (!is_array($specs)) {
+                                $specs = [];
+                            }
+                        @endphp
                         <div class="col">
                             <div class="mentor-card h-100 d-flex flex-column">
                                 <div class="mentor-img-wrapper" style="height: 250px; overflow: hidden;">
-                                    <img src="{{ $mentor->profile_photo ? (str_starts_with($mentor->profile_photo, 'http') ? $mentor->profile_photo : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($mentor->profile_photo, '/')) : asset('assets/images/mentor1.png') }}"
-                                        alt="{{ $mentor->first_name }} {{ $mentor->last_name }}"
-                                        style="width: 100%; height: 100%; object-fit: cover;">
+                                    <img src="{{ $expertPhoto }}"
+                                        alt="{{ $expertName }}"
+                                        style="width: 100%; height: 100%; object-fit: cover;"
+                                        onerror="this.onerror=null;this.src='{{ asset('assets/images/mentor1.png') }}';">
                                 </div>
                                 <div class="mentor-card-body text-center d-flex flex-column flex-grow-1">
-                                    <h3 class="mentor-name">{{ $mentor->first_name }} {{ $mentor->last_name }}</h3>
-                                    <p class="mentor-title">{{ $mentor->professional_headline ?? 'Expert Mentor' }}</p>
+                                    <h3 class="mentor-name">{{ $expertName }}</h3>
+                                    <p class="mentor-title">{{ $expertTitle }}</p>
 
                                     <div class="mentor-badges d-flex flex-wrap justify-content-center gap-2 mb-3">
-                                        <span class="badge-tag tag-blue">MBA Prep</span>
-                                        <span class="badge-tag tag-yellow">Product</span>
-                                        <span class="badge-tag tag-green">Startups</span>
+                                        @if(!empty($specs))
+                                            @foreach(array_slice($specs, 0, 3) as $idx => $spec)
+                                                <span class="badge-tag {{ $idx % 3 == 0 ? 'tag-blue' : ($idx % 3 == 1 ? 'tag-yellow' : 'tag-green') }}">{{ $spec }}</span>
+                                            @endforeach
+                                        @else
+                                            <span class="badge-tag tag-blue">{{ $expert->role ?? 'Expert' }}</span>
+                                            @if(!empty($expert->degree))
+                                                <span class="badge-tag tag-yellow">{{ $expert->degree }}</span>
+                                            @else
+                                                <span class="badge-tag tag-yellow">Counseling</span>
+                                            @endif
+                                            <span class="badge-tag tag-green">Guidance</span>
+                                        @endif
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center mb-3 mentor-stats">
@@ -843,16 +882,16 @@
                                                     class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                                     class="fa-solid fa-star text-muted"></i>
                                             </div>
-                                            <span class="ms-1 fw-bold">4.9</span>
+                                            <span class="ms-1 fw-bold">{{ !empty($expert->rating) ? number_format((float)$expert->rating, 1) : '5.0' }}</span>
                                         </div>
-                                        <span class="sessions-count text-muted">280 sessions</span>
+                                        <span class="sessions-count text-muted">{{ !empty($expert->count) ? $expert->count : (!empty($expert->no_of_students_counseled) ? $expert->no_of_students_counseled . ' counseled' : '280 sessions') }}</span>
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
                                         <div class="mentor-price">
-                                            <span class="price-amount">₹{{ number_format($mentor->price_per_min ?? 500, 0) }}</span><span class="price-unit">/min</span>
+                                            <span class="price-amount">₹{{ number_format($expert->price_per_min ?? 500, 0) }}</span><span class="price-unit">/min</span>
                                         </div>
-                                        <a href="{{ route('mentor.detail', $mentor->id) }}" class="btn btn-enrollzy btn-enrollzy-sm px-3 rounded-pill">Book session <i
+                                        <a href="{{ route('expert.detail', $expert->id) }}" class="btn btn-enrollzy btn-enrollzy-sm px-3 rounded-pill text-white text-decoration-none">Book session <i
                                                 class="fa-solid fa-arrow-right-long ms-1"
                                                 style="color: #fff; font-size: 10px;"></i></a>
                                     </div>
@@ -2255,14 +2294,14 @@
 
 <!-- Expert Mentors Section -->
     @php $secMentors = $homepageSections['expert_carousel'] ?? $homepageSections['talk_to_alumni'] ?? null; @endphp
-    @if(!isset($secMentors) || (isset($secMentors->is_visible) && $secMentors->is_visible))
+    @if((!isset($secMentors) || (isset($secMentors->is_visible) && $secMentors->is_visible)) && !in_array('expert_carousel', $renderedSectionKeys ?? []))
         <section class="mentors-section ptb-70">
             <div class="container">
                 <!-- Section Header -->
                 <div class="text-center mb-5">
                     <div class="heading-with-lines d-flex align-items-center justify-content-center gap-3 mb-3">
                         <span class="heading-line d-none d-md-block"></span>
-                        <h2 class="section-title mb-0">{{ !empty($secMentors->title) ? $secMentors->title : "Expert Mentors" }}
+                        <h2 class="section-title mb-0">{{ !empty($secMentors->title) ? $secMentors->title : "Experts" }}
                         </h2>
                         <span class="heading-line d-none d-md-block"></span>
                     </div>
@@ -2271,24 +2310,63 @@
                     </p>
                 </div>
 
-                <!-- Mentors Grid -->
+                <!-- Experts Grid -->
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
-                    @foreach($mentors as $mentor)
+                    @foreach(($experts ?? $mentors) as $expert)
+                        @php
+                            $expertName = $expert->name ?? (trim(($expert->first_name ?? '') . ' ' . ($expert->last_name ?? '')));
+                            $expertTitle = $expert->role ?? $expert->designation ?? $expert->professional_headline ?? 'Education Expert';
+                            
+                            $expertPhoto = asset('assets/images/mentor1.png');
+                            if (!empty($expert->profile_photo_url) && str_starts_with($expert->profile_photo_url, 'http')) {
+                                $expertPhoto = $expert->profile_photo_url;
+                            } elseif (!empty($expert->img)) {
+                                $expertPhoto = str_starts_with($expert->img, 'http')
+                                    ? $expert->img
+                                    : rtrim(env('BACKEND_URL', 'https://crm.enrollzy.com'), '/') . '/' . ltrim($expert->img, '/');
+                            } elseif (!empty($expert->profile_photo)) {
+                                $expertPhoto = str_starts_with($expert->profile_photo, 'http')
+                                    ? $expert->profile_photo
+                                    : rtrim(env('BACKEND_URL', 'https://crm.enrollzy.com'), '/') . '/' . ltrim($expert->profile_photo, '/');
+                            }
+
+                            $specs = [];
+                            if (!empty($expert->subject_specialization)) {
+                                $specs = is_array($expert->subject_specialization) ? $expert->subject_specialization : json_decode($expert->subject_specialization, true);
+                            }
+                            if (empty($specs) && !empty($expert->counseling_specialization)) {
+                                $specs = is_array($expert->counseling_specialization) ? $expert->counseling_specialization : json_decode($expert->counseling_specialization, true);
+                            }
+                            if (!is_array($specs)) {
+                                $specs = [];
+                            }
+                        @endphp
                         <div class="col">
                             <div class="mentor-card h-100 d-flex flex-column">
                                 <div class="mentor-img-wrapper" style="height: 250px; overflow: hidden;">
-                                    <img src="{{ $mentor->profile_photo ? (str_starts_with($mentor->profile_photo, 'http') ? $mentor->profile_photo : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($mentor->profile_photo, '/')) : asset('assets/images/mentor1.png') }}"
-                                        alt="{{ $mentor->first_name }} {{ $mentor->last_name }}"
-                                        style="width: 100%; height: 100%; object-fit: cover;">
+                                    <img src="{{ $expertPhoto }}"
+                                        alt="{{ $expertName }}"
+                                        style="width: 100%; height: 100%; object-fit: cover;"
+                                        onerror="this.onerror=null;this.src='{{ asset('assets/images/mentor1.png') }}';">
                                 </div>
                                 <div class="mentor-card-body text-center d-flex flex-column flex-grow-1">
-                                    <h3 class="mentor-name">{{ $mentor->first_name }} {{ $mentor->last_name }}</h3>
-                                    <p class="mentor-title">{{ $mentor->professional_headline ?? 'Expert Mentor' }}</p>
+                                    <h3 class="mentor-name">{{ $expertName }}</h3>
+                                    <p class="mentor-title">{{ $expertTitle }}</p>
 
                                     <div class="mentor-badges d-flex flex-wrap justify-content-center gap-2 mb-3">
-                                        <span class="badge-tag tag-blue">MBA Prep</span>
-                                        <span class="badge-tag tag-yellow">Product</span>
-                                        <span class="badge-tag tag-green">Startups</span>
+                                        @if(!empty($specs))
+                                            @foreach(array_slice($specs, 0, 3) as $idx => $spec)
+                                                <span class="badge-tag {{ $idx % 3 == 0 ? 'tag-blue' : ($idx % 3 == 1 ? 'tag-yellow' : 'tag-green') }}">{{ $spec }}</span>
+                                            @endforeach
+                                        @else
+                                            <span class="badge-tag tag-blue">{{ $expert->role ?? 'Expert' }}</span>
+                                            @if(!empty($expert->degree))
+                                                <span class="badge-tag tag-yellow">{{ $expert->degree }}</span>
+                                            @else
+                                                <span class="badge-tag tag-yellow">Counseling</span>
+                                            @endif
+                                            <span class="badge-tag tag-green">Guidance</span>
+                                        @endif
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center mb-3 mentor-stats">
@@ -2298,16 +2376,16 @@
                                                     class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                                     class="fa-solid fa-star text-muted"></i>
                                             </div>
-                                            <span class="ms-1 fw-bold">4.9</span>
+                                            <span class="ms-1 fw-bold">{{ !empty($expert->rating) ? number_format((float)$expert->rating, 1) : '5.0' }}</span>
                                         </div>
-                                        <span class="sessions-count text-muted">280 sessions</span>
+                                        <span class="sessions-count text-muted">{{ !empty($expert->count) ? $expert->count : (!empty($expert->no_of_students_counseled) ? $expert->no_of_students_counseled . ' counseled' : '280 sessions') }}</span>
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
                                         <div class="mentor-price">
-                                            <span class="price-amount">₹{{ number_format($mentor->price_per_min ?? 500, 0) }}</span><span class="price-unit">/min</span>
+                                            <span class="price-amount">₹{{ number_format($expert->price_per_min ?? 500, 0) }}</span><span class="price-unit">/min</span>
                                         </div>
-                                        <a href="{{ route('mentor.detail', $mentor->id) }}" class="btn btn-enrollzy btn-enrollzy-sm px-3 rounded-pill">Book session <i
+                                        <a href="{{ route('expert.detail', $expert->id) }}" class="btn btn-enrollzy btn-enrollzy-sm px-3 rounded-pill text-white text-decoration-none">Book session <i
                                                 class="fa-solid fa-arrow-right-long ms-1"
                                                 style="color: #fff; font-size: 10px;"></i></a>
                                     </div>
@@ -3046,6 +3124,8 @@
     @endif
 
     @endif
+
+@include('partials.book-session-modal')
 
 @push('scripts')
     <script src="{{ asset('assets/js/compare-modal.js') }}"></script>

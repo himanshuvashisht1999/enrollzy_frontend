@@ -35,9 +35,27 @@ class PageController extends Controller
         $totalLeadsCount = 10000 + \Illuminate\Support\Facades\DB::table('leads')->count();
         $totalExamsCount = \App\Models\DynamicExam::where('status', 'Active')->count();
 
-        // Since MentorProfile might be in backend, let's copy the model to frontend first if it's not there, or just use DB facade
-        $mentorsCount = \Illuminate\Support\Facades\DB::table('mentor_profiles')->count();
-        $mentors = \Illuminate\Support\Facades\DB::table('mentor_profiles')->orderBy('id', 'desc')->take(4)->get();
+        // Fetch featured experts for homepage (is_featured = 1)
+        $expertsCount = \Illuminate\Support\Facades\DB::table('experts')->count();
+        $experts = \Illuminate\Support\Facades\DB::table('experts')
+            ->where('is_featured', 1)
+            ->where(function($q) {
+                $q->where('status', 'Active')->orWhere('status', '1');
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+
+        if ($experts->isEmpty()) {
+            $experts = \Illuminate\Support\Facades\DB::table('experts')
+                ->where(function($q) {
+                    $q->where('status', 'Active')->orWhere('status', '1');
+                })
+                ->orderBy('id', 'desc')
+                ->get();
+        }
+
+        $mentorsCount = $expertsCount;
+        $mentors = $experts;
         $blogsCount = \App\Models\Blog::count();
 
         $scholarshipsCount = 850;
@@ -108,7 +126,7 @@ class PageController extends Controller
             'schoolsCount', 'coachingCount', 'universitiesCount', 'collegesCount', 'examBodiesCount',
             'counsellingBodiesCount', 'regulatoryBodiesCount', 'govAgenciesCount', 'totalInstitutionsCount',
             'totalLeadsCount', 'totalExamsCount', 'mentorsCount', 'scholarshipsCount', 'internshipsCount', 'blogsCount', 'coachingInstitutes', 'featuredUniversities', 'streamData', 'dbStreamTabs', 'trendingCourses',
-            'mentors', 'heroSliders', 'firstHero', 'homepageSections', 'homepageSectionsOrdered', 'featuredScholarships', 'campuses', 'allFacilities'
+            'mentors', 'experts', 'expertsCount', 'heroSliders', 'firstHero', 'homepageSections', 'homepageSectionsOrdered', 'featuredScholarships', 'campuses', 'allFacilities'
         ));
     }
     public function about() { return view('about'); }
@@ -890,19 +908,19 @@ class PageController extends Controller
     }
 
     public function mentors(\Illuminate\Http\Request $request) {
-        $query = \App\Models\MentorProfile::with('user');
+        $query = \Illuminate\Support\Facades\DB::table('experts');
 
         if ($request->filled('search') || $request->filled('q')) {
             $search = trim($request->input('search', $request->input('q')));
             $query->where(function($q) use ($search) {
-                $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('professional_headline', 'like', "%{$search}%")
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('designation', 'like', "%{$search}%")
+                  ->orWhere('role', 'like', "%{$search}%")
                   ->orWhere('short_bio', 'like', "%{$search}%");
             });
         }
 
-        $mentors = $query->latest()->get();
+        $mentors = $query->orderBy('id', 'desc')->get();
 
         $dbTestimonials = \App\Models\Testimonial::latest()->get();
         $testimonials = [];
@@ -916,9 +934,17 @@ class PageController extends Controller
                     $mentorRef = $mentors->get($idx % max(1, $mentors->count()));
                 }
 
-                $mName = $mentorRef ? trim(($mentorRef->first_name ?? '') . ' ' . ($mentorRef->last_name ?? '')) : 'Expert Mentor';
-                if (empty($mName) && $mentorRef) {
-                    $mName = $mentorRef->user->name ?? 'Expert Mentor';
+                $mName = 'Expert Counselor';
+                $mRole = 'Senior Counselor & Guide';
+                $mAvatar = 'mentor_1.png';
+
+                if ($mentorRef) {
+                    $mName = $mentorRef->name ?? trim(($mentorRef->first_name ?? '') . ' ' . ($mentorRef->last_name ?? ''));
+                    if (empty($mName)) {
+                        $mName = $mentorRef->user->name ?? 'Expert Counselor';
+                    }
+                    $mRole = $mentorRef->designation ?? $mentorRef->role ?? $mentorRef->professional_headline ?? 'Senior Counselor & Guide';
+                    $mAvatar = $mentorRef->img ?? $mentorRef->profile_photo_url ?? $mentorRef->profile_photo ?? 'mentor_1.png';
                 }
 
                 $tPhoto = 'team_member_1.png';
@@ -938,8 +964,8 @@ class PageController extends Controller
 
                 $testimonials[] = [
                     'mentor_name' => $mName,
-                    'mentor_role' => $mentorRef->professional_headline ?? 'Senior Mentor & Guide',
-                    'mentor_avatar' => $mentorRef && $mentorRef->profile_photo ? $mentorRef->profile_photo : 'mentor_1.png',
+                    'mentor_role' => $mRole,
+                    'mentor_avatar' => $mAvatar,
                     'mentee_name' => $tItem->name,
                     'mentee_role' => $tItem->role ?? 'Mentee / Student',
                     'mentee_avatar' => $tPhoto,
@@ -984,21 +1010,37 @@ class PageController extends Controller
 
         $video_testimonials = \App\Models\VideoTestimonial::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
 
-        return view('mentors', compact('mentors', 'testimonials', 'video_testimonials'));
+        $viewName = view()->exists('experts') ? 'experts' : 'mentors';
+        return view($viewName, compact('mentors', 'testimonials', 'video_testimonials'));
     }
 
     public function careerRoadmap(\Illuminate\Http\Request $request) {
-        // Career Roadmap page - URL managed from admin panel
-        $mentors = \App\Models\MentorProfile::with('user')->latest()->take(6)->get();
-        $video_testimonials = \App\Models\VideoTestimonial::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
+        $categories = \Illuminate\Support\Facades\DB::table('career_roadmap_categories')
+            ->where('status', 1)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        $stages = \Illuminate\Support\Facades\DB::table('career_roadmap_stages')
+            ->where('status', 1)
+            ->orderBy('id', 'asc')
+            ->get()
+            ->groupBy('category_id');
+
+        $subModules = \Illuminate\Support\Facades\DB::table('career_roadmap_sub_modules')
+            ->where('status', 1)
+            ->orderBy('id', 'asc')
+            ->get()
+            ->groupBy('stage_id');
+
+        $experts = \Illuminate\Support\Facades\DB::table('experts')
+            ->orderBy('id', 'desc')
+            ->take(8)
+            ->get();
+
         $testimonials = [];
+        $video_testimonials = \App\Models\VideoTestimonial::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
 
-        // Use dedicated career-roadmap view if it exists, otherwise fall back to mentors view
-        if (view()->exists('career-roadmap')) {
-            return view('career-roadmap', compact('mentors', 'testimonials', 'video_testimonials'));
-        }
-
-        return view('mentors', compact('mentors', 'testimonials', 'video_testimonials'));
+        return view('career-roadmap', compact('categories', 'stages', 'subModules', 'experts', 'testimonials', 'video_testimonials'));
     }
 
     public function mentorDetail($id = null) {
@@ -1016,6 +1058,25 @@ class PageController extends Controller
         return view('mentor-detail', compact('mentor', 'otherMentors', 'video_testimonials'));
     }
 
+    public function expertDetail($id = null) {
+        $expert = null;
+        if ($id) {
+            $expert = \Illuminate\Support\Facades\DB::table('experts')->where('id', $id)->first();
+        }
+        if (!$expert) {
+            $expert = \Illuminate\Support\Facades\DB::table('experts')->orderBy('id', 'desc')->first();
+        }
+
+        $otherExperts = \Illuminate\Support\Facades\DB::table('experts')
+            ->where('id', '!=', optional($expert)->id)
+            ->take(4)
+            ->get();
+
+        $video_testimonials = \App\Models\VideoTestimonial::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
+
+        return view('expert-detail', compact('expert', 'otherExperts', 'video_testimonials'));
+    }
+
     public function submitMentorReview(Request $request) {
         $request->validate([
             'rating' => 'required|integer|min:1|max:5',
@@ -1023,6 +1084,81 @@ class PageController extends Controller
         ]);
 
         return back()->with('success', 'Thank you! Your review for this mentor has been submitted successfully.');
+    }
+
+    public function getExpertSlots($expertId) {
+        $slots = \Illuminate\Support\Facades\DB::table('expert_slots')
+            ->where('expert_id', $expertId)
+            ->where('status', 'available')
+            ->whereNull('deleted_at')
+            ->where('date', '>=', date('Y-m-d'))
+            ->orderBy('date', 'asc')
+            ->orderBy('start_time', 'asc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'slots' => $slots
+        ]);
+    }
+
+    public function bookSession(Request $request) {
+        $request->validate([
+            'expert_id' => 'required',
+            'slot_id' => 'required',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        $slot = \Illuminate\Support\Facades\DB::table('expert_slots')->where('id', $request->slot_id)->first();
+
+        if (!$slot || $slot->status !== 'available') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Selected slot is no longer available. Please select another time slot.'
+            ], 422);
+        }
+
+        // Find or create user
+        $user = \App\Models\User::firstOrCreate(
+            ['email' => $request->email],
+            [
+                'name' => $request->name,
+                'password' => bcrypt('12345678'),
+            ]
+        );
+
+        $bookingId = 'BK-' . strtoupper(\Illuminate\Support\Str::random(10));
+        $expertEarning = ($slot->cost ?? 0) * 0.90; // 90% expert earning
+        $platformFee = ($slot->cost ?? 0) * 0.10;
+
+        \Illuminate\Support\Facades\DB::table('bookings')->insert([
+            'booking_id' => $bookingId,
+            'user_id' => $user->id,
+            'expert_id' => $request->expert_id,
+            'slot_id' => $slot->id,
+            'booking_date' => now(),
+            'status' => 'pending',
+            'amount' => $slot->cost ?? 0,
+            'platform_fee' => $platformFee,
+            'expert_earning' => $expertEarning,
+            'payment_status' => (($slot->cost ?? 0) > 0) ? 'pending' : 'paid',
+            'notes' => $request->notes,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Mark slot status as booked
+        \Illuminate\Support\Facades\DB::table('expert_slots')
+            ->where('id', $slot->id)
+            ->update(['status' => 'booked', 'updated_at' => now()]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Session booking request submitted successfully! Pending approval from expert.',
+            'booking_id' => $bookingId
+        ]);
     }
     public function askEnrollzy(Request $request) {
         $query = \App\Models\CommunityQuestion::with(['user', 'category'])
