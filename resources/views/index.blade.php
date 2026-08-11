@@ -365,9 +365,16 @@
                                 </div>
                                 <span
                                     class="badge-capsule mb-2 mx-auto">{{ Str::limit($coaching->brand_name ?? $coaching->name, 20) }}</span>
-                                <div class="card-info-text text-center">
-                                    {{ is_array($coaching->cities_present_in) ? ($coaching->cities_present_in[0] ?? 'City') : ($coaching->cities_present_in ?? 'City') }},
-                                    {{ is_array($coaching->states_present_in) ? ($coaching->states_present_in[0] ?? 'State') : ($coaching->states_present_in ?? 'State') }}
+                                @php
+                                    $locArray = [];
+                                    $cities = is_array($coaching->cities_present_in) ? $coaching->cities_present_in : (is_string($coaching->cities_present_in) ? json_decode($coaching->cities_present_in, true) : []);
+                                    $states = is_array($coaching->states_present_in) ? $coaching->states_present_in : (is_string($coaching->states_present_in) ? json_decode($coaching->states_present_in, true) : []);
+                                    if (!empty($cities)) $locArray = array_merge($locArray, (array) $cities);
+                                    if (!empty($states)) $locArray = array_merge($locArray, (array) $states);
+                                    $locationStr = !empty($coaching->head_office_location) ? $coaching->head_office_location : (!empty($locArray) ? implode(', ', array_unique($locArray)) : 'City, State');
+                                @endphp
+                                <div class="card-info-text text-center px-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; min-height: 28px;" title="{{ $locationStr }}">
+                                    {{ $locationStr }}
                                 </div>
                                 <div class="card-info-text text-center"
                                     style="font-size: 10px; font-weight: 700; color: #000000;margin-bottom: 13px;">
@@ -1879,9 +1886,16 @@
                                 </div>
                                 <span
                                     class="badge-capsule mb-2 mx-auto">{{ Str::limit($coaching->brand_name ?? $coaching->name, 20) }}</span>
-                                <div class="card-info-text text-center">
-                                    {{ is_array($coaching->cities_present_in) ? ($coaching->cities_present_in[0] ?? 'City') : ($coaching->cities_present_in ?? 'City') }},
-                                    {{ is_array($coaching->states_present_in) ? ($coaching->states_present_in[0] ?? 'State') : ($coaching->states_present_in ?? 'State') }}
+                                @php
+                                    $locArray = [];
+                                    $cities = is_array($coaching->cities_present_in) ? $coaching->cities_present_in : (is_string($coaching->cities_present_in) ? json_decode($coaching->cities_present_in, true) : []);
+                                    $states = is_array($coaching->states_present_in) ? $coaching->states_present_in : (is_string($coaching->states_present_in) ? json_decode($coaching->states_present_in, true) : []);
+                                    if (!empty($cities)) $locArray = array_merge($locArray, (array) $cities);
+                                    if (!empty($states)) $locArray = array_merge($locArray, (array) $states);
+                                    $locationStr = !empty($coaching->head_office_location) ? $coaching->head_office_location : (!empty($locArray) ? implode(', ', array_unique($locArray)) : 'City, State');
+                                @endphp
+                                <div class="card-info-text text-center px-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; min-height: 28px;" title="{{ $locationStr }}">
+                                    {{ $locationStr }}
                                 </div>
                                 <div class="card-info-text text-center"
                                     style="font-size: 10px; font-weight: 700; color: #000000;margin-bottom: 13px;">

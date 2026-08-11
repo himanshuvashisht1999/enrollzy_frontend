@@ -927,8 +927,8 @@ class PageController extends Controller
         if ($dbTestimonials->isNotEmpty()) {
             foreach ($dbTestimonials as $idx => $tItem) {
                 $mentorRef = null;
-                if (!empty($tItem->mentor_profile_id)) {
-                    $mentorRef = \App\Models\MentorProfile::with('user')->find($tItem->mentor_profile_id);
+                if (!empty($tItem->expert_id)) {
+                    $mentorRef = \Illuminate\Support\Facades\DB::table('experts')->find($tItem->expert_id);
                 }
                 if (!$mentorRef) {
                     $mentorRef = $mentors->get($idx % max(1, $mentors->count()));
@@ -941,9 +941,9 @@ class PageController extends Controller
                 if ($mentorRef) {
                     $mName = $mentorRef->name ?? trim(($mentorRef->first_name ?? '') . ' ' . ($mentorRef->last_name ?? ''));
                     if (empty($mName)) {
-                        $mName = $mentorRef->user->name ?? 'Expert Counselor';
+                        $mName = (property_exists($mentorRef, 'user') && $mentorRef->user) ? ($mentorRef->user->name ?? 'Expert Counselor') : 'Expert Counselor';
                     }
-                    $mRole = $mentorRef->designation ?? $mentorRef->role ?? $mentorRef->professional_headline ?? 'Senior Counselor & Guide';
+                    $mRole = $mentorRef->designation ?? $mentorRef->role ?? $mentorRef->professional_headline ?? 'Education Expert';
                     $mAvatar = $mentorRef->img ?? $mentorRef->profile_photo_url ?? $mentorRef->profile_photo ?? 'mentor_1.png';
                 }
 

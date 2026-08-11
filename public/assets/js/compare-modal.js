@@ -37,7 +37,9 @@ window.switchToEmpty = function(slot) {
     
     if (window.selections) {
         window.selections[slot] = null;
-        sessionStorage.setItem('enrollzy_compare_slots', JSON.stringify(window.selections));
+        if (!window.location.pathname.includes('/compare')) {
+            sessionStorage.setItem('enrollzy_compare_slots', JSON.stringify(window.selections));
+        }
         if (typeof window.updateComparison === 'function') {
             window.updateComparison();
         }
@@ -168,8 +170,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmBtn = document.getElementById('confirmSelectionBtn');
     if (confirmBtn) {
         confirmBtn.addEventListener('click', function() {
-            sessionStorage.setItem('enrollzy_compare_slots', JSON.stringify(window.selections));
             if (!window.location.pathname.includes('/compare')) {
+                sessionStorage.setItem('enrollzy_compare_slots', JSON.stringify(window.selections));
                 window.location.href = '/compare';
             } else {
                 if (typeof window.updateComparison === 'function') {

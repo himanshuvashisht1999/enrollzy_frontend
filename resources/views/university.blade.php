@@ -29,44 +29,44 @@
   <!-- Partner Logos Band -->
   <div class="univ-partner-band">
     <div class="container">
-      <div class="univ-partner-logos-row">
-        <!-- Logo 1 -->
-        <div class="univ-logo-circle">
-          <img src="assets/images/uni-icon.png" alt="" />
-        </div>
-        <!-- Logo 2 -->
-        <div class="univ-logo-circle">
-          <img src="assets/images/uni-icon.png" alt="" />
-        </div>
-        <!-- Logo 3 -->
-        <div class="univ-logo-circle">
-          <img src="assets/images/uni-icon.png" alt="" />
-        </div>
-        <!-- Logo 4 -->
-        <div class="univ-logo-circle">
-          <img src="assets/images/uni-icon.png" alt="" />
-        </div>
-        <!-- Logo 5 (Repeated for density) -->
-        <div class="univ-logo-circle">
-          <img src="assets/images/uni-icon.png" alt="" />
-        </div>
-        <!-- Logo 6 -->
-        <div class="univ-logo-circle">
-          <img src="assets/images/uni-icon.png" alt="" />
-        </div>
-        <!-- Logo 7 -->
-        <div class="univ-logo-circle">
-          <img src="assets/images/uni-icon.png" alt="" />
-        </div>
-        <!-- Logo 8 -->
-        <div class="univ-logo-circle">
-          <img src="assets/images/uni-icon.png" alt="" />
-        </div>
-        <!-- Logo 9 -->
-        <div class="univ-logo-circle">
-          <img src="assets/images/uni-icon.png" alt="" />
+      <div class="swiper univ-logo-swiper" style="padding: 20px 0;">
+        <div class="swiper-wrapper align-items-center">
+          @foreach($universities as $university)
+            @php
+              $logoUrl = $university->logo_url
+                ? (str_starts_with($university->logo_url, 'http') ? $university->logo_url : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($university->logo_url, '/'))
+                : asset('assets/images/uni-icon.png');
+            @endphp
+            <div class="swiper-slide d-flex justify-content-center">
+              <a href="{{ route('university.detail', $university->slug) }}" class="univ-logo-circle d-flex align-items-center justify-content-center bg-white shadow-sm" style="width: 100px; height: 100px; border-radius: 50%; padding: 10px; overflow: hidden; border: 1px solid #eee; text-decoration: none;" title="{{ $university->brand_name ?? $university->name }}">
+                <img src="{{ $logoUrl }}" alt="{{ $university->brand_name ?? $university->name }}" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='{{ asset('assets/images/uni-icon.png') }}'" />
+              </a>
+            </div>
+          @endforeach
         </div>
       </div>
+      
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          if (typeof Swiper !== 'undefined') {
+            new Swiper('.univ-logo-swiper', {
+              slidesPerView: 3,
+              spaceBetween: 20,
+              loop: true,
+              autoplay: {
+                delay: 2500,
+                disableOnInteraction: false,
+              },
+              breakpoints: {
+                576: { slidesPerView: 4, spaceBetween: 20 },
+                768: { slidesPerView: 6, spaceBetween: 30 },
+                992: { slidesPerView: 8, spaceBetween: 30 },
+                1200: { slidesPerView: 9, spaceBetween: 30 },
+              }
+            });
+          }
+        });
+      </script>
     </div>
   </div>
 

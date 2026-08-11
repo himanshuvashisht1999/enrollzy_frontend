@@ -424,6 +424,9 @@
                 if (storedSelections) {
                     window.selections = JSON.parse(storedSelections);
                     window.updateComparison();
+                    
+                    // Clear the stored selection so refreshes or direct visits don't auto-load old data
+                    sessionStorage.removeItem('enrollzy_compare_slots');
                 }
             } catch (e) {
                 console.error("Failed to parse selections from storage", e);

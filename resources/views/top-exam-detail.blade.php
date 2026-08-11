@@ -7,7 +7,7 @@
       </div>
       <div class="container">
         <div class="about-hero-container">
-          <img src="{{ $exam->cover_image ? (str_starts_with($exam->cover_image, 'http') ? $exam->cover_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($exam->cover_image, '/')) : asset('assets/images/top-exam-img.png') }}" alt="{{ $exam->name }}" style="width:100%; object-fit:cover;" />
+          <img src="{{ $exam->cover_image ? (str_starts_with($exam->cover_image, 'http') ? $exam->cover_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($exam->cover_image, '/')) : asset('assets/images/top-exam-img.png') }}" alt="{{ $exam->name }}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);" />
 
           <!-- Centered Badge -->
           <div class="about-us-badge-wrapper">
@@ -49,7 +49,7 @@
         <div class="exam-detail-banner">
           <div class="exam-detail-banner-content">
             <div class="exam-detail-banner-logo">
-              <img src="{{ $exam->logo ? (str_starts_with($exam->logo, 'http') ? $exam->logo : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($exam->logo, '/')) : asset('assets/images/top-exam-icon-1.png') }}" alt="{{ $exam->name }}" />
+              <img src="{{ $exam->logo ? (str_starts_with($exam->logo, 'http') ? $exam->logo : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($exam->logo, '/')) : asset('assets/images/top-exam-icon-1.png') }}" alt="{{ $exam->name }}" style="width: 32px; height: 32px; object-fit: contain;" />
             </div>
             <span>{{ $exam->name }} 2026: Official Notification, Exam Dates, Syllabus, Cutoff & Result Updates</span>
           </div>
