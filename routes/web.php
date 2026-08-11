@@ -59,9 +59,13 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/university', [PageController::class, 'university'])->name('university');
     Route::get('/university-detail/{slug}', [PageController::class, 'universityDetail'])->name('university.detail');
     Route::get('/mentors', [PageController::class, 'mentors'])->name('mentors');
+    Route::get('/experts', [PageController::class, 'mentors'])->name('experts');
     Route::get('/career-roadmap', [PageController::class, 'careerRoadmap'])->name('career-roadmap.index');
     Route::get('/mentor-detail/{id?}', [PageController::class, 'mentorDetail'])->name('mentor.detail');
+    Route::get('/expert-detail/{id?}', [PageController::class, 'expertDetail'])->name('expert.detail');
     Route::post('/mentor-detail/review', [PageController::class, 'submitMentorReview'])->name('mentor.review.submit');
+    Route::get('/api/expert-slots/{expertId}', [PageController::class, 'getExpertSlots'])->name('expert.slots.fetch');
+    Route::post('/book-session', [PageController::class, 'bookSession'])->name('session.book');
     Route::get('/ask-enrollzy', [PageController::class, 'askEnrollzy'])->name('ask.enrollzy');
     Route::post('/ask-enrollzy/question/store', [PageController::class, 'storeQuestion'])->name('ask.enrollzy.store');
     Route::get('/ask-enrollzy/question/{id}', [PageController::class, 'questionDetail'])->name('ask.enrollzy.detail');
