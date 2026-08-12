@@ -924,6 +924,8 @@ class PageController extends Controller
 
         $dbTestimonials = \App\Models\Testimonial::latest()->get();
         $testimonials = [];
+        $backendUrl = rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/');
+
         if ($dbTestimonials->isNotEmpty()) {
             foreach ($dbTestimonials as $idx => $tItem) {
                 $mentorRef = null;
@@ -934,9 +936,9 @@ class PageController extends Controller
                     $mentorRef = $mentors->get($idx % max(1, $mentors->count()));
                 }
 
-                $mName = 'Expert Counselor';
-                $mRole = 'Senior Counselor & Guide';
-                $mAvatar = 'mentor_1.png';
+                $mName   = 'Expert Counselor';
+                $mRole   = 'Senior Counselor & Guide';
+                $mAvatar = asset('assets/images/mentor_1.png');
 
                 if ($mentorRef) {
                     $mName = $mentorRef->name ?? trim(($mentorRef->first_name ?? '') . ' ' . ($mentorRef->last_name ?? ''));
@@ -944,33 +946,37 @@ class PageController extends Controller
                         $mName = (property_exists($mentorRef, 'user') && $mentorRef->user) ? ($mentorRef->user->name ?? 'Expert Counselor') : 'Expert Counselor';
                     }
                     $mRole = $mentorRef->designation ?? $mentorRef->role ?? $mentorRef->professional_headline ?? 'Education Expert';
-                    $mAvatar = $mentorRef->img ?? $mentorRef->profile_photo_url ?? $mentorRef->profile_photo ?? 'mentor_1.png';
+
+                    // img is stored as 'uploads/experts/filename.jpg' in backend public/
+                    $rawImg = $mentorRef->img ?? null;
+                    if (!empty($rawImg)) {
+                        if (str_starts_with($rawImg, 'http')) {
+                            $mAvatar = $rawImg;
+                        } else {
+                            $mAvatar = $backendUrl . '/' . ltrim($rawImg, '/');
+                        }
+                    }
                 }
 
-                $tPhoto = 'team_member_1.png';
+                // Testimonial reviewer photo
+                $tPhoto = asset('assets/images/team_member_1.png');
                 if (!empty($tItem->image)) {
                     if (str_starts_with($tItem->image, 'http')) {
                         $tPhoto = $tItem->image;
-                    } elseif (file_exists(public_path($tItem->image))) {
-                        $tPhoto = asset($tItem->image);
-                    } elseif (file_exists(public_path('storage/' . $tItem->image))) {
-                        $tPhoto = asset('storage/' . $tItem->image);
-                    } elseif (file_exists(base_path('../enrollzy_backend/public/' . ltrim($tItem->image, '/')))) {
-                        $tPhoto = 'http://127.0.0.1:8001/' . ltrim($tItem->image, '/');
-                    } elseif (file_exists(public_path('assets/images/' . $tItem->image))) {
-                        $tPhoto = asset('assets/images/' . $tItem->image);
+                    } else {
+                        $tPhoto = $backendUrl . '/' . ltrim($tItem->image, '/');
                     }
                 }
 
                 $testimonials[] = [
-                    'mentor_name' => $mName,
-                    'mentor_role' => $mRole,
+                    'mentor_name'   => $mName,
+                    'mentor_role'   => $mRole,
                     'mentor_avatar' => $mAvatar,
-                    'mentee_name' => $tItem->name,
-                    'mentee_role' => $tItem->role ?? 'Mentee / Student',
+                    'mentee_name'   => $tItem->name,
+                    'mentee_role'   => $tItem->role ?? 'Mentee / Student',
                     'mentee_avatar' => $tPhoto,
-                    'text' => $tItem->content,
-                    'stars' => $tItem->rating ?? 5
+                    'text'          => $tItem->content,
+                    'stars'         => $tItem->rating ?? 5
                 ];
             }
         } else {

@@ -109,39 +109,9 @@
                         @if(isset($testimonials) && count($testimonials) > 0)
                             @foreach($testimonials as $t)
                                 @php
-                                    $mAvatar = asset('assets/images/mentor_1.png');
-                                    if (!empty($t['mentor_avatar'])) {
-                                        if (str_starts_with($t['mentor_avatar'], 'http')) {
-                                            $mAvatar = $t['mentor_avatar'];
-                                        } elseif (file_exists(public_path('storage/' . $t['mentor_avatar']))) {
-                                            $mAvatar = asset('storage/' . $t['mentor_avatar']);
-                                        } elseif (file_exists(public_path($t['mentor_avatar']))) {
-                                            $mAvatar = asset($t['mentor_avatar']);
-                                        } elseif (file_exists(base_path('../enrollzy_backend/public/storage/' . $t['mentor_avatar']))) {
-                                            $mAvatar = 'http://127.0.0.1:8001/storage/' . $t['mentor_avatar'];
-                                        } elseif (file_exists(base_path('../enrollzy_backend/public/' . ltrim($t['mentor_avatar'], '/')))) {
-                                            $mAvatar = 'http://127.0.0.1:8001/' . ltrim($t['mentor_avatar'], '/');
-                                        } elseif (file_exists(public_path('assets/images/' . $t['mentor_avatar']))) {
-                                            $mAvatar = asset('assets/images/' . $t['mentor_avatar']);
-                                        }
-                                    }
-
-                                    $menteeAvatar = asset('assets/images/team_member_1.png');
-                                    if (!empty($t['mentee_avatar'])) {
-                                        if (str_starts_with($t['mentee_avatar'], 'http')) {
-                                            $menteeAvatar = $t['mentee_avatar'];
-                                        } elseif (file_exists(public_path('storage/' . $t['mentee_avatar']))) {
-                                            $menteeAvatar = asset('storage/' . $t['mentee_avatar']);
-                                        } elseif (file_exists(public_path($t['mentee_avatar']))) {
-                                            $menteeAvatar = asset($t['mentee_avatar']);
-                                        } elseif (file_exists(base_path('../enrollzy_backend/public/storage/' . $t['mentee_avatar']))) {
-                                            $menteeAvatar = 'http://127.0.0.1:8001/storage/' . $t['mentee_avatar'];
-                                        } elseif (file_exists(base_path('../enrollzy_backend/public/' . ltrim($t['mentee_avatar'], '/')))) {
-                                            $menteeAvatar = 'http://127.0.0.1:8001/' . ltrim($t['mentee_avatar'], '/');
-                                        } elseif (file_exists(public_path('assets/images/' . $t['mentee_avatar']))) {
-                                            $menteeAvatar = asset('assets/images/' . $t['mentee_avatar']);
-                                        }
-                                    }
+                                    // URLs are fully resolved in PageController using BACKEND_URL
+                                    $mAvatar = $t['mentor_avatar'];
+                                    $menteeAvatar = $t['mentee_avatar'];
                                 @endphp
                                 <div class="swiper-slide">
                                     <div class="testimonial-slide-card">
