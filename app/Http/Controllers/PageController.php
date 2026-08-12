@@ -1553,4 +1553,13 @@ class PageController extends Controller
 
         return view('compare', compact('campuses', 'allFacilities'));
     }
+
+    public function dynamicPage($slug)
+    {
+        $page = \App\Models\Page::where('slug', $slug)->where('status', 1)->first();
+        if (!$page) {
+            abort(404);
+        }
+        return view('dynamic-page', compact('page'));
+    }
 }

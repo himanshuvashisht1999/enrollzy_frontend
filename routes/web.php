@@ -80,4 +80,7 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
 
     Route::get('/career-roadmap/api/stage/{stageId}', [\App\Http\Controllers\CareerRoadmapController::class, 'getStageDetails'])->name('career-roadmap.api.stage');
     Route::get('/career-roadmap/api/stream/{streamId}', [\App\Http\Controllers\CareerRoadmapController::class, 'getStreamDetails'])->name('career-roadmap.api.stream');
+
+    // Dynamic Pages Route
+    Route::get('/page/{slug}', [PageController::class, 'dynamicPage'])->name('page.dynamic');
 });
