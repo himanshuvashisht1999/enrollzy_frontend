@@ -1127,13 +1127,17 @@ class PageController extends Controller
         }
 
         // Find or create user
-        $user = \App\Models\User::firstOrCreate(
-            ['email' => $request->email],
-            [
-                'name' => $request->name,
-                'password' => bcrypt('12345678'),
-            ]
-        );
+        if (\Illuminate\Support\Facades\Auth::check()) {
+            $user = \Illuminate\Support\Facades\Auth::user();
+        } else {
+            $user = \App\Models\User::firstOrCreate(
+                ['email' => $request->email],
+                [
+                    'name' => $request->name,
+                    'password' => bcrypt('12345678'),
+                ]
+            );
+        }
 
         $bookingId = 'BK-' . strtoupper(\Illuminate\Support\Str::random(10));
         $expertEarning = ($slot->cost ?? 0) * 0.90; // 90% expert earning
@@ -1145,7 +1149,7 @@ class PageController extends Controller
             'expert_id' => $request->expert_id,
             'slot_id' => $slot->id,
             'booking_date' => now(),
-            'status' => 'pending',
+            'status' => 'confirmed',
             'amount' => $slot->cost ?? 0,
             'platform_fee' => $platformFee,
             'expert_earning' => $expertEarning,
@@ -1162,7 +1166,7 @@ class PageController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Session booking request submitted successfully! Pending approval from expert.',
+            'message' => 'Your 1:1 session has been automatically confirmed! The expert has been notified.',
             'booking_id' => $bookingId
         ]);
     }

@@ -794,6 +794,11 @@
                                         <i class="fa-solid fa-user-circle me-1"></i> {{ auth()->user()->name ?? auth()->user()->mobile }}
                                     </li>
                                     <li>
+                                        <a href="{{ route('user.dashboard') }}" class="dropdown-item py-2">
+                                            <i class="fa-solid fa-gauge me-2"></i> Dashboard
+                                        </a>
+                                    </li>
+                                    <li>
                                         <form action="{{ route('logout') }}" method="POST" class="m-0">
                                             @csrf
                                             <button type="submit" class="dropdown-item text-danger py-2">

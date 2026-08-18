@@ -81,6 +81,14 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/career-roadmap/api/stage/{stageId}', [\App\Http\Controllers\CareerRoadmapController::class, 'getStageDetails'])->name('career-roadmap.api.stage');
     Route::get('/career-roadmap/api/stream/{streamId}', [\App\Http\Controllers\CareerRoadmapController::class, 'getStreamDetails'])->name('career-roadmap.api.stream');
 
+    // User Dashboard Routes
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/user/dashboard', [\App\Http\Controllers\UserController::class, 'dashboard'])->name('user.dashboard');
+        Route::get('/user/profile', [\App\Http\Controllers\UserController::class, 'profile'])->name('user.profile');
+        Route::post('/user/profile', [\App\Http\Controllers\UserController::class, 'updateProfile'])->name('user.profile.update');
+        Route::get('/user/bookings', [\App\Http\Controllers\UserController::class, 'bookings'])->name('user.bookings');
+    });
+
     // Dynamic Pages Route
     Route::get('/page/{slug}', [PageController::class, 'dynamicPage'])->name('page.dynamic');
 });
