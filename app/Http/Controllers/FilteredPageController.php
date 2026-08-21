@@ -1,0 +1,82 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Campus;
+use Illuminate\Support\Facades\DB;
+
+class FilteredPageController extends Controller
+{
+    public function show($slug)
+    {
+        $filteredPage = DB::table('filtered_pages')->where('slug', $slug)->first();
+
+        if (!$filteredPage) {
+            abort(404);
+        }
+
+        $campuses = collect();
+
+        if ($filteredPage->category === 'School') {
+            $query = Campus::with('organisation')
+                ->whereHas('organisation', function($q) use ($filteredPage) {
+                    // Filter that parent organisation type is school (ID 4 based on OrganisationType)
+                    $q->where('organisation_type_id', 4);
+
+                    if ($filteredPage->ownership_type) {
+                        $q->where('ownership_type', $filteredPage->ownership_type);
+                    }
+                    if ($filteredPage->curriculum) {
+                        $q->whereJsonContains('education_boards_supported', $filteredPage->curriculum);
+                    }
+                    if ($filteredPage->state) {
+                        $q->whereJsonContains('states_present_in', $filteredPage->state);
+                    }
+                    if ($filteredPage->city) {
+                        $q->whereJsonContains('cities_present_in', $filteredPage->city);
+                    }
+                });
+
+            if ($filteredPage->school_type_id) {
+                $query->whereJsonContains('campus_type_new_id', (string)$filteredPage->school_type_id);
+            }
+
+            $campuses = $query->paginate(20);
+            
+            return view('filtered-campuses', compact('filteredPage', 'campuses'));
+
+        } else if ($filteredPage->category === 'University') {
+            $query = Campus::with('organisation')
+                ->whereHas('organisation', function($q) use ($filteredPage) {
+                    // Filter that parent organisation type is University (ID 1)
+                    $q->where('organisation_type_id', 1);
+
+                    if ($filteredPage->university_type) {
+                        $q->where('university_type', $filteredPage->university_type);
+                    }
+                    
+                    // Not use for now browse by stream (Skipped stream_id filtering as requested)
+                    
+                    if ($filteredPage->degree) {
+                        // Browse by Degree maps to levels_offered in organisation
+                        $q->whereJsonContains('levels_offered', $filteredPage->degree);
+                    }
+                    
+                    // City and State also in organisation
+                    if ($filteredPage->state) {
+                        $q->whereJsonContains('states_present_in', $filteredPage->state);
+                    }
+                    if ($filteredPage->city) {
+                        $q->whereJsonContains('cities_present_in', $filteredPage->city);
+                    }
+                });
+
+            $campuses = $query->paginate(20);
+            
+            return view('filtered-campuses', compact('filteredPage', 'campuses'));
+        }
+
+        return view('filtered-campuses', compact('filteredPage', 'campuses'));
+    }
+}

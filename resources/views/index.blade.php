@@ -756,7 +756,7 @@
                                                         @if ($mention->image)
                                                             <img src="{{ str_starts_with($mention->image, 'http') ? $mention->image : (file_exists(public_path($mention->image)) ? asset($mention->image) : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($mention->image, '/')) }}"
                                                                 alt="{{ $mention->title }}"
-                                                                style="width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1);">
+                                                                style="width: 44px; height: 44px; object-fit: contain;">
                                                         @else
                                                             <span class="text-white fw-bold" style="font-size: 12px;">AI</span>
                                                         @endif
@@ -1430,8 +1430,8 @@
                                                 </div>
                                                 <div class="perfect-badges-grid" style="padding: 10px 12px;border-radius: 10px;background-color: #fff;border: 1px solid #DDDDDD;">
                                                     @foreach($sVal['exams'] as $ex)
-                                                        <a href="{{ route('top-exams', ['search' => $ex]) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
-                                                            {{ $ex }}
+                                                        <a href="{{ route('exam.detail', $ex->slug ?? $ex->id) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
+                                                            {{ $ex->name ?? $ex->short_name }}
                                                         </a>
                                                     @endforeach
                                                 </div>
@@ -1462,8 +1462,8 @@
                                             </div>
                                             <div class="perfect-badges-grid">
                                                 @foreach($sVal['courses'] as $crs)
-                                                    <a href="{{ route('university', ['search' => $crs]) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
-                                                        {{ $crs }}
+                                                    <a href="{{ route('university', ['search' => $crs->name]) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
+                                                        {{ $crs->name }}
                                                     </a>
                                                 @endforeach
                                             </div>
@@ -2262,7 +2262,7 @@
                                                         @if ($mention->image)
                                                             <img src="{{ str_starts_with($mention->image, 'http') ? $mention->image : (file_exists(public_path($mention->image)) ? asset($mention->image) : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($mention->image, '/')) }}"
                                                                 alt="{{ $mention->title }}"
-                                                                style="width: 22px; height: 22px; object-fit: contain; filter: brightness(0) invert(1);">
+                                                                style="width: 44px; height: 44px; object-fit: contain;">
                                                         @else
                                                             <span class="text-white fw-bold" style="font-size: 12px;">AI</span>
                                                         @endif
@@ -2896,8 +2896,8 @@
                                                 </div>
                                                 <div class="perfect-badges-grid" style="padding: 10px 12px;border-radius: 10px;background-color: #fff;border: 1px solid #DDDDDD;">
                                                     @foreach($sVal['exams'] as $ex)
-                                                        <a href="{{ route('top-exams', ['search' => $ex]) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
-                                                            {{ $ex }}
+                                                        <a href="{{ route('exam.detail', $ex->slug ?? $ex->id) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
+                                                            {{ $ex->name ?? $ex->short_name }}
                                                         </a>
                                                     @endforeach
                                                 </div>
@@ -2928,8 +2928,8 @@
                                             </div>
                                             <div class="perfect-badges-grid">
                                                 @foreach($sVal['courses'] as $crs)
-                                                    <a href="{{ route('university', ['search' => $crs]) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
-                                                        {{ $crs }}
+                                                    <a href="{{ route('university', ['search' => $crs->name]) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
+                                                        {{ $crs->name }}
                                                     </a>
                                                 @endforeach
                                             </div>

@@ -54,6 +54,7 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/scholarship', [PageController::class, 'scholarships']);
     Route::get('/scholarship-detail/{id}', [PageController::class, 'scholarshipDetail'])->name('scholarship.detail');
     Route::get('/school-detail/{slug}', [PageController::class, 'schoolDetail'])->name('school.detail');
+    Route::get('/campus-detail/{slug}', [\App\Http\Controllers\CampusController::class, 'show'])->name('campus.detail');
     Route::get('/all-coaching', [PageController::class, 'allCoaching'])->name('all.coaching');
     Route::get('/coaching-detail/{slug}', [PageController::class, 'coachingDetail'])->name('coaching.detail');
     Route::get('/university', [PageController::class, 'university'])->name('university');
@@ -89,6 +90,7 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
         Route::get('/user/bookings', [\App\Http\Controllers\UserController::class, 'bookings'])->name('user.bookings');
     });
 
+    Route::get('/{slug}', [\App\Http\Controllers\FilteredPageController::class, 'show'])->name('filtered.page');
     // Dynamic Pages Route
     Route::get('/page/{slug}', [PageController::class, 'dynamicPage'])->name('page.dynamic');
 });

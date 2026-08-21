@@ -70,23 +70,14 @@ class PageController extends Controller
 
         $streamData = [];
         foreach ($dbStreamTabs as $tab) {
-            $keywords = is_array($tab->keywords) ? $tab->keywords : json_decode($tab->keywords ?? '[]', true);
-            $exams = is_array($tab->default_exams) ? $tab->default_exams : json_decode($tab->default_exams ?? '[]', true);
-            $states = is_array($tab->default_states) ? $tab->default_states : json_decode($tab->default_states ?? '[]', true);
-            $courses = is_array($tab->default_courses) ? $tab->default_courses : json_decode($tab->default_courses ?? '[]', true);
+            $feature_colleges_ids = is_array($tab->feature_colleges) ? $tab->feature_colleges : (json_decode($tab->feature_colleges ?? '[]', true) ?: []);
+            $exams_ids = is_array($tab->default_exams) ? $tab->default_exams : (json_decode($tab->default_exams ?? '[]', true) ?: []);
+            $states = is_array($tab->default_states) ? $tab->default_states : (json_decode($tab->default_states ?? '[]', true) ?: []);
+            $courses_ids = is_array($tab->default_courses) ? $tab->default_courses : (json_decode($tab->default_courses ?? '[]', true) ?: []);
 
-            $filteredUnivs = $allActiveUnivs->filter(function($u) use ($keywords) {
-                if (empty($keywords)) return true;
-                $text = strtolower($u->name . ' ' . ($u->about_organisation ?? '') . ' ' . ($u->meta_title ?? ''));
-                foreach ($keywords as $kw) {
-                    if (!empty($kw) && str_contains($text, strtolower($kw))) return true;
-                }
-                return false;
-            })->take(12);
-
-            if ($filteredUnivs->count() < 4) {
-                $filteredUnivs = $allActiveUnivs->take(12);
-            }
+            $filteredUnivs = $allActiveUnivs->whereIn('id', $feature_colleges_ids);
+            $exams = \App\Models\DynamicExam::whereIn('id', $exams_ids)->get();
+            $courses = \App\Models\Course::whereIn('id', $courses_ids)->get();
 
             $streamData[$tab->key] = [
                 'name' => $tab->name,
