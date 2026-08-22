@@ -75,6 +75,35 @@ class FilteredPageController extends Controller
             $campuses = $query->paginate(20);
             
             return view('filtered-campuses', compact('filteredPage', 'campuses'));
+        } else if ($filteredPage->category === 'Coaching') {
+            $query = Campus::with('organisation')
+                ->whereHas('organisation', function($q) use ($filteredPage) {
+                    // Filter that parent organisation type is Institute (ID 3)
+                    $q->where('organisation_type_id', 3);
+
+                    if ($filteredPage->state) {
+                        $q->whereJsonContains('states_present_in', $filteredPage->state);
+                    }
+                    if ($filteredPage->city) {
+                        $q->whereJsonContains('cities_present_in', $filteredPage->city);
+                    }
+                });
+
+            if ($filteredPage->coaching_category_id) {
+                $query->where(function($q) use ($filteredPage) {
+                    $q->whereJsonContains('coaching_category_ids', (string)$filteredPage->coaching_category_id)
+                      ->orWhereJsonContains('coaching_category_ids', (int)$filteredPage->coaching_category_id);
+                });
+                
+                $cc = DB::table('coaching_categories')->where('id', $filteredPage->coaching_category_id)->first();
+                if($cc) {
+                    $filteredPage->coaching_category_name = $cc->title;
+                }
+            }
+
+            $campuses = $query->paginate(20);
+            
+            return view('filtered-campuses', compact('filteredPage', 'campuses'));
         }
 
         return view('filtered-campuses', compact('filteredPage', 'campuses'));

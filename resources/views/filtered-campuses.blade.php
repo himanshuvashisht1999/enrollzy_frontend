@@ -24,12 +24,13 @@
     <div class="container">
         
         @php
-            $hasBadges = $filteredPage->ownership_type || $filteredPage->curriculum || $filteredPage->university_type || $filteredPage->degree || $filteredPage->state || $filteredPage->city;
+            $hasBadges = $filteredPage->ownership_type || $filteredPage->curriculum || $filteredPage->university_type || $filteredPage->degree || $filteredPage->state || $filteredPage->city || $filteredPage->coaching_category_id;
         @endphp
         
         @if($hasBadges)
         <div class="mb-4 text-center">
             <div class="d-flex justify-content-center gap-2 flex-wrap mt-2">
+                @if(isset($filteredPage->coaching_category_name)) <span class="badge" style="background: #1e3a8a; font-size: 14px; padding: 8px 15px;">Coaching: {{ $filteredPage->coaching_category_name }}</span> @endif
                 @if($filteredPage->ownership_type) <span class="badge" style="background: #1e3a8a; font-size: 14px; padding: 8px 15px;">Ownership: {{ $filteredPage->ownership_type }}</span> @endif
                 @if($filteredPage->curriculum) <span class="badge" style="background: #1e3a8a; font-size: 14px; padding: 8px 15px;">Curriculum: {{ $filteredPage->curriculum }}</span> @endif
                 @if($filteredPage->university_type) <span class="badge" style="background: #1e3a8a; font-size: 14px; padding: 8px 15px;">Type: {{ $filteredPage->university_type }}</span> @endif
