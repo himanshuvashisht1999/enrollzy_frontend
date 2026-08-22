@@ -2550,6 +2550,7 @@ header {
     z-index: 5;
     pointer-events: auto;
     text-align: center;
+    width: 95%; /* ensure wrapper doesn't overflow */
 }
 
 .about-us-badge-wrapper p {
@@ -2567,13 +2568,15 @@ header {
     font-weight: bold;
     letter-spacing: 1px;
     padding: 7px 25px;
-    border-radius: 50px;
+    border-radius: 20px; /* softer border radius for multiple lines */
     box-shadow: 0px 8px 24px rgba(15, 89, 199, 0.35);
     text-transform: uppercase;
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
-    white-space: nowrap;
+    white-space: normal;
+    word-break: break-word;
+    max-width: 100%;
 }
 
 /* .about-us-badge:hover {
