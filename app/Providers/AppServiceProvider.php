@@ -11,32 +11,24 @@ use App\Models\MegaMenu;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         Paginator::useBootstrapFive();
 
         View::composer('common.header', function ($view) {
-            $view->with('headerLinks', HeaderLink::where('status', 1)->orderBy('sort_order')->get());
+            $view->with('headerLinks', HeaderLink::where('status', 1)->whereNull('parent_id')->orderBy('sort_order')->get());
             $view->with('headerMenus', \App\Models\HeaderMenu::where('status', 1)->whereNull('parent_id')->orderBy('sort_order')->get());
 
-            // Build mega menu categories from header_links with their sub-items from mega_menus
             $megaMenuCategories = collect([]);
             try {
                 if (\Illuminate\Support\Facades\Schema::hasTable('mega_menus') &&
                     \Illuminate\Support\Facades\Schema::hasColumn('mega_menus', 'header_link_id')) {
 
-                    // Load all active sub-items grouped by header_link_id
                     $subItems = MegaMenu::whereNotNull('parent_id')
                         ->whereNotNull('header_link_id')
                         ->where('status', 1)
@@ -44,22 +36,24 @@ class AppServiceProvider extends ServiceProvider
                         ->get()
                         ->groupBy('header_link_id');
 
-                    // Build category objects from header_links with re-indexed values
+                    // Load Top Level Categories
                     $megaMenuCategories = HeaderLink::where('status', 1)
+                        ->whereNull('parent_id')
                         ->orderBy('sort_order')
                         ->get()
                         ->map(function ($hl) use ($subItems) {
-                            $hl->children = $subItems->get($hl->id, collect());
+                            // Load Child Categories
+                            $hl->child_links = HeaderLink::where('status', 1)
+                                ->where('parent_id', $hl->id)
+                                ->orderBy('sort_order')
+                                ->get()
+                                ->map(function ($child) use ($subItems) {
+                                    $child->mega_menus = $subItems->get($child->id, collect());
+                                    return $child;
+                                });
                             return $hl;
                         })
                         ->values();
-                } elseif (\Illuminate\Support\Facades\Schema::hasTable('mega_menus')) {
-                    // Legacy fallback: load by parent_id=null structure
-                    $megaMenuCategories = MegaMenu::whereNull('parent_id')
-                        ->where('status', 1)
-                        ->orderBy('sort_order')
-                        ->with(['children' => function($q) { $q->where('status', 1)->orderBy('sort_order'); }])
-                        ->get();
                 }
             } catch (\Throwable $e) {
                 $megaMenuCategories = collect([]);
@@ -78,3 +72,4 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 }
+

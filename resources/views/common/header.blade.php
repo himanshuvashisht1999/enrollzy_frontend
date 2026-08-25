@@ -72,9 +72,10 @@
                                             @php
                                                 $displayTitle = strtoupper(trim($link->title));
                                                 $linkHref = formatHeaderLinkUrl($link->url, $link->title);
-                                                $tabTrigger = resolveHeaderTab($link->id, $megaMenuCategories ?? null);
+                                                $catData = isset($megaMenuCategories) ? $megaMenuCategories->where('id', $link->id)->first() : null;
+                                                $hasMegaMenu = $catData && $catData->child_links && $catData->child_links->count() > 0;
                                             @endphp
-                                            <li class="nav-item" {!! $tabTrigger ? 'data-tab-trigger="'.$tabTrigger.'"' : '' !!}>
+                                            <li class="nav-item" {!! $hasMegaMenu ? 'data-tab-trigger="mega-nav-'.$link->id.'"' : '' !!}>
                                                 <a class="nav-link" href="{{ $linkHref }}">{{ $displayTitle }}</a>
                                             </li>
                                         @endforeach
@@ -83,74 +84,77 @@
                                     <!-- Mega Menu Wrapper -->
                                     @if(isset($megaMenuCategories) && $megaMenuCategories->count() > 0)
                                         <div class="mega-menu-wrapper">
-                                            <div class="mega-menu-container">
-                                                <!-- Sidebar -->
-                                                <div class="mega-menu-sidebar">
-                                                    <ul class="mega-sidebar-list">
-                                                        @foreach($megaMenuCategories as $index => $cat)
-                                                            <li class="mega-sidebar-item {{ $index === 0 ? 'active' : '' }}" data-mega-tab="tab-mega-{{ $cat->id }}">
-                                                                <span>{{ $cat->title }}</span>
-                                                                <i class="fa-solid fa-chevron-right mega-arrow-icon"></i>
-                                                            </li>
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
-
-                                                <!-- Content Area -->
-                                                <div class="mega-menu-content">
-                                                    @foreach($megaMenuCategories as $index => $cat)
-                                                        <div class="mega-tab-content {{ $index === 0 ? 'active' : '' }}" id="tab-mega-{{ $cat->id }}">
-                                                            <div class="mega-grid">
-                                                                @php
-                                                                    $groupedCols = $cat->children->groupBy('column_title');
-                                                                @endphp
-                                                                 @forelse($groupedCols as $colHeading => $children)
-                                                                    <div class="mega-col">
-                                                                        @if($colHeading)
-                                                                            <h5>{{ $colHeading }}</h5>
-                                                                        @endif
-                                                                        <ul>
-                                                                            @foreach($children as $child)
-                                                                                <li>
-                                                                                    <a href="{{ $child->url ? (str_starts_with($child->url, 'http') ? $child->url : url($child->url)) : '#' }}" 
-                                                                                       class="{{ $child->is_highlighted ? 'highlight-link' : '' }}">
-                                                                                        {{ $child->title }}
-                                                                                    </a>
-                                                                                </li>
-                                                                            @endforeach
-                                                                        </ul>
-                                                                    </div>
-                                                                @empty
-                                                                    <div class="mega-col">
-                                                                        <h5>{{ $cat->title }}</h5>
-                                                                        <ul>
-                                                                            <li><a href="{{ formatHeaderLinkUrl($cat->url, $cat->title) }}">Explore {{ $cat->title }}</a></li>
-                                                                        </ul>
-                                                                    </div>
-                                                                @endforelse
-                                                            </div>
+                                            @foreach($megaMenuCategories as $parentCat)
+                                                @if($parentCat->child_links && $parentCat->child_links->count() > 0)
+                                                    <div class="mega-menu-container" id="mega-nav-{{ $parentCat->id }}" style="display: none;">
+                                                        <!-- Sidebar -->
+                                                        <div class="mega-menu-sidebar">
+                                                            <ul class="mega-sidebar-list">
+                                                                @foreach($parentCat->child_links as $index => $cat)
+                                                                    <li class="mega-sidebar-item {{ $index === 0 ? 'active' : '' }}" data-mega-tab="tab-mega-{{ $cat->id }}">
+                                                                        <span>{{ $cat->title }}</span>
+                                                                        <i class="fa-solid fa-chevron-right mega-arrow-icon"></i>
+                                                                    </li>
+                                                                @endforeach
+                                                            </ul>
                                                         </div>
-                                                    @endforeach
 
-                                                    <!-- Bottom Footer -->
-                                                    <div class="mega-menu-footer-main">
-                                                        <div class="mega-menu-footer">
-                                                            <div class="mega-footer-left">
-                                                                <span>Not sure where to begin?</span>
-                                                                <a href="{{ route('all-schools') }}">browse more schools</a>
-                                                                <span>or</span>
-                                                                <a href="{{ route('mentors') }}">Learn more about Mentors</a>
-                                                            </div>
-                                                            <div class="mega-footer-right">
-                                                                <img src="{{ asset('assets/images/logo.svg') }}" alt="Enrollzy"
-                                                                    class="mega-footer-logo">
+                                                        <!-- Content Area -->
+                                                        <div class="mega-menu-content">
+                                                            @foreach($parentCat->child_links as $index => $cat)
+                                                                <div class="mega-tab-content {{ $index === 0 ? 'active' : '' }}" id="tab-mega-{{ $cat->id }}">
+                                                                    <div class="mega-grid">
+                                                                        @php
+                                                                            $groupedCols = $cat->mega_menus->groupBy('column_title');
+                                                                        @endphp
+                                                                         @forelse($groupedCols as $colHeading => $children)
+                                                                            <div class="mega-col">
+                                                                                @if($colHeading)
+                                                                                    <h5>{{ $colHeading }}</h5>
+                                                                                @endif
+                                                                                <ul>
+                                                                                    @foreach($children as $child)
+                                                                                        <li>
+                                                                                            <a href="{{ $child->url ? (str_starts_with($child->url, 'http') ? $child->url : url($child->url)) : '#' }}" 
+                                                                                               class="{{ $child->is_highlighted ? 'highlight-link' : '' }}">
+                                                                                                {{ $child->title }}
+                                                                                            </a>
+                                                                                        </li>
+                                                                                    @endforeach
+                                                                                </ul>
+                                                                            </div>
+                                                                        @empty
+                                                                            <div class="mega-col">
+                                                                                <h5>{{ $cat->title }}</h5>
+                                                                                <ul>
+                                                                                    <li><a href="{{ formatHeaderLinkUrl($cat->url, $cat->title) }}">Explore {{ $cat->title }}</a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        @endforelse
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+
+                                                            <!-- Bottom Footer -->
+                                                            <div class="mega-menu-footer-main">
+                                                                <div class="mega-menu-footer">
+                                                                    <div class="mega-footer-left">
+                                                                        <span>Not sure where to begin?</span>
+                                                                        <a href="{{ route('all-schools') }}">browse more schools</a>
+                                                                        <span>or</span>
+                                                                        <a href="{{ route('mentors') }}">Learn more about Mentors</a>
+                                                                    </div>
+                                                                    <div class="mega-footer-right">
+                                                                        <img src="{{ asset('assets/images/logo.svg') }}" alt="Enrollzy" class="mega-footer-logo">
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
+                                                @endif
+                                            @endforeach
                                         </div>
-                                    @else
+                                    @elseif(!isset($megaMenuCategories))
                                         <div class="mega-menu-wrapper">
                                             <div class="mega-menu-container">
                                                 <!-- Sidebar -->
@@ -511,46 +515,61 @@
                                 </div>
 
                                 <!-- Mobile Menu Accordion (Mobile Only) -->
-                                @if(isset($megaMenuCategories) && $megaMenuCategories->count() > 0)
-                                    <div class="mobile-menu-accordion accordion d-lg-none w-100" id="mobileMenuAccordion">
-                                        @foreach($megaMenuCategories as $mIndex => $mCat)
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="heading-m-dyn-{{ $mCat->id }}">
-                                                    <button class="accordion-button {{ $mIndex === 0 ? '' : 'collapsed' }}" type="button"
-                                                        data-bs-toggle="collapse" data-bs-target="#collapse-m-dyn-{{ $mCat->id }}"
-                                                        aria-expanded="{{ $mIndex === 0 ? 'true' : 'false' }}" aria-controls="collapse-m-dyn-{{ $mCat->id }}">
-                                                        {{ strtoupper($mCat->title) }}
-                                                    </button>
-                                                </h2>
-                                                <div id="collapse-m-dyn-{{ $mCat->id }}" class="accordion-collapse collapse {{ $mIndex === 0 ? 'show' : '' }}"
-                                                    aria-labelledby="heading-m-dyn-{{ $mCat->id }}" data-bs-parent="#mobileMenuAccordion">
-                                                    <div class="accordion-body">
-                                                        @php
-                                                            $mGrouped = $mCat->children->groupBy('column_title');
-                                                        @endphp
-                                                        @foreach($mGrouped as $mColHead => $mChildren)
-                                                            <div class="mobile-submenu-group {{ !$loop->first ? 'mt-3' : '' }}">
-                                                                @if($mColHead)
-                                                                    <h6>{{ $mColHead }}</h6>
-                                                                @endif
-                                                                <ul>
-                                                                    @foreach($mChildren as $mChild)
-                                                                        <li>
-                                                                            <a href="{{ $mChild->url ? (str_starts_with($mChild->url, 'http') ? $mChild->url : url($mChild->url)) : '#' }}">
-                                                                                {{ $mChild->title }}
-                                                                            </a>
-                                                                        </li>
-                                                                    @endforeach
-                                                                </ul>
-                                                            </div>
+                                  @if(isset($megaMenuCategories) && $megaMenuCategories->count() > 0)
+                                      <div class="mobile-menu-accordion accordion d-lg-none w-100" id="mobileMenuAccordion">
+                                          @foreach($megaMenuCategories as $mIndex => $mCat)
+                                            @if($mCat->child_links->count() > 0)
+                                              <div class="accordion-item">
+                                                  <h2 class="accordion-header" id="heading-m-dyn-{{ $mCat->id }}">
+                                                      <button class="accordion-button {{ $mIndex === 0 ? '' : 'collapsed' }}" type="button"
+                                                          data-bs-toggle="collapse" data-bs-target="#collapse-m-dyn-{{ $mCat->id }}"
+                                                          aria-expanded="{{ $mIndex === 0 ? 'true' : 'false' }}" aria-controls="collapse-m-dyn-{{ $mCat->id }}">
+                                                          {{ strtoupper($mCat->title) }}
+                                                      </button>
+                                                  </h2>
+                                                  <div id="collapse-m-dyn-{{ $mCat->id }}" class="accordion-collapse collapse {{ $mIndex === 0 ? 'show' : '' }}"
+                                                      aria-labelledby="heading-m-dyn-{{ $mCat->id }}" data-bs-parent="#mobileMenuAccordion">
+                                                      <div class="accordion-body">
+                                                        @foreach($mCat->child_links as $mChildCat)
+                                                          <div class="mobile-submenu-group mb-3">
+                                                            <h5 class="text-primary">{{ $mChildCat->title }}</h5>
+                                                            @php
+                                                                $mGrouped = $mChildCat->mega_menus->groupBy('column_title');
+                                                            @endphp
+                                                            @foreach($mGrouped as $mColHead => $mChildren)
+                                                                <div class="mobile-submenu-group {{ !$loop->first ? 'mt-3' : '' }}">
+                                                                    @if($mColHead)
+                                                                        <h6>{{ $mColHead }}</h6>
+                                                                    @endif
+                                                                    <ul>
+                                                                        @foreach($mChildren as $mChild)
+                                                                            <li>
+                                                                                <a href="{{ $mChild->url ? (str_starts_with($mChild->url, 'http') ? $mChild->url : url($mChild->url)) : '#' }}">
+                                                                                    {{ $mChild->title }}
+                                                                                </a>
+                                                                            </li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                </div>
+                                                            @endforeach
+                                                          </div>
                                                         @endforeach
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <div class="mobile-menu-accordion accordion d-lg-none w-100" id="mobileMenuAccordion">
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                            @else
+                                              <div class="accordion-item">
+                                                  <h2 class="accordion-header">
+                                                      <a href="{{ $mCat->url }}" class="accordion-button collapsed" style="text-decoration:none;">
+                                                          {{ strtoupper($mCat->title) }}
+                                                      </a>
+                                                  </h2>
+                                              </div>
+                                            @endif
+                                          @endforeach
+                                      </div>
+                                  @elseif(!isset($megaMenuCategories))
+                                      <div class="mobile-menu-accordion accordion d-lg-none w-100" id="mobileMenuAccordion">
                                         <!-- Item 1: Boarding Schools -->
                                         <div class="accordion-item">
                                             <h2 class="accordion-header" id="heading-m-boarding">

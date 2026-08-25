@@ -94,26 +94,36 @@
 
             function showMenu(tabId) {
                 clearTimeout(hideTimeout);
-                megaMenu.classList.add('show-mega');
 
-                let sidebarItem = null;
                 if (tabId) {
-                    sidebarItem = megaMenu.querySelector(`.mega-sidebar-item[data-mega-tab="${tabId}"]`);
-                }
-                if (!sidebarItem) {
-                    sidebarItem = megaMenu.querySelector('.mega-sidebar-item');
-                }
-
-                if (sidebarItem) {
-                    megaMenu.querySelectorAll('.mega-sidebar-item').forEach(i => i.classList.remove('active'));
-                    megaMenu.querySelectorAll('.mega-tab-content').forEach(pane => pane.classList.remove('active'));
-
-                    sidebarItem.classList.add('active');
-                    const targetTabId = sidebarItem.getAttribute('data-mega-tab');
-                    const targetPane = megaMenu.querySelector('#' + targetTabId) || megaMenu.querySelector('.mega-tab-content');
-                    if (targetPane) {
-                        targetPane.classList.add('active');
+                    const containers = megaMenu.querySelectorAll('.mega-menu-container');
+                    let found = false;
+                    containers.forEach(c => {
+                        if (c.id === tabId) {
+                            c.style.display = 'flex';
+                            found = true;
+                            // Activate first tab by default
+                            const firstSidebarItem = c.querySelector('.mega-sidebar-item');
+                            if (firstSidebarItem) {
+                                c.querySelectorAll('.mega-sidebar-item').forEach(i => i.classList.remove('active'));
+                                c.querySelectorAll('.mega-tab-content').forEach(pane => pane.classList.remove('active'));
+                                firstSidebarItem.classList.add('active');
+                                const targetTabId = firstSidebarItem.getAttribute('data-mega-tab');
+                                const targetPane = c.querySelector('#' + targetTabId);
+                                if (targetPane) targetPane.classList.add('active');
+                            }
+                        } else {
+                            c.style.display = 'none';
+                        }
+                    });
+                    
+                    if (found) {
+                        megaMenu.classList.add('show-mega');
+                    } else {
+                        megaMenu.classList.remove('show-mega');
                     }
+                } else {
+                    megaMenu.classList.add('show-mega');
                 }
             }
 
@@ -125,6 +135,10 @@
 
             triggerItems.forEach(item => {
                 item.addEventListener('mouseenter', function () {
+                    const tabId = this.getAttribute('data-tab-trigger');
+                    showMenu(tabId);
+                });
+                item.addEventListener('click', function () {
                     const tabId = this.getAttribute('data-tab-trigger');
                     showMenu(tabId);
                 });
@@ -156,7 +170,7 @@
             // Mega Menu inner sidebar tab switching on hover
             const sidebarItems = megaMenu.querySelectorAll('.mega-sidebar-item');
             sidebarItems.forEach(item => {
-                item.addEventListener('mouseenter', function () {
+                const switchTab = function () {
                     megaMenu.querySelectorAll('.mega-sidebar-item').forEach(i => i.classList.remove('active'));
                     megaMenu.querySelectorAll('.mega-tab-content').forEach(pane => pane.classList.remove('active'));
 
@@ -166,7 +180,9 @@
                     if (targetPane) {
                         targetPane.classList.add('active');
                     }
-                });
+                };
+                item.addEventListener('mouseenter', switchTab);
+                item.addEventListener('click', switchTab);
             });
         }
 

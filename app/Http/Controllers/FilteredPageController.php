@@ -101,6 +101,17 @@ class FilteredPageController extends Controller
                 }
             }
 
+            if (isset($filteredPage->program_type_id) && $filteredPage->program_type_id) {
+                $query->whereHas('courses.course.programTypes', function($q) use ($filteredPage) {
+                    $q->where('program_types.id', $filteredPage->program_type_id);
+                });
+                
+                $pt = DB::table('program_types')->where('id', $filteredPage->program_type_id)->first();
+                if($pt) {
+                    $filteredPage->program_type_name = $pt->title;
+                }
+            }
+
             $campuses = $query->paginate(20);
             
             return view('filtered-campuses', compact('filteredPage', 'campuses'));
