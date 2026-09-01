@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Campus;
+use App\Models\Course;
 use Illuminate\Support\Facades\DB;
 
 class FilteredPageController extends Controller
@@ -14,6 +15,13 @@ class FilteredPageController extends Controller
 
         if (!$filteredPage) {
             abort(404);
+        }
+
+        if (!empty($filteredPage->course_id)) {
+            $course = Course::find($filteredPage->course_id);
+            if ($course) {
+                $filteredPage->course_name = $course->name;
+            }
         }
 
         $campuses = collect();
@@ -42,6 +50,18 @@ class FilteredPageController extends Controller
                 $query->whereJsonContains('campus_type_new_id', (string)$filteredPage->school_type_id);
             }
 
+            if (!empty($filteredPage->course_id)) {
+                $query->where(function($cq) use ($filteredPage) {
+                    $cq->whereHas('courses', function($sub) use ($filteredPage) {
+                        $sub->where('course_id', $filteredPage->course_id);
+                    })->orWhereHas('departments.courses', function($sub) use ($filteredPage) {
+                        $sub->where('course_id', $filteredPage->course_id);
+                    })->orWhereHas('organisation.courses', function($sub) use ($filteredPage) {
+                        $sub->where('course_id', $filteredPage->course_id);
+                    });
+                });
+            }
+
             $campuses = $query->paginate(20);
             
             return view('filtered-campuses', compact('filteredPage', 'campuses'));
@@ -56,8 +76,6 @@ class FilteredPageController extends Controller
                         $q->where('university_type', $filteredPage->university_type);
                     }
                     
-                    // Not use for now browse by stream (Skipped stream_id filtering as requested)
-                    
                     if ($filteredPage->degree) {
                         // Browse by Degree maps to levels_offered in organisation
                         $q->whereJsonContains('levels_offered', $filteredPage->degree);
@@ -71,6 +89,28 @@ class FilteredPageController extends Controller
                         $q->whereJsonContains('cities_present_in', $filteredPage->city);
                     }
                 });
+
+            if (!empty($filteredPage->stream_id)) {
+                $query->where(function($cq) use ($filteredPage) {
+                    $cq->whereHas('courses', function($sub) use ($filteredPage) {
+                        $sub->where('stream_offered_id', $filteredPage->stream_id);
+                    })->orWhereHas('departments.courses', function($sub) use ($filteredPage) {
+                        $sub->where('stream_offered_id', $filteredPage->stream_id);
+                    });
+                });
+            }
+
+            if (!empty($filteredPage->course_id)) {
+                $query->where(function($cq) use ($filteredPage) {
+                    $cq->whereHas('courses', function($sub) use ($filteredPage) {
+                        $sub->where('course_id', $filteredPage->course_id);
+                    })->orWhereHas('departments.courses', function($sub) use ($filteredPage) {
+                        $sub->where('course_id', $filteredPage->course_id);
+                    })->orWhereHas('organisation.courses', function($sub) use ($filteredPage) {
+                        $sub->where('course_id', $filteredPage->course_id);
+                    });
+                });
+            }
 
             $campuses = $query->paginate(20);
             
@@ -110,6 +150,18 @@ class FilteredPageController extends Controller
                 if($pt) {
                     $filteredPage->program_type_name = $pt->title;
                 }
+            }
+
+            if (!empty($filteredPage->course_id)) {
+                $query->where(function($cq) use ($filteredPage) {
+                    $cq->whereHas('courses', function($sub) use ($filteredPage) {
+                        $sub->where('course_id', $filteredPage->course_id);
+                    })->orWhereHas('departments.courses', function($sub) use ($filteredPage) {
+                        $sub->where('course_id', $filteredPage->course_id);
+                    })->orWhereHas('organisation.courses', function($sub) use ($filteredPage) {
+                        $sub->where('course_id', $filteredPage->course_id);
+                    });
+                });
             }
 
             $campuses = $query->paginate(20);

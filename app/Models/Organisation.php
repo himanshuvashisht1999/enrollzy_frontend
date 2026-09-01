@@ -422,6 +422,4 @@ class Organisation extends Model
     {
         return $this->hasMany(Campus::class);
     }
-
-
 }
