@@ -79,6 +79,10 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/top-schools', [PageController::class, 'topSchools'])->name('top.schools');
     Route::get('/top-coaching', [PageController::class, 'topCoaching'])->name('top.coaching');
 
+    // Course Routes
+    Route::get('/courses', [\App\Http\Controllers\CourseController::class, 'index'])->name('courses.index');
+    Route::get('/course/{slug}', [\App\Http\Controllers\CourseController::class, 'show'])->name('course.detail');
+
     Route::get('/career-roadmap/api/stage/{stageId}', [\App\Http\Controllers\CareerRoadmapController::class, 'getStageDetails'])->name('career-roadmap.api.stage');
     Route::get('/career-roadmap/api/stream/{streamId}', [\App\Http\Controllers\CareerRoadmapController::class, 'getStreamDetails'])->name('career-roadmap.api.stream');
 
