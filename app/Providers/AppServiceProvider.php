@@ -70,6 +70,19 @@ class AppServiceProvider extends ServiceProvider
             $view->with('generalLinks', \App\Models\GeneralLink::where('status', 1)->orderBy('sort_order')->get());
             $view->with('siteSettings', \App\Models\Setting::first());
         });
+
+        View::composer('common.head', function ($view) {
+            try {
+                if (\Illuminate\Support\Facades\Schema::hasTable('seo_organization_settings')) {
+                    $seoSetting = \App\Models\SeoOrganizationSetting::with('founders')->first();
+                    if ($seoSetting && $seoSetting->schema_enabled && $seoSetting->organization_schema) {
+                        $view->with('organizationSchema', $seoSetting->generateOrganizationSchema());
+                    }
+                }
+            } catch (\Throwable $e) {
+                // Silently handle
+            }
+        });
     }
 }
 

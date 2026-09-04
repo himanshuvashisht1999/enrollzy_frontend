@@ -10,3 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     @stack('css')
+
+    @if(isset($organizationSchema) && !empty($organizationSchema))
+    <!-- Organization Schema.org Structured Data -->
+    <script type="application/ld+json">
+{!! json_encode($organizationSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
+    </script>
+    @endif
