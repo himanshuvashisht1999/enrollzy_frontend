@@ -38,13 +38,24 @@ class FilteredPageController extends Controller
                     if ($filteredPage->curriculum) {
                         $q->whereJsonContains('education_boards_supported', $filteredPage->curriculum);
                     }
-                    if ($filteredPage->state) {
-                        $q->whereJsonContains('states_present_in', $filteredPage->state);
-                    }
-                    if ($filteredPage->city) {
-                        $q->whereJsonContains('cities_present_in', $filteredPage->city);
-                    }
                 });
+
+            if ($filteredPage->state) {
+                $query->where(function($sq) use ($filteredPage) {
+                    $sq->where('state', 'like', '%' . trim($filteredPage->state) . '%')
+                       ->orWhereHas('organisation', function($oq) use ($filteredPage) {
+                           $oq->whereJsonContains('states_present_in', $filteredPage->state);
+                       });
+                });
+            }
+            if ($filteredPage->city) {
+                $query->where(function($cq) use ($filteredPage) {
+                    $cq->where('city', 'like', '%' . trim($filteredPage->city) . '%')
+                       ->orWhereHas('organisation', function($oq) use ($filteredPage) {
+                           $oq->whereJsonContains('cities_present_in', $filteredPage->city);
+                       });
+                });
+            }
 
             if ($filteredPage->school_type_id) {
                 $query->whereJsonContains('campus_type_new_id', (string)$filteredPage->school_type_id);
@@ -80,15 +91,24 @@ class FilteredPageController extends Controller
                         // Browse by Degree maps to levels_offered in organisation
                         $q->whereJsonContains('levels_offered', $filteredPage->degree);
                     }
-                    
-                    // City and State also in organisation
-                    if ($filteredPage->state) {
-                        $q->whereJsonContains('states_present_in', $filteredPage->state);
-                    }
-                    if ($filteredPage->city) {
-                        $q->whereJsonContains('cities_present_in', $filteredPage->city);
-                    }
                 });
+
+            if ($filteredPage->state) {
+                $query->where(function($sq) use ($filteredPage) {
+                    $sq->where('state', 'like', '%' . trim($filteredPage->state) . '%')
+                       ->orWhereHas('organisation', function($oq) use ($filteredPage) {
+                           $oq->whereJsonContains('states_present_in', $filteredPage->state);
+                       });
+                });
+            }
+            if ($filteredPage->city) {
+                $query->where(function($cq) use ($filteredPage) {
+                    $cq->where('city', 'like', '%' . trim($filteredPage->city) . '%')
+                       ->orWhereHas('organisation', function($oq) use ($filteredPage) {
+                           $oq->whereJsonContains('cities_present_in', $filteredPage->city);
+                       });
+                });
+            }
 
             if (!empty($filteredPage->stream_id)) {
                 $query->where(function($cq) use ($filteredPage) {
@@ -120,14 +140,24 @@ class FilteredPageController extends Controller
                 ->whereHas('organisation', function($q) use ($filteredPage) {
                     // Filter that parent organisation type is Institute (ID 3)
                     $q->where('organisation_type_id', 3);
-
-                    if ($filteredPage->state) {
-                        $q->whereJsonContains('states_present_in', $filteredPage->state);
-                    }
-                    if ($filteredPage->city) {
-                        $q->whereJsonContains('cities_present_in', $filteredPage->city);
-                    }
                 });
+
+            if ($filteredPage->state) {
+                $query->where(function($sq) use ($filteredPage) {
+                    $sq->where('state', 'like', '%' . trim($filteredPage->state) . '%')
+                       ->orWhereHas('organisation', function($oq) use ($filteredPage) {
+                           $oq->whereJsonContains('states_present_in', $filteredPage->state);
+                       });
+                });
+            }
+            if ($filteredPage->city) {
+                $query->where(function($cq) use ($filteredPage) {
+                    $cq->where('city', 'like', '%' . trim($filteredPage->city) . '%')
+                       ->orWhereHas('organisation', function($oq) use ($filteredPage) {
+                           $oq->whereJsonContains('cities_present_in', $filteredPage->city);
+                       });
+                });
+            }
 
             if ($filteredPage->coaching_category_id) {
                 $query->where(function($q) use ($filteredPage) {

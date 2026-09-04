@@ -72,6 +72,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('common.head', function ($view) {
+            $siteSettings = \App\Models\Setting::first();
+            $seoSetting = null;
             try {
                 if (\Illuminate\Support\Facades\Schema::hasTable('seo_organization_settings')) {
                     $seoSetting = \App\Models\SeoOrganizationSetting::with('founders')->first();
@@ -82,6 +84,37 @@ class AppServiceProvider extends ServiceProvider
             } catch (\Throwable $e) {
                 // Silently handle
             }
+
+            $faviconUrl = null;
+            $backendUrl = rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/');
+
+            if ($siteSettings && !empty($siteSettings->favicon)) {
+                $fav = $siteSettings->favicon;
+                if (str_starts_with($fav, 'http')) {
+                    $faviconUrl = $fav;
+                } elseif (file_exists(public_path($fav))) {
+                    $faviconUrl = asset($fav);
+                } else {
+                    $faviconUrl = $backendUrl . '/' . ltrim($fav, '/');
+                }
+            } elseif ($seoSetting && !empty($seoSetting->favicon)) {
+                $fav = $seoSetting->favicon;
+                if (str_starts_with($fav, 'http')) {
+                    $faviconUrl = $fav;
+                } elseif (file_exists(public_path($fav))) {
+                    $faviconUrl = asset($fav);
+                } else {
+                    $faviconUrl = $backendUrl . '/' . ltrim($fav, '/');
+                }
+            }
+
+            if (!$faviconUrl) {
+                $faviconUrl = asset('assets/images/logo.svg');
+            }
+
+            $view->with('siteFavicon', $faviconUrl);
+            $view->with('siteSettings', $siteSettings);
+            $view->with('seoSetting', $seoSetting);
         });
     }
 }

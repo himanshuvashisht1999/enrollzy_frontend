@@ -11,6 +11,15 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     @stack('css')
 
+    <!-- Favicon -->
+    @if(isset($siteFavicon) && !empty($siteFavicon))
+        <link rel="icon" href="{{ $siteFavicon }}">
+        <link rel="shortcut icon" href="{{ $siteFavicon }}">
+        <link rel="apple-touch-icon" href="{{ $siteFavicon }}">
+    @else
+        <link rel="icon" href="{{ asset('assets/images/logo.svg') }}">
+    @endif
+
     @if(isset($organizationSchema) && !empty($organizationSchema))
     <!-- Organization Schema.org Structured Data -->
     <script type="application/ld+json">

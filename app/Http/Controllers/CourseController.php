@@ -18,7 +18,8 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         $query = Course::with(['programLevel', 'streamOffered', 'discipline', 'courseType', 'programTypes'])
-            ->where('status', 1);
+            ->where('status', 1)
+            ->where('is_show_on_website', 1);
 
         // 1. Search Query
         if ($request->filled('search')) {
