@@ -196,7 +196,8 @@ class CourseController extends Controller
         if ($offeringColleges->isEmpty()) {
             $recommendedUnivs = Organisation::where('organisation_type_id', 1)
                 ->where('status', 1)
-                ->orderBy('id', 'desc')
+                ->orderBy('sort_order', 'asc')
+                ->orderBy('name', 'asc')
                 ->take(4)
                 ->get();
         } else {
@@ -213,11 +214,11 @@ class CourseController extends Controller
                 $q->whereIn('id', $examIdsOrNames)
                   ->orWhereIn('name', $examIdsOrNames)
                   ->orWhereIn('short_name', $examIdsOrNames);
-            })->where('status', 'Active')->get();
+            })->where('status', 'Active')->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
         }
 
         if ($entranceExams->isEmpty()) {
-            $entranceExams = DynamicExam::where('status', 'Active')->take(4)->get();
+            $entranceExams = DynamicExam::where('status', 'Active')->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->take(4)->get();
         }
 
         $specializationIdsOrNames = is_array($course->common_specializations)
@@ -226,7 +227,7 @@ class CourseController extends Controller
 
         $specializations = collect();
         if (!empty($specializationIdsOrNames)) {
-            $specializations = Specialization::whereIn('id', $specializationIdsOrNames)->get();
+            $specializations = Specialization::whereIn('id', $specializationIdsOrNames)->orderBy('sort_order', 'asc')->get();
         }
 
         $relatedCourses = Course::where('id', '!=', $course->id)
@@ -241,6 +242,8 @@ class CourseController extends Controller
                 }
             })
             ->with(['programLevel', 'discipline', 'streamOffered'])
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('name', 'asc')
             ->take(5)
             ->get();
 

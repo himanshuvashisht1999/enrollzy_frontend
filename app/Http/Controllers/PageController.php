@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class PageController extends Controller
 {
     public function index() {
-        $boardingSchools = \App\Models\Organisation::where('organisation_type_id', 4)->where('status', 1)->take(6)->get();
+        $boardingSchools = \App\Models\Organisation::where('organisation_type_id', 4)->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->take(6)->get();
         $noteworthy_categories = \App\Models\NoteworthyCategory::with(['mentions' => function ($q) {
             $q->where('status', 1)->orderBy('sort_order');
         }])->where('status', 1)->orderBy('sort_order')->get();
@@ -17,7 +17,7 @@ class PageController extends Controller
         $home_benefits = \App\Models\HomeBenefit::where('status', 1)->orderBy('sort_order')->get();
         $trending_skills = \App\Models\TrendingSkill::where('status', 1)->orderBy('sort_order')->get();
         $trendingCourses = \App\Models\TrendingCourse::where('status', 1)->orderBy('sort_order', 'asc')->get();
-        $top_exams = \App\Models\DynamicExam::where('status', 'Active')->orderBy('id', 'desc')->take(6)->get();
+        $top_exams = \App\Models\DynamicExam::where('status', 'Active')->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->take(6)->get();
         $video_testimonials = \App\Models\VideoTestimonial::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
         $blogs = \App\Models\Blog::with('category')->orderBy('published_at', 'desc')->take(4)->get();
         $testimonials = \App\Models\Testimonial::orderBy('id', 'desc')->get();
@@ -61,10 +61,10 @@ class PageController extends Controller
         $scholarshipsCount = 850;
         $internshipsCount = 4500;
         
-        $coachingInstitutes = \App\Models\Organisation::where('organisation_type_id', 3)->where('status', 1)->take(6)->get();
-        $featuredUniversities = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1)->orderBy('id', 'desc')->take(15)->get();
+        $coachingInstitutes = \App\Models\Organisation::where('organisation_type_id', 3)->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->take(6)->get();
+        $featuredUniversities = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->take(15)->get();
 
-        $allActiveUnivs = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1)->orderBy('id', 'desc')->get();
+        $allActiveUnivs = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
 
         $dbStreamTabs = \App\Models\HomepageStreamTab::where('status', 1)->orderBy('sort_order', 'asc')->get();
 
@@ -75,9 +75,9 @@ class PageController extends Controller
             $states = is_array($tab->default_states) ? $tab->default_states : (json_decode($tab->default_states ?? '[]', true) ?: []);
             $courses_ids = is_array($tab->default_courses) ? $tab->default_courses : (json_decode($tab->default_courses ?? '[]', true) ?: []);
 
-            $filteredUnivs = $allActiveUnivs->whereIn('id', $feature_colleges_ids);
-            $exams = \App\Models\DynamicExam::whereIn('id', $exams_ids)->get();
-            $courses = \App\Models\Course::whereIn('id', $courses_ids)->get();
+            $filteredUnivs = $allActiveUnivs->whereIn('id', $feature_colleges_ids)->sortBy('sort_order')->values();
+            $exams = \App\Models\DynamicExam::whereIn('id', $exams_ids)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
+            $courses = \App\Models\Course::whereIn('id', $courses_ids)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
 
             $streamData[$tab->key] = [
                 'name' => $tab->name,
@@ -103,10 +103,10 @@ class PageController extends Controller
             'departments.courses' => function ($q) {
                 $q->whereIn('status', [1, '1', 'Active', true])->with(['course', 'programLevel', 'specialization']);
             }
-        ])->whereIn('status', [1, '1', 'Active', true])->get();
+        ])->whereIn('status', [1, '1', 'Active', true])->orderBy('sort_order', 'asc')->orderBy('campus_name', 'asc')->get();
 
         if ($campuses->isEmpty()) {
-            $campuses = \App\Models\Campus::with(['organisation', 'departments.courses.course'])->get();
+            $campuses = \App\Models\Campus::with(['organisation', 'departments.courses.course'])->orderBy('sort_order', 'asc')->orderBy('campus_name', 'asc')->get();
         }
 
         $allFacilities = \App\Models\Facility::where('status', 'Active')->get();
@@ -374,7 +374,7 @@ class PageController extends Controller
                 ->value('pill_2_label');
         }
 
-        $schools = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
+        $schools = $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->paginate(10)->withQueryString();
             
         return view('all-schools', compact('schools', 'heroPillLabel'));
     }
@@ -424,9 +424,9 @@ class PageController extends Controller
         if ($sort === 'name') {
             $query->orderBy('name', 'asc');
         } elseif ($sort === 'featured') {
-            $query->orderByDesc('featured_exam')->orderBy('name');
+            $query->orderByDesc('featured_exam')->orderBy('sort_order', 'asc')->orderBy('name', 'asc');
         } else {
-            $query->orderBy('id', 'desc');
+            $query->orderBy('sort_order', 'asc')->orderBy('id', 'desc');
         }
 
         $exams = $query->paginate(12)->withQueryString();
@@ -705,7 +705,7 @@ class PageController extends Controller
                 ->value('pill_4_label');
         }
 
-        $coachings = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
+        $coachings = $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->paginate(10)->withQueryString();
             
         return view('all-coaching', compact('coachings', 'heroPillLabel'));
     }
@@ -748,6 +748,8 @@ class PageController extends Controller
         ];
 
         $query = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1);
+
+        $this->applyOrganisationFilters($query, $request);
 
         // Top Filter
         if ($request->has('is_top') && ($request->is_top == '1' || $request->is_top == 'true')) {
@@ -850,7 +852,7 @@ class PageController extends Controller
                 ->value('pill_1_label');
         }
 
-        $universities = $query->orderBy('is_top', 'desc')->orderBy('nirf_rank_overall', 'asc')->paginate(12)->withQueryString();
+        $universities = $query->orderBy('sort_order', 'asc')->orderBy('is_top', 'desc')->orderBy('nirf_rank_overall', 'asc')->paginate(12)->withQueryString();
 
         return view('university', compact('universities', 'heroPillLabel'));
     }
@@ -1347,6 +1349,8 @@ class PageController extends Controller
                       ->orWhere('cities_present_in', 'like', "%{$q}%")
                       ->orWhere('states_present_in', 'like', "%{$q}%");
             })
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('name', 'asc')
             ->limit(6)->get();
 
         // Schools
@@ -1359,6 +1363,8 @@ class PageController extends Controller
                       ->orWhere('cities_present_in', 'like', "%{$q}%")
                       ->orWhere('states_present_in', 'like', "%{$q}%");
             })
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('name', 'asc')
             ->limit(6)->get();
 
         // Coaching
@@ -1371,6 +1377,8 @@ class PageController extends Controller
                       ->orWhere('cities_present_in', 'like', "%{$q}%")
                       ->orWhere('states_present_in', 'like', "%{$q}%");
             })
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('name', 'asc')
             ->limit(6)->get();
 
         // Mentors
@@ -1410,6 +1418,8 @@ class PageController extends Controller
                           ->orWhere('cities_present_in', 'like', "%{$q}%")
                           ->orWhere('states_present_in', 'like', "%{$q}%");
                 })
+                ->orderBy('sort_order', 'asc')
+                ->orderBy('name', 'asc')
                 ->limit(5)
                 ->get();
 
@@ -1440,6 +1450,8 @@ class PageController extends Controller
                           ->orWhere('cities_present_in', 'like', "%{$q}%")
                           ->orWhere('states_present_in', 'like', "%{$q}%");
                 })
+                ->orderBy('sort_order', 'asc')
+                ->orderBy('name', 'asc')
                 ->limit(5)
                 ->get();
 
@@ -1470,6 +1482,8 @@ class PageController extends Controller
                           ->orWhere('cities_present_in', 'like', "%{$q}%")
                           ->orWhere('states_present_in', 'like', "%{$q}%");
                 })
+                ->orderBy('sort_order', 'asc')
+                ->orderBy('name', 'asc')
                 ->limit(5)
                 ->get();
 
@@ -1512,6 +1526,8 @@ class PageController extends Controller
                     $query->where('name', 'like', "%{$q}%")
                           ->orWhere('short_name', 'like', "%{$q}%");
                 })
+                ->orderBy('sort_order', 'asc')
+                ->orderBy('name', 'asc')
                 ->limit(5)
                 ->get();
 
@@ -1533,15 +1549,15 @@ class PageController extends Controller
         $campuses = \App\Models\Campus::with([
             'organisation.organisationType',
             'departments' => function ($q) {
-                $q->whereIn('status', [1, '1', 'Active', true]);
+                $q->whereIn('status', [1, '1', 'Active', true])->orderBy('sort_order', 'asc');
             },
             'departments.courses' => function ($q) {
-                $q->whereIn('status', [1, '1', 'Active', true])->with(['course', 'programLevel', 'specialization']);
+                $q->whereIn('status', [1, '1', 'Active', true])->orderBy('sort_order', 'asc')->with(['course', 'programLevel', 'specialization']);
             }
-        ])->whereIn('status', [1, '1', 'Active', true])->get();
+        ])->whereIn('status', [1, '1', 'Active', true])->orderBy('sort_order', 'asc')->orderBy('campus_name', 'asc')->get();
 
         if ($campuses->isEmpty()) {
-            $campuses = \App\Models\Campus::with(['organisation', 'departments.courses.course'])->get();
+            $campuses = \App\Models\Campus::with(['organisation', 'departments.courses.course'])->orderBy('sort_order', 'asc')->orderBy('campus_name', 'asc')->get();
         }
 
         $allFacilities = \App\Models\Facility::where('status', 'Active')->get();

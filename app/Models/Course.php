@@ -43,14 +43,19 @@ class Course extends Model
         });
     }
 
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc');
+    }
+
     public function organisationCourses()
     {
-        return $this->hasMany(OrganisationCourse::class, 'course_id');
+        return $this->hasMany(OrganisationCourse::class, 'course_id')->orderBy('sort_order', 'asc');
     }
 
     public function universityCourses()
     {
-        return $this->hasMany(OrganisationCourse::class, 'course_id');
+        return $this->hasMany(OrganisationCourse::class, 'course_id')->orderBy('sort_order', 'asc');
     }
 
     public function programLevel()

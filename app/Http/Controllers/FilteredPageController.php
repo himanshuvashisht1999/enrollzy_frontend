@@ -73,7 +73,7 @@ class FilteredPageController extends Controller
                 });
             }
 
-            $campuses = $query->paginate(20);
+            $campuses = $query->orderBy('sort_order', 'asc')->orderBy('campus_name', 'asc')->paginate(20);
             
             return view('filtered-campuses', compact('filteredPage', 'campuses'));
 
@@ -132,7 +132,7 @@ class FilteredPageController extends Controller
                 });
             }
 
-            $campuses = $query->paginate(20);
+            $campuses = $query->orderBy('sort_order', 'asc')->orderBy('campus_name', 'asc')->paginate(20);
             
             return view('filtered-campuses', compact('filteredPage', 'campuses'));
         } else if ($filteredPage->category === 'Coaching') {
@@ -194,7 +194,7 @@ class FilteredPageController extends Controller
                 });
             }
 
-            $campuses = $query->paginate(20);
+            $campuses = $query->orderBy('sort_order', 'asc')->orderBy('campus_name', 'asc')->paginate(20);
             
             return view('filtered-campuses', compact('filteredPage', 'campuses'));
         }
