@@ -181,11 +181,27 @@
                   <div class="text-muted leading-relaxed" style="font-size: 14px;">
                     @php
                       $cVal = $sec->content ?? $sec->description ?? '';
+                      if (is_string($cVal)) {
+                          $decoded = json_decode($cVal, true);
+                          if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                              $cVal = $decoded;
+                          }
+                      }
                       if (is_array($cVal)) {
                           $htmlOut = '';
                           foreach ($cVal as $item) {
                               if (is_array($item)) {
-                                  $htmlOut .= implode(' ', array_filter($item, 'is_string'));
+                                  if (isset($item['value']) && is_string($item['value'])) {
+                                      $htmlOut .= $item['value'];
+                                  } elseif (isset($item['content']) && is_string($item['content'])) {
+                                      $htmlOut .= $item['content'];
+                                  } elseif (isset($item['html']) && is_string($item['html'])) {
+                                      $htmlOut .= $item['html'];
+                                  } elseif (isset($item['text']) && is_string($item['text'])) {
+                                      $htmlOut .= $item['text'];
+                                  } else {
+                                      $htmlOut .= implode(' ', array_filter($item, 'is_string'));
+                                  }
                               } elseif (is_string($item)) {
                                   $htmlOut .= $item;
                               }
@@ -391,11 +407,27 @@
               @if($admitCardSection && !empty($admitCardSection->content))
                 @php
                   $admitContent = $admitCardSection->content;
+                  if (is_string($admitContent)) {
+                      $decoded = json_decode($admitContent, true);
+                      if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                          $admitContent = $decoded;
+                      }
+                  }
                   if (is_array($admitContent)) {
                       $htmlOut = '';
                       foreach ($admitContent as $item) {
                           if (is_array($item)) {
-                              $htmlOut .= implode(' ', array_filter($item, 'is_string'));
+                              if (isset($item['value']) && is_string($item['value'])) {
+                                  $htmlOut .= $item['value'];
+                              } elseif (isset($item['content']) && is_string($item['content'])) {
+                                  $htmlOut .= $item['content'];
+                              } elseif (isset($item['html']) && is_string($item['html'])) {
+                                  $htmlOut .= $item['html'];
+                              } elseif (isset($item['text']) && is_string($item['text'])) {
+                                  $htmlOut .= $item['text'];
+                              } else {
+                                  $htmlOut .= implode(' ', array_filter($item, 'is_string'));
+                              }
                           } elseif (is_string($item)) {
                               $htmlOut .= $item;
                           }

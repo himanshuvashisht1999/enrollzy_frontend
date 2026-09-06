@@ -88,7 +88,7 @@
             @endif
         </div>
         
-        @if($campuses->hasPages())
+        @if(method_exists($campuses, 'hasPages') && $campuses->hasPages())
         <div class="d-flex justify-content-center mt-5">
             {{ $campuses->links('pagination::bootstrap-5') }}
         </div>
