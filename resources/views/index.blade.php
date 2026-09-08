@@ -445,7 +445,7 @@
                                     @if(!empty($item->image))
                                         <img src="{{ str_starts_with($item->image, 'http') ? $item->image : (file_exists(public_path($item->image)) ? asset($item->image) : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($item->image, '/')) }}"
                                             alt="{{ $item->title }}"
-                                            style="max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                            style="max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
                                     @else
                                         <img src="{{ asset('assets/images/step-img-' . (($index % 6) + 1) . '.png') }}"
                                             alt="{{ $item->title }}"

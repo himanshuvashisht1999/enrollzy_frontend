@@ -322,15 +322,15 @@
                                 <div class="exam-card-dates-box">
                                     <div class="exam-date-row">
                                         <span class="exam-date-label">Results</span>
-                                        <span class="exam-date-value">Declared / TBA</span>
+                                        <span class="exam-date-value">{{ $exam->result_status ?: 'Declared / TBA' }}</span>
                                     </div>
                                     <div class="exam-date-row highlighted">
                                         <span class="exam-date-label">Exam Frequency</span>
-                                        <span class="exam-date-value">{{ $exam->exam_frequency ?? 'Once a year' }}</span>
+                                        <span class="exam-date-value">{{ $exam->exam_frequency ?: 'Once a year' }}</span>
                                     </div>
                                     <div class="exam-date-row">
                                         <span class="exam-date-label">Registration</span>
-                                        <span class="exam-date-value">Open</span>
+                                        <span class="exam-date-value">{{ $exam->registration_status ?: 'Open' }}</span>
                                     </div>
                                 </div>
 
