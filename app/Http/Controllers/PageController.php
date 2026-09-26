@@ -1571,6 +1571,11 @@ class PageController extends Controller
         if (!$page) {
             abort(404);
         }
+
+        if (view()->exists("pages.{$slug}")) {
+            return view("pages.{$slug}", compact('page'));
+        }
+
         return view('dynamic-page', compact('page'));
     }
 }
