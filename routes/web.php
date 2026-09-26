@@ -36,6 +36,12 @@ Route::post('/site-login', function (\Illuminate\Http\Request $request) {
     return back()->with('error', 'Invalid username or password');
 })->name('site-login.submit');
 
+// ✅ Public Digital Business Card Routes (Direct QR Scanner Access)
+Route::get('/card/{slug}.vcf', [\App\Http\Controllers\PublicDigitalCardController::class, 'vcard'])->name('digital-cards.vcf');
+Route::get('/card/{slug}/vcard', [\App\Http\Controllers\PublicDigitalCardController::class, 'vcard'])->name('digital-cards.vcard');
+Route::get('/card/{slug}', [\App\Http\Controllers\PublicDigitalCardController::class, 'show'])->name('digital-cards.show');
+Route::get('/api/card/{slug}', [\App\Http\Controllers\PublicDigitalCardController::class, 'apiShow'])->name('digital-cards.api');
+
 Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(function () {
     Route::get('/', [PageController::class, 'index'])->name('home');
     Route::get('/about', [PageController::class, 'about']);
