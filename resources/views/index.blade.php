@@ -440,17 +440,10 @@
                     @if(isset($home_services) && count($home_services) > 0)
                         @foreach($home_services as $index => $item)
                             <div class="col journey-step-col">
-                                <div class="journey-icon-wrapper"
-                                    style="width: 72px; height: 72px; min-width: 72px; min-height: 72px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; background: #ffffff; border: 1px solid rgba(15, 89, 199, 0.15); margin: 0 auto 15px auto; box-shadow: 0px 4px 12px rgba(15, 89, 199, 0.08);">
-                                    @if(!empty($item->image))
-                                        <img src="{{ str_starts_with($item->image, 'http') ? $item->image : (file_exists(public_path($item->image)) ? asset($item->image) : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($item->image, '/')) }}"
-                                            alt="{{ $item->title }}"
-                                            style="max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
-                                    @else
-                                        <img src="{{ asset('assets/images/step-img-' . (($index % 6) + 1) . '.png') }}"
-                                            alt="{{ $item->title }}"
-                                            style="max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain;">
-                                    @endif
+                                <div class="journey-icon-wrapper journey-step-number-circle"
+                                    style="width: 76px; height: 76px; min-width: 76px; min-height: 76px; border-radius: 50%; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #0171E0 0%, #0056B3 100%); color: #ffffff; margin: 0 auto 15px auto; box-shadow: 0px 8px 20px rgba(1, 113, 224, 0.28); border: 3px solid #ffffff; transition: all 0.3s ease;">
+                                    <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9; line-height: 1; margin-bottom: 2px;">Step</span>
+                                    <span style="font-size: 24px; font-weight: 800; line-height: 1;">{{ $loop->iteration }}</span>
                                 </div>
                                 <h3 class="journey-step-title">{{ $item->title }}</h3>
                                 <p class="journey-step-desc"
@@ -463,61 +456,27 @@
                             </div>
                         @endforeach
                     @else
-                        <!-- Step 1 -->
-                        <div class="col journey-step-col">
-                            <div class="journey-icon-wrapper">
-                                <!-- Book SVG -->
-                                <img src="assets/images/step-img-1.png" alt="Explore & Discover">
+                        @php
+                            $fallbackSteps = [
+                                ['title' => 'Explore & Discover', 'desc' => 'Find your interests and aptitude through guided assessments'],
+                                ['title' => 'Choose Institution', 'desc' => 'Compare & apply to best-fit schools, coaching, or colleges'],
+                                ['title' => 'Secure Funding', 'desc' => 'Apply for scholarships & financial aid through Enrollzy'],
+                                ['title' => 'Skill Up', 'desc' => 'Take certifications and courses alongside academics'],
+                                ['title' => 'Get a Mentor', 'desc' => '1:1 sessions with industry experts and alumni'],
+                                ['title' => 'Land the Job', 'desc' => 'Internships, placements, and career support on one platform'],
+                            ];
+                        @endphp
+                        @foreach($fallbackSteps as $fIndex => $fStep)
+                            <div class="col journey-step-col">
+                                <div class="journey-icon-wrapper journey-step-number-circle"
+                                    style="width: 76px; height: 76px; min-width: 76px; min-height: 76px; border-radius: 50%; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #0171E0 0%, #0056B3 100%); color: #ffffff; margin: 0 auto 15px auto; box-shadow: 0px 8px 20px rgba(1, 113, 224, 0.28); border: 3px solid #ffffff; transition: all 0.3s ease;">
+                                    <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9; line-height: 1; margin-bottom: 2px;">Step</span>
+                                    <span style="font-size: 24px; font-weight: 800; line-height: 1;">{{ $fIndex + 1 }}</span>
+                                </div>
+                                <h3 class="journey-step-title">{{ $fStep['title'] }}</h3>
+                                <p class="journey-step-desc">{{ $fStep['desc'] }}</p>
                             </div>
-                            <h3 class="journey-step-title">Explore & Discover</h3>
-                            <p class="journey-step-desc">Find your interests and aptitude <br> through guided assessments</p>
-                        </div>
-
-                        <!-- Step 2 -->
-                        <div class="col journey-step-col">
-                            <div class="journey-icon-wrapper">
-                                <!-- Cap SVG -->
-                                <img src="assets/images/step-img-2.png" alt="Choose Institution">
-                            </div>
-                            <h3 class="journey-step-title">Choose Institution</h3>
-                            <p class="journey-step-desc">Compare & apply to best-fit <br> schools, coaching, or colleges</p>
-                        </div>
-                        <!-- Step 3 -->
-                        <div class="col journey-step-col">
-                            <div class="journey-icon-wrapper">
-                                <!-- Trophy SVG -->
-                                <img src="assets/images/step-img-3.png" alt="Secure Funding">
-                            </div>
-                            <h3 class="journey-step-title">Secure Funding</h3>
-                            <p class="journey-step-desc">Apply for scholarships & financial <br> aid through Enrollzy</p>
-                        </div>
-                        <!-- Step 4 -->
-                        <div class="col journey-step-col">
-                            <div class="journey-icon-wrapper">
-                                <!-- Books SVG -->
-                                <img src="assets/images/step-img-4.png" alt="Skill Up">
-                            </div>
-                            <h3 class="journey-step-title">Skill Up</h3>
-                            <p class="journey-step-desc">Take certifications and courses <br> alongside academics</p>
-                        </div>
-                        <!-- Step 5 -->
-                        <div class="col journey-step-col">
-                            <div class="journey-icon-wrapper">
-                                <!-- Mentors SVG -->
-                                <img src="assets/images/step-img-5.png" alt="Get a Mentor">
-                            </div>
-                            <h3 class="journey-step-title">Get a Mentor</h3>
-                            <p class="journey-step-desc">1:1 sessions with industry experts <br> and alumni</p>
-                        </div>
-                        <!-- Step 6 -->
-                        <div class="col journey-step-col">
-                            <div class="journey-icon-wrapper">
-                                <!-- Briefcase SVG -->
-                                <img src="assets/images/step-img-6.png" alt="Land the Job">
-                            </div>
-                            <h3 class="journey-step-title">Land the Job</h3>
-                            <p class="journey-step-desc">Internships, placements, and <br> career support on one platform</p>
-                        </div>
+                        @endforeach
                     @endif
                 </div>
 
@@ -1956,17 +1915,10 @@
                     @if(isset($home_services) && count($home_services) > 0)
                         @foreach($home_services as $index => $item)
                             <div class="col journey-step-col">
-                                <div class="journey-icon-wrapper"
-                                    style="width: 72px; height: 72px; min-width: 72px; min-height: 72px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; background: #ffffff; border: 1px solid rgba(15, 89, 199, 0.15); margin: 0 auto 15px auto; box-shadow: 0px 4px 12px rgba(15, 89, 199, 0.08);">
-                                    @if(!empty($item->image))
-                                        <img src="{{ str_starts_with($item->image, 'http') ? $item->image : (file_exists(public_path($item->image)) ? asset($item->image) : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($item->image, '/')) }}"
-                                            alt="{{ $item->title }}"
-                                            style="max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-                                    @else
-                                        <img src="{{ asset('assets/images/step-img-' . (($index % 6) + 1) . '.png') }}"
-                                            alt="{{ $item->title }}"
-                                            style="max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain;">
-                                    @endif
+                                <div class="journey-icon-wrapper journey-step-number-circle"
+                                    style="width: 76px; height: 76px; min-width: 76px; min-height: 76px; border-radius: 50%; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #0171E0 0%, #0056B3 100%); color: #ffffff; margin: 0 auto 15px auto; box-shadow: 0px 8px 20px rgba(1, 113, 224, 0.28); border: 3px solid #ffffff; transition: all 0.3s ease;">
+                                    <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9; line-height: 1; margin-bottom: 2px;">Step</span>
+                                    <span style="font-size: 24px; font-weight: 800; line-height: 1;">{{ $loop->iteration }}</span>
                                 </div>
                                 <h3 class="journey-step-title">{{ $item->title }}</h3>
                                 <p class="journey-step-desc"
@@ -1979,61 +1931,27 @@
                             </div>
                         @endforeach
                     @else
-                        <!-- Step 1 -->
-                        <div class="col journey-step-col">
-                            <div class="journey-icon-wrapper">
-                                <!-- Book SVG -->
-                                <img src="assets/images/step-img-1.png" alt="Explore & Discover">
+                        @php
+                            $fallbackSteps = [
+                                ['title' => 'Explore & Discover', 'desc' => 'Find your interests and aptitude through guided assessments'],
+                                ['title' => 'Choose Institution', 'desc' => 'Compare & apply to best-fit schools, coaching, or colleges'],
+                                ['title' => 'Secure Funding', 'desc' => 'Apply for scholarships & financial aid through Enrollzy'],
+                                ['title' => 'Skill Up', 'desc' => 'Take certifications and courses alongside academics'],
+                                ['title' => 'Get a Mentor', 'desc' => '1:1 sessions with industry experts and alumni'],
+                                ['title' => 'Land the Job', 'desc' => 'Internships, placements, and career support on one platform'],
+                            ];
+                        @endphp
+                        @foreach($fallbackSteps as $fIndex => $fStep)
+                            <div class="col journey-step-col">
+                                <div class="journey-icon-wrapper journey-step-number-circle"
+                                    style="width: 76px; height: 76px; min-width: 76px; min-height: 76px; border-radius: 50%; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #0171E0 0%, #0056B3 100%); color: #ffffff; margin: 0 auto 15px auto; box-shadow: 0px 8px 20px rgba(1, 113, 224, 0.28); border: 3px solid #ffffff; transition: all 0.3s ease;">
+                                    <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9; line-height: 1; margin-bottom: 2px;">Step</span>
+                                    <span style="font-size: 24px; font-weight: 800; line-height: 1;">{{ $fIndex + 1 }}</span>
+                                </div>
+                                <h3 class="journey-step-title">{{ $fStep['title'] }}</h3>
+                                <p class="journey-step-desc">{{ $fStep['desc'] }}</p>
                             </div>
-                            <h3 class="journey-step-title">Explore & Discover</h3>
-                            <p class="journey-step-desc">Find your interests and aptitude <br> through guided assessments</p>
-                        </div>
-
-                        <!-- Step 2 -->
-                        <div class="col journey-step-col">
-                            <div class="journey-icon-wrapper">
-                                <!-- Cap SVG -->
-                                <img src="assets/images/step-img-2.png" alt="Choose Institution">
-                            </div>
-                            <h3 class="journey-step-title">Choose Institution</h3>
-                            <p class="journey-step-desc">Compare & apply to best-fit <br> schools, coaching, or colleges</p>
-                        </div>
-                        <!-- Step 3 -->
-                        <div class="col journey-step-col">
-                            <div class="journey-icon-wrapper">
-                                <!-- Trophy SVG -->
-                                <img src="assets/images/step-img-3.png" alt="Secure Funding">
-                            </div>
-                            <h3 class="journey-step-title">Secure Funding</h3>
-                            <p class="journey-step-desc">Apply for scholarships & financial <br> aid through Enrollzy</p>
-                        </div>
-                        <!-- Step 4 -->
-                        <div class="col journey-step-col">
-                            <div class="journey-icon-wrapper">
-                                <!-- Books SVG -->
-                                <img src="assets/images/step-img-4.png" alt="Skill Up">
-                            </div>
-                            <h3 class="journey-step-title">Skill Up</h3>
-                            <p class="journey-step-desc">Take certifications and courses <br> alongside academics</p>
-                        </div>
-                        <!-- Step 5 -->
-                        <div class="col journey-step-col">
-                            <div class="journey-icon-wrapper">
-                                <!-- Mentors SVG -->
-                                <img src="assets/images/step-img-5.png" alt="Get a Mentor">
-                            </div>
-                            <h3 class="journey-step-title">Get a Mentor</h3>
-                            <p class="journey-step-desc">1:1 sessions with industry experts <br> and alumni</p>
-                        </div>
-                        <!-- Step 6 -->
-                        <div class="col journey-step-col">
-                            <div class="journey-icon-wrapper">
-                                <!-- Briefcase SVG -->
-                                <img src="assets/images/step-img-6.png" alt="Land the Job">
-                            </div>
-                            <h3 class="journey-step-title">Land the Job</h3>
-                            <p class="journey-step-desc">Internships, placements, and <br> career support on one platform</p>
-                        </div>
+                        @endforeach
                     @endif
                 </div>
 
