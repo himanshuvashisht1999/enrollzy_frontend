@@ -74,7 +74,15 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/all-coaching', [PageController::class, 'allCoaching'])->name('all.coaching');
     Route::get('/coaching-detail/{slug}', [PageController::class, 'coachingDetail'])->name('coaching.detail');
     Route::get('/university', [PageController::class, 'university'])->name('university');
-    Route::get('/university-detail/{slug}', [PageController::class, 'universityDetail'])->name('university.detail');
+    // University pages (client design "University page v2"); same URL as before for the overview
+    Route::get('/university-detail/{slug}', [\App\Http\Controllers\UniversityController::class, 'overview'])->name('university.detail');
+    Route::get('/university-detail/{slug}/courses', [\App\Http\Controllers\UniversityController::class, 'courses'])->name('university.courses');
+    Route::get('/university-detail/{slug}/courses/{course}', [\App\Http\Controllers\UniversityController::class, 'course'])->name('university.course');
+    Route::get('/university-detail/{slug}/campuses/{campusSlug?}', [\App\Http\Controllers\UniversityController::class, 'campus'])->name('university.campus');
+    Route::get('/university-detail/{slug}/online', [\App\Http\Controllers\UniversityController::class, 'online'])->name('university.online');
+    Route::get('/university-detail/{slug}/compare', [\App\Http\Controllers\UniversityController::class, 'compare'])->name('university.compare');
+    Route::get('/university-compare/data', [\App\Http\Controllers\UniversityController::class, 'compareData'])->name('university.compare.data');
+    Route::get('/university-compare/options', [\App\Http\Controllers\UniversityController::class, 'compareOptions'])->name('university.compare.options');
     Route::get('/mentors', [PageController::class, 'mentors'])->name('mentors');
     Route::get('/experts', [PageController::class, 'mentors'])->name('experts');
     Route::get('/career-roadmap', [PageController::class, 'careerRoadmap'])->name('career-roadmap.index');
