@@ -11,6 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // "Your details" on the counselling pages: written by counselling.js, so it is a plain (unencrypted) cookie.
+        $middleware->encryptCookies(except: ['ez_profile']);
         $middleware->alias([
             'simple.auth' => \App\Http\Middleware\SimpleAuthMiddleware::class,
         ]);

@@ -1,3 +1,20 @@
+// Compare data is fetched per campus when needed (it used to be embedded for every campus, which no longer fits in memory).
+window.compareModalData = window.compareModalData || {};
+window.loadCompareData = function (ids) {
+    const want = Array.from(new Set((ids || []).filter(id => id && !window.compareModalData[id])));
+    if (!want.length || !window.compareDataUrl) return Promise.resolve(window.compareModalData);
+    return fetch(window.compareDataUrl + '?ids=' + encodeURIComponent(want.join(',')), { headers: { 'Accept': 'application/json' }, credentials: 'same-origin' })
+        .then(r => r.ok ? r.json() : { campuses: {} })
+        .then(res => {
+            Object.assign(window.compareModalData, res.campuses || {});   // same object: pages holding a reference see the new data
+            const maxOf = (a, b) => (isNaN(parseInt(a)) ? b : (isNaN(parseInt(b)) ? a : Math.max(parseInt(a), parseInt(b))));
+            window.maxClassProfileYear = maxOf(window.maxClassProfileYear, res.max_class_profile_year);
+            window.maxPlacementYear = maxOf(window.maxPlacementYear, res.max_placement_year);
+            return window.compareModalData;
+        })
+        .catch(() => window.compareModalData);
+};
+
 window.switchToEditing = function(slot) {
     const emptyState = document.getElementById('empty-state-' + slot);
     const filledState = document.getElementById('filled-state-' + slot);
@@ -80,14 +97,26 @@ document.addEventListener('DOMContentLoaded', function () {
             window.selections[slot] = null;
             this.closest('.compare-card').classList.remove('active-slot');
 
-            if (campusId && data[campusId]) {
-                deptSelect.disabled = false;
-                const depts = data[campusId].departments;
-                Object.keys(depts).forEach(deptId => {
-                    const option = document.createElement('option');
-                    option.value = deptId;
-                    option.textContent = depts[deptId].department_name || depts[deptId].name;
-                    deptSelect.appendChild(option);
+            if (campusId) {
+                // Fetch this campus's departments and programmes first (they are no longer embedded in the page).
+                deptSelect.innerHTML = '<option value="">Loading departments...</option>';
+                const select = this;
+                window.loadCompareData([campusId]).then(() => {
+                    if (select.value !== campusId) return;   // another campus was picked meanwhile
+                    deptSelect.innerHTML = '<option value="">Select Department</option>';
+                    if (data[campusId]) {
+                        deptSelect.disabled = false;
+                        const depts = data[campusId].departments;
+                        Object.keys(depts).forEach(deptId => {
+                            const option = document.createElement('option');
+                            option.value = deptId;
+                            option.textContent = depts[deptId].department_name || depts[deptId].name;
+                            deptSelect.appendChild(option);
+                        });
+                    }
+                    if (window.jQuery && $(deptSelect).hasClass('select2-hidden-accessible')) {
+                        $(deptSelect).trigger('change.select2');
+                    }
                 });
             }
             
@@ -113,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
             window.selections[slot] = null;
             this.closest('.compare-card').classList.remove('active-slot');
 
-            if (campusId && deptId && data[campusId].departments[deptId]) {
+            if (campusId && deptId && data[campusId] && data[campusId].departments[deptId]) {
                 courseSelect.disabled = false;
                 const courses = data[campusId].departments[deptId].courses;
                 courses.forEach(course => {
@@ -138,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const deptId = document.querySelector(`.dept-selector[data-slot="${slot}"]`).value;
             const courseId = this.value;
 
-            if (campusId && deptId && courseId) {
+            if (campusId && deptId && courseId && data[campusId]) {
                 const campus = data[campusId];
                 const dept = campus.departments[deptId];
                 const courseData = dept.courses.find(c => c.id == courseId);
@@ -216,5 +245,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     
-    syncModalUI();
+    // Remembered selections: fetch their campuses first, then show them.
+    const rememberedIds = Object.values(window.selections).filter(Boolean).map(s => s.campusId);
+    window.compareDataReady = window.loadCompareData(rememberedIds).then(syncModalUI);
 });

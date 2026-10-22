@@ -46,6 +46,7 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/', [PageController::class, 'index'])->name('home');
     Route::get('/about', [PageController::class, 'about']);
     Route::get('/compare', [PageController::class, 'compare'])->name('compare');
+    Route::get('/compare/campus-data', [PageController::class, 'compareData'])->name('compare.campus-data');
     Route::get('/all-schools', [PageController::class, 'allSchools'])->name('all-schools');
     Route::get('/blogs', [PageController::class, 'blogs'])->name('blogs');
     Route::get('/blog/{slug}', [PageController::class, 'blogDetail'])->name('blog.detail');
@@ -53,6 +54,14 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::post('/contact-us', [PageController::class, 'submitContactUs'])->name('contact.submit');
     Route::get('/top-exams', [PageController::class, 'topExams'])->name('top-exams');
     Route::get('/exam/{slug}', [PageController::class, 'examDetail'])->name('exam.detail');
+
+    // Exam and counselling pages (data from the backend public API)
+    Route::get('/exams/{slug}', [\App\Http\Controllers\CounsellingController::class, 'exam'])->name('exams.show');
+    Route::get('/counselling', [\App\Http\Controllers\CounsellingController::class, 'index'])->name('counselling.index');
+    Route::get('/counselling/{slug}/cutoffs', [\App\Http\Controllers\CounsellingController::class, 'cutoffs'])->name('counselling.cutoffs');
+    Route::get('/counselling/{slug}/seat-matrix', [\App\Http\Controllers\CounsellingController::class, 'seats'])->name('counselling.seats');
+    Route::get('/counselling/{slug}/colleges', [\App\Http\Controllers\CounsellingController::class, 'colleges'])->name('counselling.colleges');
+    Route::get('/counselling/{slug}/{year?}', [\App\Http\Controllers\CounsellingController::class, 'show'])->where('year', '[0-9]{4}')->name('counselling.show');
     Route::get('/faq', [App\Http\Controllers\PageController::class, 'faq'])->name('faq');
     Route::get('/about-us', [App\Http\Controllers\PageController::class, 'aboutUs'])->name('about-us');
     Route::get('/scholarships-and-benefits', [PageController::class, 'scholarships'])->name('scholarships');

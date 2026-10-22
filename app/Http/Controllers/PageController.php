@@ -95,19 +95,8 @@ class PageController extends Controller
 
         $featuredScholarships = \App\Models\Scholarship::where('featured_on_homepage', 1)->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('id', 'desc')->get();
 
-        $campuses = \App\Models\Campus::with([
-            'organisation.organisationType',
-            'departments' => function ($q) {
-                $q->whereIn('status', [1, '1', 'Active', true]);
-            },
-            'departments.courses' => function ($q) {
-                $q->whereIn('status', [1, '1', 'Active', true])->with(['course', 'programLevel', 'specialization']);
-            }
-        ])->whereIn('status', [1, '1', 'Active', true])->orderBy('sort_order', 'asc')->orderBy('campus_name', 'asc')->get();
-
-        if ($campuses->isEmpty()) {
-            $campuses = \App\Models\Campus::with(['organisation', 'departments.courses.course'])->orderBy('sort_order', 'asc')->orderBy('campus_name', 'asc')->get();
-        }
+        // Compare pop-up: only the campus names here; a campus's details are fetched when it is picked (compareData()).
+        $campuses = \App\Support\CompareData::campusList();
 
         $allFacilities = \App\Models\Facility::where('status', 'Active')->get();
 
@@ -1546,23 +1535,19 @@ class PageController extends Controller
 
     public function compare()
     {
-        $campuses = \App\Models\Campus::with([
-            'organisation.organisationType',
-            'departments' => function ($q) {
-                $q->whereIn('status', [1, '1', 'Active', true])->orderBy('sort_order', 'asc');
-            },
-            'departments.courses' => function ($q) {
-                $q->whereIn('status', [1, '1', 'Active', true])->orderBy('sort_order', 'asc')->with(['course', 'programLevel', 'specialization']);
-            }
-        ])->whereIn('status', [1, '1', 'Active', true])->orderBy('sort_order', 'asc')->orderBy('campus_name', 'asc')->get();
-
-        if ($campuses->isEmpty()) {
-            $campuses = \App\Models\Campus::with(['organisation', 'departments.courses.course'])->orderBy('sort_order', 'asc')->orderBy('campus_name', 'asc')->get();
-        }
+        // Only the campus names: the details of the campuses being compared are fetched by the page (compareData()).
+        $campuses = \App\Support\CompareData::campusList();
 
         $allFacilities = \App\Models\Facility::where('status', 'Active')->get();
 
         return view('compare', compact('campuses', 'allFacilities'));
+    }
+
+    /** Compare data for up to 4 campuses: GET /compare/campus-data?ids=a,b,c */
+    public function compareData(\Illuminate\Http\Request $request)
+    {
+        $ids = array_slice(array_filter(array_map('trim', explode(',', (string) $request->query('ids')))), 0, 4);
+        return response()->json(\App\Support\CompareData::forCampuses($ids));
     }
 
     public function dynamicPage($slug)

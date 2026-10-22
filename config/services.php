@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    // Counselling and exam pages read the backend's public API (api/v1). site_key = the backend's CNS_SITE_KEY.
+    'enrollzy_api' => [
+        'url' => rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/api/v1',
+        'site_key' => env('CNS_SITE_KEY'),
+        'timeout' => (int) env('ENROLLZY_API_TIMEOUT', 8),
+        'cache_seconds' => (int) env('ENROLLZY_API_CACHE', 60),
+    ],
+
 ];
