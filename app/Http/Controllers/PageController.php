@@ -17,7 +17,9 @@ class PageController extends Controller
         $home_benefits = \App\Models\HomeBenefit::where('status', 1)->orderBy('sort_order')->get();
         $trending_skills = \App\Models\TrendingSkill::where('status', 1)->orderBy('sort_order')->get();
         $trendingCourses = \App\Models\TrendingCourse::where('status', 1)->orderBy('sort_order', 'asc')->get();
-        $top_exams = \App\Models\DynamicExam::where('status', 'Active')->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->take(6)->get();
+        // Exams come from the Exam Module (backend API); an unreachable API just leaves these boxes empty.
+        $examFeed = \App\Support\ExamCatalog::safeList(['sort' => 'featured', 'per_page' => 6]);
+        $top_exams = $examFeed['items'];
         $video_testimonials = \App\Models\VideoTestimonial::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
         $blogs = \App\Models\Blog::with('category')->orderBy('published_at', 'desc')->take(4)->get();
         $testimonials = \App\Models\Testimonial::orderBy('id', 'desc')->get();
@@ -33,7 +35,7 @@ class PageController extends Controller
         $totalInstitutionsCount = \App\Models\Organisation::count();
         
         $totalLeadsCount = 10000 + \Illuminate\Support\Facades\DB::table('leads')->count();
-        $totalExamsCount = \App\Models\DynamicExam::where('status', 'Active')->count();
+        $totalExamsCount = (int) ($examFeed['meta']['total'] ?? 0);
 
         // Fetch featured experts for homepage (is_featured = 1)
         $expertsCount = \Illuminate\Support\Facades\DB::table('experts')->count();
@@ -68,6 +70,9 @@ class PageController extends Controller
 
         $dbStreamTabs = \App\Models\HomepageStreamTab::where('status', 1)->orderBy('sort_order', 'asc')->get();
 
+        // every tab's "Important Exams" resolved in one go (Exam Module exams; old ids / names matched by name)
+        $tabExams = \App\Support\ExamCatalog::resolveGroups($dbStreamTabs->mapWithKeys(fn ($t) => [$t->id => is_array($t->default_exams) ? $t->default_exams : (json_decode($t->default_exams ?? '[]', true) ?: [])])->all());
+
         $streamData = [];
         foreach ($dbStreamTabs as $tab) {
             $feature_colleges_ids = is_array($tab->feature_colleges) ? $tab->feature_colleges : (json_decode($tab->feature_colleges ?? '[]', true) ?: []);
@@ -76,7 +81,7 @@ class PageController extends Controller
             $courses_ids = is_array($tab->default_courses) ? $tab->default_courses : (json_decode($tab->default_courses ?? '[]', true) ?: []);
 
             $filteredUnivs = $allActiveUnivs->whereIn('id', $feature_colleges_ids)->sortBy('sort_order')->values();
-            $exams = \App\Models\DynamicExam::whereIn('id', $exams_ids)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
+            $exams = $tabExams[$tab->id] ?? collect();
             $courses = \App\Models\Course::whereIn('id', $courses_ids)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
 
             $streamData[$tab->key] = [
@@ -367,91 +372,15 @@ class PageController extends Controller
             
         return view('all-schools', compact('schools', 'heroPillLabel'));
     }
+    /** /top-exams: published Exam Module exams (via the backend API), with the same sidebar filters as before. */
     public function topExams(\Illuminate\Http\Request $request) {
-        $query = \App\Models\DynamicExam::where('status', 'Active');
-
-        // Search filter
-        if ($request->filled('search')) {
-            $search = trim($request->search);
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('short_name', 'like', "%{$search}%")
-                  ->orWhere('conducting_authority_name', 'like', "%{$search}%");
-            });
+        try {
+            return view('top-exams', \App\Support\ExamCatalog::listing($request));
+        } catch (\App\Support\ApiUnavailable $e) {
+            return response()->view('counselling.unavailable', [], 503);
         }
-
-        // Category filter (exam_category is a JSON array)
-        if ($request->filled('category')) {
-            $categories = array_filter((array) $request->category);
-            if (!empty($categories)) {
-                $query->where(function($q) use ($categories) {
-                    foreach ($categories as $cat) {
-                        $q->orWhereJsonContains('exam_category', $cat)
-                          ->orWhere('exam_category', 'like', '%"' . $cat . '"%');
-                    }
-                });
-            }
-        }
-
-        // Exam Type filter
-        if ($request->filled('exam_type')) {
-            $query->where('exam_type', $request->exam_type);
-        }
-
-        // Conducting body type filter
-        if ($request->filled('conducting_body_type')) {
-            $query->where('conducting_body_type', $request->conducting_body_type);
-        }
-
-        // Featured filter
-        if ($request->boolean('featured')) {
-            $query->where('featured_exam', true);
-        }
-
-        // Sort
-        $sort = $request->get('sort', 'latest');
-        if ($sort === 'name') {
-            $query->orderBy('name', 'asc');
-        } elseif ($sort === 'featured') {
-            $query->orderByDesc('featured_exam')->orderBy('sort_order', 'asc')->orderBy('name', 'asc');
-        } else {
-            $query->orderBy('sort_order', 'asc')->orderBy('id', 'desc');
-        }
-
-        $exams = $query->paginate(12)->withQueryString();
-
-        // Pass distinct values for dynamic filter options
-        $allCategories = \App\Models\DynamicExam::where('status', 'Active')
-            ->whereNotNull('exam_category')
-            ->pluck('exam_category')
-            ->flatten()
-            ->unique()
-            ->filter()
-            ->sort()
-            ->values();
-
-        $allExamTypes = \App\Models\DynamicExam::where('status', 'Active')
-            ->whereNotNull('exam_type')
-            ->distinct()
-            ->pluck('exam_type')
-            ->sort()
-            ->values();
-
-        $allConductingBodyTypes = \App\Models\DynamicExam::where('status', 'Active')
-            ->whereNotNull('conducting_body_type')
-            ->distinct()
-            ->pluck('conducting_body_type')
-            ->sort()
-            ->values();
-
-        return view('top-exams', compact('exams', 'allCategories', 'allExamTypes', 'allConductingBodyTypes'));
     }
-    public function examDetail($slug)
-    {
-        $exam = \App\Models\DynamicExam::with('sections')->where('slug', $slug)->firstOrFail();
-        return view('top-exam-detail', compact('exam'));
-    }
-    
+
     public function contactUs() {
         $contactDetails = \App\Models\ContactUsDetail::firstOrCreate(['id' => 1]);
         return view('contact-us', compact('contactDetails'));
@@ -1510,22 +1439,15 @@ class PageController extends Controller
 
         // 5. Dynamic Exams
         if (empty($type)) {
-            $exams = \App\Models\DynamicExam::where('status', 1)
-                ->where(function($query) use ($q) {
-                    $query->where('name', 'like', "%{$q}%")
-                          ->orWhere('short_name', 'like', "%{$q}%");
-                })
-                ->orderBy('sort_order', 'asc')
-                ->orderBy('name', 'asc')
-                ->limit(5)
-                ->get();
+            // Exam Module exams (backend API)
+            $exams = \App\Support\ExamCatalog::safeList(['q' => $q, 'sort' => 'featured', 'per_page' => 5])['items'];
 
             foreach ($exams as $ex) {
                 $results->push([
                     'title' => $ex->name ?? $ex->short_name,
                     'subtitle' => 'Entrance Exam',
                     'type' => 'Exam',
-                    'url' => route('top-exam.detail', $ex->slug ?? $ex->id)
+                    'url' => route('exam.detail', $ex->slug)
                 ]);
             }
         }

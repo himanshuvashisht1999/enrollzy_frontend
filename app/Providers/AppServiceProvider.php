@@ -62,7 +62,7 @@ class AppServiceProvider extends ServiceProvider
             $view->with('headerBoardingSchools', \App\Models\Organisation::where('organisation_type_id', 4)->where('status', 1)->take(7)->get());
             $view->with('headerUniversities', \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1)->take(7)->get());
             $view->with('headerCoachingInstitutes', \App\Models\Organisation::where('organisation_type_id', 3)->where('status', 1)->take(7)->get());
-            $view->with('headerTopExams', \App\Models\DynamicExam::where('status', 'Active')->orderBy('id', 'desc')->take(8)->get());
+            $view->with('headerTopExams', \App\Support\ExamCatalog::safeList(['sort' => 'featured', 'per_page' => 8])['items']);   // Exam Module exams
         });
 
         View::composer('common.footer', function ($view) {

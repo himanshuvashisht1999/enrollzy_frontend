@@ -36,7 +36,14 @@ class CounsellingController extends Controller
     public function exam(Request $request, string $slug)
     {
         return $this->guard(function () use ($request, $slug) {
-            $exam = Api::get('exams/' . rawurlencode($slug)) ?? abort(404);
+            $exam = Api::get('exams/' . rawurlencode($slug));
+            if (!$exam) {
+                // An old exam URL (Dynamic Exam slug, or a name-like slug): send it, permanently, to the exam it meant.
+                if ($to = \App\Support\ExamCatalog::redirectFor($slug)) {
+                    return redirect($to[0], $to[1]);
+                }
+                abort(404);
+            }
             $masters = $this->masters();
             $profile = Ui::profile($request, $masters['states']);
             $counsellings = $exam['counsellings'] ?? [];

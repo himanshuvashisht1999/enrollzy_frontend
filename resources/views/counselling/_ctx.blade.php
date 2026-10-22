@@ -18,7 +18,7 @@
     <div class="cz-container">
         <div class="cz-ctx-path">
             @if($primary && $primary['slug'])
-                <a href="{{ route('exams.show', $primary['slug']) }}">{{ $primary['short_name'] ?: $primary['name'] }} {{ $examYear }}</a><span aria-hidden="true">›</span>
+                <a href="{{ route('exam.detail', $primary['slug']) }}">{{ $primary['short_name'] ?: $primary['name'] }} {{ $examYear }}</a><span aria-hidden="true">›</span>
             @endif
             <a href="{{ route('counselling.index', $primary && $primary['slug'] ? ['exam' => $primary['slug']] : []) }}">Counselling</a><span aria-hidden="true">›</span>
             <label for="cz-switch" class="cz-sr">Switch counselling</label>

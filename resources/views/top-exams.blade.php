@@ -307,7 +307,7 @@
                                 </h3>
 
                                 <p class="exam-card-meta">
-                                    UG &bull; <span class="conducting-body">{{ $exam->conducting_authority_name ?? $exam->conducting_body_type ?? 'NTA' }}</span> &bull; 
+                                    UG &bull; <span class="conducting-body">{{ $exam->conducting_authority_name ?? $exam->conducting_body_type ?? 'Conducting body to be added' }}</span> &bull; 
                                     <span style="color: #F9AD0B;">
                                         @if(is_array($exam->exam_category) && count($exam->exam_category))
                                             {{ implode(', ', $exam->exam_category) }}
@@ -322,15 +322,15 @@
                                 <div class="exam-card-dates-box">
                                     <div class="exam-date-row">
                                         <span class="exam-date-label">Results</span>
-                                        <span class="exam-date-value">{{ $exam->result_status ?: 'Declared / TBA' }}</span>
+                                        <span class="exam-date-value">{{ $exam->result_status ?: 'To be announced' }}</span>
                                     </div>
                                     <div class="exam-date-row highlighted">
                                         <span class="exam-date-label">Exam Frequency</span>
-                                        <span class="exam-date-value">{{ $exam->exam_frequency ?: 'Once a year' }}</span>
+                                        <span class="exam-date-value">{{ $exam->exam_frequency ?: '–' }}</span>
                                     </div>
                                     <div class="exam-date-row">
                                         <span class="exam-date-label">Registration</span>
-                                        <span class="exam-date-value">{{ $exam->registration_status ?: 'Open' }}</span>
+                                        <span class="exam-date-value">{{ $exam->registration_status ?: 'To be announced' }}</span>
                                     </div>
                                 </div>
 

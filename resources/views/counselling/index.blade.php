@@ -16,7 +16,7 @@
         <div class="cz-container">
             <nav class="cz-crumbs" aria-label="Breadcrumb">
                 <a href="{{ url('/') }}">Home</a>›
-                @if($exam)<a href="{{ route('exams.show', $exam['exam']['slug']) }}">{{ $examName }} {{ $examYear }}</a>›@endif
+                @if($exam)<a href="{{ route('exam.detail', $exam['exam']['slug']) }}">{{ $examName }} {{ $examYear }}</a>›@endif
                 <span>Counselling</span>
             </nav>
             <div class="cz-hero-text">
@@ -35,16 +35,15 @@
                 <label class="cz-field grow" for="hub-q">Search
                     <input id="hub-q" type="search" placeholder="State or counselling name" value="{{ request('q') }}" data-cz-hub="q" autocomplete="off">
                 </label>
-                @if(count($levels) > 1)
-                    <div class="cz-field">Type
-                        <div class="cz-chips" role="group" aria-label="Type" data-cz-hub="type">
-                            <button type="button" class="cz-chip" aria-pressed="true" data-v="all">All</button>
-                            @foreach($levels as $l)
-                                <button type="button" class="cz-chip" aria-pressed="false" data-v="{{ $l }}">{{ Ui::LEVELS[$l] ?? ucfirst($l) }}</button>
-                            @endforeach
-                        </div>
+                {{-- Always offered (as in the design): National and State, plus any other level that has counsellings. --}}
+                <div class="cz-field">Type
+                    <div class="cz-chips" role="group" aria-label="Type" data-cz-hub="type">
+                        <button type="button" class="cz-chip" aria-pressed="true" data-v="all">All</button>
+                        @foreach(array_values(array_unique(array_merge(['national', 'state'], $levels))) as $l)
+                            <button type="button" class="cz-chip" aria-pressed="false" data-v="{{ $l }}">{{ Ui::LEVELS[$l] ?? ucfirst($l) }}</button>
+                        @endforeach
                     </div>
-                @endif
+                </div>
                 <div class="cz-field">Status
                     <div class="cz-chips" role="group" aria-label="Status" data-cz-hub="status">
                         <button type="button" class="cz-chip" aria-pressed="true" data-v="all">All</button>

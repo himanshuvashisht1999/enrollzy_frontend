@@ -37,6 +37,14 @@ class EnrollzyApi
         }
 
         if ($res->status() === 404) {
+            // Only the API's own "not found" (unknown or unpublished counselling / exam / year) is a real 404. A 404 for the
+            // route itself means the backend has not deployed the API (or BACKEND_URL points elsewhere): that is an outage,
+            // not "no data", so the page says "try again" instead of showing an empty list.
+            $message = (string) ($res->json('message') ?? '');
+            if (!preg_match('/^(Counselling not found|Exam not found|No public cycle)/', $message)) {
+                Log::error('Enrollzy API route missing (404) for ' . $path . ': check BACKEND_URL and that the backend API is deployed (routes/api.php, bootstrap/app.php, php artisan route:clear).');
+                throw new ApiUnavailable('API route missing: ' . $path);
+            }
             Cache::put($key, ['found' => false, 'data' => null], $cfg['cache_seconds']);
             return null;
         }
@@ -55,7 +63,10 @@ class EnrollzyApi
     {
         $out = [];
         for ($page = 1; $page <= $maxPages; $page++) {
-            $res = self::get($path, $query + ['per_page' => 50, 'page' => $page]) ?? ['data' => [], 'meta' => ['last_page' => 1]];
+            $res = self::get($path, $query + ['per_page' => 50, 'page' => $page]);
+            if ($res === null) {
+                throw new ApiUnavailable('List endpoint answered 404: ' . $path);
+            }
             array_push($out, ...($res['data'] ?? []));
             if ($page >= (int) ($res['meta']['last_page'] ?? 1)) break;
         }

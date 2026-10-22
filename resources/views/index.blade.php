@@ -1389,7 +1389,7 @@
                                                 </div>
                                                 <div class="perfect-badges-grid" style="padding: 10px 12px;border-radius: 10px;background-color: #fff;border: 1px solid #DDDDDD;">
                                                     @foreach($sVal['exams'] as $ex)
-                                                        <a href="{{ route('exam.detail', $ex->slug ?? $ex->id) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
+                                                        <a href="{{ $ex->slug ? route('exam.detail', $ex->slug) : route('top-exams', ['search' => $ex->name]) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
                                                             {{ $ex->name ?? $ex->short_name }}
                                                         </a>
                                                     @endforeach
@@ -2814,7 +2814,7 @@
                                                 </div>
                                                 <div class="perfect-badges-grid" style="padding: 10px 12px;border-radius: 10px;background-color: #fff;border: 1px solid #DDDDDD;">
                                                     @foreach($sVal['exams'] as $ex)
-                                                        <a href="{{ route('exam.detail', $ex->slug ?? $ex->id) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
+                                                        <a href="{{ $ex->slug ? route('exam.detail', $ex->slug) : route('top-exams', ['search' => $ex->name]) }}" class="badge-univ-pill text-decoration-none text-dark d-inline-block">
                                                             {{ $ex->name ?? $ex->short_name }}
                                                         </a>
                                                     @endforeach

@@ -9,7 +9,6 @@ use App\Models\StreamOffered;
 use App\Models\Discipline;
 use App\Models\CourseType;
 use App\Models\ProgramType;
-use App\Models\DynamicExam;
 use App\Models\Specialization;
 use App\Models\Organisation;
 
@@ -208,17 +207,11 @@ class CourseController extends Controller
             ? $course->common_entrance_exams
             : (json_decode($course->common_entrance_exams ?? '[]', true) ?: []);
         
-        $entranceExams = collect();
-        if (!empty($examIdsOrNames)) {
-            $entranceExams = DynamicExam::where(function($q) use ($examIdsOrNames) {
-                $q->whereIn('id', $examIdsOrNames)
-                  ->orWhereIn('name', $examIdsOrNames)
-                  ->orWhereIn('short_name', $examIdsOrNames);
-            })->where('status', 'Active')->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
-        }
-
+        // Exam Module exams: "exm:{id}" values, or old ids / names matched to a published exam. Only real, published
+        // exams are shown (each links to its page); with none, the featured ones are suggested instead.
+        $entranceExams = \App\Support\ExamCatalog::resolve($examIdsOrNames, false);
         if ($entranceExams->isEmpty()) {
-            $entranceExams = DynamicExam::where('status', 'Active')->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->take(4)->get();
+            $entranceExams = \App\Support\ExamCatalog::safeList(['sort' => 'featured', 'per_page' => 4])['items'];
         }
 
         $specializationIdsOrNames = is_array($course->common_specializations)

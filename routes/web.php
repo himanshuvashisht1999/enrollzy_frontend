@@ -53,10 +53,11 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/contact-us', [PageController::class, 'contactUs'])->name('contact');
     Route::post('/contact-us', [PageController::class, 'submitContactUs'])->name('contact.submit');
     Route::get('/top-exams', [PageController::class, 'topExams'])->name('top-exams');
-    Route::get('/exam/{slug}', [PageController::class, 'examDetail'])->name('exam.detail');
 
     // Exam and counselling pages (data from the backend public API)
-    Route::get('/exams/{slug}', [\App\Http\Controllers\CounsellingController::class, 'exam'])->name('exams.show');
+    // One exam URL: /exam/{slug} (Exam Module). Old Dynamic Exam slugs there are 301-redirected to the matching exam.
+    Route::get('/exam/{slug}', [\App\Http\Controllers\CounsellingController::class, 'exam'])->name('exam.detail');
+    Route::get('/exams/{slug}', fn (string $slug) => redirect()->route('exam.detail', $slug, 301));
     Route::get('/counselling', [\App\Http\Controllers\CounsellingController::class, 'index'])->name('counselling.index');
     Route::get('/counselling/{slug}/cutoffs', [\App\Http\Controllers\CounsellingController::class, 'cutoffs'])->name('counselling.cutoffs');
     Route::get('/counselling/{slug}/seat-matrix', [\App\Http\Controllers\CounsellingController::class, 'seats'])->name('counselling.seats');
