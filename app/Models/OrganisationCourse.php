@@ -118,10 +118,16 @@ class OrganisationCourse extends Model
         'refund_policy_available',
 
         // Admin
+        'sort_order',
         'verified_reviews_only',
         'meta_title',
         'meta_description',
     ];
+
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort_order', 'asc');
+    }
 
     public function organisation()
     {

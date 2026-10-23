@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class PageController extends Controller
 {
     public function index() {
-        $boardingSchools = \App\Models\Organisation::where('organisation_type_id', 4)->where('status', 1)->take(6)->get();
+        $boardingSchools = \App\Models\Organisation::where('organisation_type_id', 4)->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->take(6)->get();
         $noteworthy_categories = \App\Models\NoteworthyCategory::with(['mentions' => function ($q) {
             $q->where('status', 1)->orderBy('sort_order');
         }])->where('status', 1)->orderBy('sort_order')->get();
@@ -17,7 +17,9 @@ class PageController extends Controller
         $home_benefits = \App\Models\HomeBenefit::where('status', 1)->orderBy('sort_order')->get();
         $trending_skills = \App\Models\TrendingSkill::where('status', 1)->orderBy('sort_order')->get();
         $trendingCourses = \App\Models\TrendingCourse::where('status', 1)->orderBy('sort_order', 'asc')->get();
-        $top_exams = \App\Models\DynamicExam::where('status', 'Active')->orderBy('id', 'desc')->take(6)->get();
+        // Exams come from the Exam Module (backend API); an unreachable API just leaves these boxes empty.
+        $examFeed = \App\Support\ExamCatalog::safeList(['sort' => 'featured', 'per_page' => 6]);
+        $top_exams = $examFeed['items'];
         $video_testimonials = \App\Models\VideoTestimonial::where('is_active', 1)->orderBy('sort_order', 'asc')->get();
         $blogs = \App\Models\Blog::with('category')->orderBy('published_at', 'desc')->take(4)->get();
         $testimonials = \App\Models\Testimonial::orderBy('id', 'desc')->get();
@@ -33,7 +35,7 @@ class PageController extends Controller
         $totalInstitutionsCount = \App\Models\Organisation::count();
         
         $totalLeadsCount = 10000 + \Illuminate\Support\Facades\DB::table('leads')->count();
-        $totalExamsCount = \App\Models\DynamicExam::where('status', 'Active')->count();
+        $totalExamsCount = (int) ($examFeed['meta']['total'] ?? 0);
 
         // Fetch featured experts for homepage (is_featured = 1)
         $expertsCount = \Illuminate\Support\Facades\DB::table('experts')->count();
@@ -61,32 +63,26 @@ class PageController extends Controller
         $scholarshipsCount = 850;
         $internshipsCount = 4500;
         
-        $coachingInstitutes = \App\Models\Organisation::where('organisation_type_id', 3)->where('status', 1)->take(6)->get();
-        $featuredUniversities = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1)->orderBy('id', 'desc')->take(15)->get();
+        $coachingInstitutes = \App\Models\Organisation::where('organisation_type_id', 3)->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->take(6)->get();
+        $featuredUniversities = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->take(15)->get();
 
-        $allActiveUnivs = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1)->orderBy('id', 'desc')->get();
+        $allActiveUnivs = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
 
         $dbStreamTabs = \App\Models\HomepageStreamTab::where('status', 1)->orderBy('sort_order', 'asc')->get();
 
+        // every tab's "Important Exams" resolved in one go (Exam Module exams; old ids / names matched by name)
+        $tabExams = \App\Support\ExamCatalog::resolveGroups($dbStreamTabs->mapWithKeys(fn ($t) => [$t->id => is_array($t->default_exams) ? $t->default_exams : (json_decode($t->default_exams ?? '[]', true) ?: [])])->all());
+
         $streamData = [];
         foreach ($dbStreamTabs as $tab) {
-            $keywords = is_array($tab->keywords) ? $tab->keywords : json_decode($tab->keywords ?? '[]', true);
-            $exams = is_array($tab->default_exams) ? $tab->default_exams : json_decode($tab->default_exams ?? '[]', true);
-            $states = is_array($tab->default_states) ? $tab->default_states : json_decode($tab->default_states ?? '[]', true);
-            $courses = is_array($tab->default_courses) ? $tab->default_courses : json_decode($tab->default_courses ?? '[]', true);
+            $feature_colleges_ids = is_array($tab->feature_colleges) ? $tab->feature_colleges : (json_decode($tab->feature_colleges ?? '[]', true) ?: []);
+            $exams_ids = is_array($tab->default_exams) ? $tab->default_exams : (json_decode($tab->default_exams ?? '[]', true) ?: []);
+            $states = is_array($tab->default_states) ? $tab->default_states : (json_decode($tab->default_states ?? '[]', true) ?: []);
+            $courses_ids = is_array($tab->default_courses) ? $tab->default_courses : (json_decode($tab->default_courses ?? '[]', true) ?: []);
 
-            $filteredUnivs = $allActiveUnivs->filter(function($u) use ($keywords) {
-                if (empty($keywords)) return true;
-                $text = strtolower($u->name . ' ' . ($u->about_organisation ?? '') . ' ' . ($u->meta_title ?? ''));
-                foreach ($keywords as $kw) {
-                    if (!empty($kw) && str_contains($text, strtolower($kw))) return true;
-                }
-                return false;
-            })->take(12);
-
-            if ($filteredUnivs->count() < 4) {
-                $filteredUnivs = $allActiveUnivs->take(12);
-            }
+            $filteredUnivs = $allActiveUnivs->whereIn('id', $feature_colleges_ids)->sortBy('sort_order')->values();
+            $exams = $tabExams[$tab->id] ?? collect();
+            $courses = \App\Models\Course::whereIn('id', $courses_ids)->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->get();
 
             $streamData[$tab->key] = [
                 'name' => $tab->name,
@@ -104,19 +100,8 @@ class PageController extends Controller
 
         $featuredScholarships = \App\Models\Scholarship::where('featured_on_homepage', 1)->where('status', 1)->orderBy('sort_order', 'asc')->orderBy('id', 'desc')->get();
 
-        $campuses = \App\Models\Campus::with([
-            'organisation.organisationType',
-            'departments' => function ($q) {
-                $q->whereIn('status', [1, '1', 'Active', true]);
-            },
-            'departments.courses' => function ($q) {
-                $q->whereIn('status', [1, '1', 'Active', true])->with(['course', 'programLevel', 'specialization']);
-            }
-        ])->whereIn('status', [1, '1', 'Active', true])->get();
-
-        if ($campuses->isEmpty()) {
-            $campuses = \App\Models\Campus::with(['organisation', 'departments.courses.course'])->get();
-        }
+        // Compare pop-up: only the campus names here; a campus's details are fetched when it is picked (compareData()).
+        $campuses = \App\Support\CompareData::campusList();
 
         $allFacilities = \App\Models\Facility::where('status', 'Active')->get();
 
@@ -298,6 +283,20 @@ class PageController extends Controller
             });
         }
 
+        // 8b. School type from the CRM list (Campus Types, e.g. "Girls' Boarding School"), as linked from the homepage
+        // "Boarding schools" tabs: ?campus_type[]=8. A campus stores its types as a JSON list of ids ("8" or 8).
+        if ($request->filled('campus_type')) {
+            $typeIds = array_values(array_filter(array_map('intval', (array) $request->campus_type)));
+            if ($typeIds) {
+                $query->whereExists(function ($q) use ($typeIds) {
+                    $q->selectRaw('1')->from('campuses')->whereColumn('campuses.organisation_id', 'organisations.id')->whereNull('campuses.deleted_at')
+                        ->where(function ($w) use ($typeIds) {
+                            foreach ($typeIds as $id) $w->orWhereRaw('campuses.campus_type_new_id regexp ?', ['(^|[^0-9])' . $id . '([^0-9]|$)']);
+                        });
+                });
+            }
+        }
+
         // 9. School / Coaching Type Filter
         if ($request->filled('school_type')) {
             $types = (array) $request->school_type;
@@ -383,95 +382,19 @@ class PageController extends Controller
                 ->value('pill_2_label');
         }
 
-        $schools = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
+        $schools = $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->paginate(10)->withQueryString();
             
         return view('all-schools', compact('schools', 'heroPillLabel'));
     }
+    /** /top-exams: published Exam Module exams (via the backend API), with the same sidebar filters as before. */
     public function topExams(\Illuminate\Http\Request $request) {
-        $query = \App\Models\DynamicExam::where('status', 'Active');
-
-        // Search filter
-        if ($request->filled('search')) {
-            $search = trim($request->search);
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('short_name', 'like', "%{$search}%")
-                  ->orWhere('conducting_authority_name', 'like', "%{$search}%");
-            });
+        try {
+            return view('top-exams', \App\Support\ExamCatalog::listing($request));
+        } catch (\App\Support\ApiUnavailable $e) {
+            return response()->view('counselling.unavailable', [], 503);
         }
-
-        // Category filter (exam_category is a JSON array)
-        if ($request->filled('category')) {
-            $categories = array_filter((array) $request->category);
-            if (!empty($categories)) {
-                $query->where(function($q) use ($categories) {
-                    foreach ($categories as $cat) {
-                        $q->orWhereJsonContains('exam_category', $cat)
-                          ->orWhere('exam_category', 'like', '%"' . $cat . '"%');
-                    }
-                });
-            }
-        }
-
-        // Exam Type filter
-        if ($request->filled('exam_type')) {
-            $query->where('exam_type', $request->exam_type);
-        }
-
-        // Conducting body type filter
-        if ($request->filled('conducting_body_type')) {
-            $query->where('conducting_body_type', $request->conducting_body_type);
-        }
-
-        // Featured filter
-        if ($request->boolean('featured')) {
-            $query->where('featured_exam', true);
-        }
-
-        // Sort
-        $sort = $request->get('sort', 'latest');
-        if ($sort === 'name') {
-            $query->orderBy('name', 'asc');
-        } elseif ($sort === 'featured') {
-            $query->orderByDesc('featured_exam')->orderBy('name');
-        } else {
-            $query->orderBy('id', 'desc');
-        }
-
-        $exams = $query->paginate(12)->withQueryString();
-
-        // Pass distinct values for dynamic filter options
-        $allCategories = \App\Models\DynamicExam::where('status', 'Active')
-            ->whereNotNull('exam_category')
-            ->pluck('exam_category')
-            ->flatten()
-            ->unique()
-            ->filter()
-            ->sort()
-            ->values();
-
-        $allExamTypes = \App\Models\DynamicExam::where('status', 'Active')
-            ->whereNotNull('exam_type')
-            ->distinct()
-            ->pluck('exam_type')
-            ->sort()
-            ->values();
-
-        $allConductingBodyTypes = \App\Models\DynamicExam::where('status', 'Active')
-            ->whereNotNull('conducting_body_type')
-            ->distinct()
-            ->pluck('conducting_body_type')
-            ->sort()
-            ->values();
-
-        return view('top-exams', compact('exams', 'allCategories', 'allExamTypes', 'allConductingBodyTypes'));
     }
-    public function examDetail($slug)
-    {
-        $exam = \App\Models\DynamicExam::with('sections')->where('slug', $slug)->firstOrFail();
-        return view('top-exam-detail', compact('exam'));
-    }
-    
+
     public function contactUs() {
         $contactDetails = \App\Models\ContactUsDetail::firstOrCreate(['id' => 1]);
         return view('contact-us', compact('contactDetails'));
@@ -714,7 +637,7 @@ class PageController extends Controller
                 ->value('pill_4_label');
         }
 
-        $coachings = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
+        $coachings = $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc')->paginate(10)->withQueryString();
             
         return view('all-coaching', compact('coachings', 'heroPillLabel'));
     }
@@ -757,6 +680,8 @@ class PageController extends Controller
         ];
 
         $query = \App\Models\Organisation::where('organisation_type_id', 1)->where('status', 1);
+
+        $this->applyOrganisationFilters($query, $request);
 
         // Top Filter
         if ($request->has('is_top') && ($request->is_top == '1' || $request->is_top == 'true')) {
@@ -859,7 +784,7 @@ class PageController extends Controller
                 ->value('pill_1_label');
         }
 
-        $universities = $query->orderBy('is_top', 'desc')->orderBy('nirf_rank_overall', 'asc')->paginate(12)->withQueryString();
+        $universities = $query->orderBy('sort_order', 'asc')->orderBy('is_top', 'desc')->orderBy('nirf_rank_overall', 'asc')->paginate(12)->withQueryString();
 
         return view('university', compact('universities', 'heroPillLabel'));
     }
@@ -924,53 +849,59 @@ class PageController extends Controller
 
         $dbTestimonials = \App\Models\Testimonial::latest()->get();
         $testimonials = [];
+        $backendUrl = rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/');
+
         if ($dbTestimonials->isNotEmpty()) {
             foreach ($dbTestimonials as $idx => $tItem) {
                 $mentorRef = null;
-                if (!empty($tItem->mentor_profile_id)) {
-                    $mentorRef = \App\Models\MentorProfile::with('user')->find($tItem->mentor_profile_id);
+                if (!empty($tItem->expert_id)) {
+                    $mentorRef = \Illuminate\Support\Facades\DB::table('experts')->find($tItem->expert_id);
                 }
                 if (!$mentorRef) {
                     $mentorRef = $mentors->get($idx % max(1, $mentors->count()));
                 }
 
-                $mName = 'Expert Counselor';
-                $mRole = 'Senior Counselor & Guide';
-                $mAvatar = 'mentor_1.png';
+                $mName   = 'Expert Counselor';
+                $mRole   = 'Senior Counselor & Guide';
+                $mAvatar = asset('assets/images/mentor_1.png');
 
                 if ($mentorRef) {
                     $mName = $mentorRef->name ?? trim(($mentorRef->first_name ?? '') . ' ' . ($mentorRef->last_name ?? ''));
                     if (empty($mName)) {
-                        $mName = $mentorRef->user->name ?? 'Expert Counselor';
+                        $mName = (property_exists($mentorRef, 'user') && $mentorRef->user) ? ($mentorRef->user->name ?? 'Expert Counselor') : 'Expert Counselor';
                     }
-                    $mRole = $mentorRef->designation ?? $mentorRef->role ?? $mentorRef->professional_headline ?? 'Senior Counselor & Guide';
-                    $mAvatar = $mentorRef->img ?? $mentorRef->profile_photo_url ?? $mentorRef->profile_photo ?? 'mentor_1.png';
+                    $mRole = $mentorRef->designation ?? $mentorRef->role ?? $mentorRef->professional_headline ?? 'Education Expert';
+
+                    // img is stored as 'uploads/experts/filename.jpg' in backend public/
+                    $rawImg = $mentorRef->img ?? null;
+                    if (!empty($rawImg)) {
+                        if (str_starts_with($rawImg, 'http')) {
+                            $mAvatar = $rawImg;
+                        } else {
+                            $mAvatar = $backendUrl . '/' . ltrim($rawImg, '/');
+                        }
+                    }
                 }
 
-                $tPhoto = 'team_member_1.png';
+                // Testimonial reviewer photo
+                $tPhoto = asset('assets/images/team_member_1.png');
                 if (!empty($tItem->image)) {
                     if (str_starts_with($tItem->image, 'http')) {
                         $tPhoto = $tItem->image;
-                    } elseif (file_exists(public_path($tItem->image))) {
-                        $tPhoto = asset($tItem->image);
-                    } elseif (file_exists(public_path('storage/' . $tItem->image))) {
-                        $tPhoto = asset('storage/' . $tItem->image);
-                    } elseif (file_exists(base_path('../enrollzy_backend/public/' . ltrim($tItem->image, '/')))) {
-                        $tPhoto = 'http://127.0.0.1:8001/' . ltrim($tItem->image, '/');
-                    } elseif (file_exists(public_path('assets/images/' . $tItem->image))) {
-                        $tPhoto = asset('assets/images/' . $tItem->image);
+                    } else {
+                        $tPhoto = $backendUrl . '/' . ltrim($tItem->image, '/');
                     }
                 }
 
                 $testimonials[] = [
-                    'mentor_name' => $mName,
-                    'mentor_role' => $mRole,
+                    'mentor_name'   => $mName,
+                    'mentor_role'   => $mRole,
                     'mentor_avatar' => $mAvatar,
-                    'mentee_name' => $tItem->name,
-                    'mentee_role' => $tItem->role ?? 'Mentee / Student',
+                    'mentee_name'   => $tItem->name,
+                    'mentee_role'   => $tItem->role ?? 'Mentee / Student',
                     'mentee_avatar' => $tPhoto,
-                    'text' => $tItem->content,
-                    'stars' => $tItem->rating ?? 5
+                    'text'          => $tItem->content,
+                    'stars'         => $tItem->rating ?? 5
                 ];
             }
         } else {
@@ -1121,13 +1052,17 @@ class PageController extends Controller
         }
 
         // Find or create user
-        $user = \App\Models\User::firstOrCreate(
-            ['email' => $request->email],
-            [
-                'name' => $request->name,
-                'password' => bcrypt('12345678'),
-            ]
-        );
+        if (\Illuminate\Support\Facades\Auth::check()) {
+            $user = \Illuminate\Support\Facades\Auth::user();
+        } else {
+            $user = \App\Models\User::firstOrCreate(
+                ['email' => $request->email],
+                [
+                    'name' => $request->name,
+                    'password' => bcrypt('12345678'),
+                ]
+            );
+        }
 
         $bookingId = 'BK-' . strtoupper(\Illuminate\Support\Str::random(10));
         $expertEarning = ($slot->cost ?? 0) * 0.90; // 90% expert earning
@@ -1139,7 +1074,7 @@ class PageController extends Controller
             'expert_id' => $request->expert_id,
             'slot_id' => $slot->id,
             'booking_date' => now(),
-            'status' => 'pending',
+            'status' => 'confirmed',
             'amount' => $slot->cost ?? 0,
             'platform_fee' => $platformFee,
             'expert_earning' => $expertEarning,
@@ -1156,7 +1091,7 @@ class PageController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Session booking request submitted successfully! Pending approval from expert.',
+            'message' => 'Your 1:1 session has been automatically confirmed! The expert has been notified.',
             'booking_id' => $bookingId
         ]);
     }
@@ -1346,6 +1281,8 @@ class PageController extends Controller
                       ->orWhere('cities_present_in', 'like', "%{$q}%")
                       ->orWhere('states_present_in', 'like', "%{$q}%");
             })
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('name', 'asc')
             ->limit(6)->get();
 
         // Schools
@@ -1358,6 +1295,8 @@ class PageController extends Controller
                       ->orWhere('cities_present_in', 'like', "%{$q}%")
                       ->orWhere('states_present_in', 'like', "%{$q}%");
             })
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('name', 'asc')
             ->limit(6)->get();
 
         // Coaching
@@ -1370,6 +1309,8 @@ class PageController extends Controller
                       ->orWhere('cities_present_in', 'like', "%{$q}%")
                       ->orWhere('states_present_in', 'like', "%{$q}%");
             })
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('name', 'asc')
             ->limit(6)->get();
 
         // Mentors
@@ -1409,6 +1350,8 @@ class PageController extends Controller
                           ->orWhere('cities_present_in', 'like', "%{$q}%")
                           ->orWhere('states_present_in', 'like', "%{$q}%");
                 })
+                ->orderBy('sort_order', 'asc')
+                ->orderBy('name', 'asc')
                 ->limit(5)
                 ->get();
 
@@ -1439,6 +1382,8 @@ class PageController extends Controller
                           ->orWhere('cities_present_in', 'like', "%{$q}%")
                           ->orWhere('states_present_in', 'like', "%{$q}%");
                 })
+                ->orderBy('sort_order', 'asc')
+                ->orderBy('name', 'asc')
                 ->limit(5)
                 ->get();
 
@@ -1469,6 +1414,8 @@ class PageController extends Controller
                           ->orWhere('cities_present_in', 'like', "%{$q}%")
                           ->orWhere('states_present_in', 'like', "%{$q}%");
                 })
+                ->orderBy('sort_order', 'asc')
+                ->orderBy('name', 'asc')
                 ->limit(5)
                 ->get();
 
@@ -1505,21 +1452,16 @@ class PageController extends Controller
         }
 
         // 5. Dynamic Exams
-        if (empty($type)) {
-            $exams = \App\Models\DynamicExam::where('status', 1)
-                ->where(function($query) use ($q) {
-                    $query->where('name', 'like', "%{$q}%")
-                          ->orWhere('short_name', 'like', "%{$q}%");
-                })
-                ->limit(5)
-                ->get();
+        if (empty($type) || $type === 'exams') {
+            // Exam Module exams (backend API)
+            $exams = \App\Support\ExamCatalog::safeList(['q' => $q, 'sort' => 'featured', 'per_page' => 5])['items'];
 
             foreach ($exams as $ex) {
                 $results->push([
                     'title' => $ex->name ?? $ex->short_name,
                     'subtitle' => 'Entrance Exam',
                     'type' => 'Exam',
-                    'url' => route('top-exam.detail', $ex->slug ?? $ex->id)
+                    'url' => route('exam.detail', $ex->slug)
                 ]);
             }
         }
@@ -1529,22 +1471,32 @@ class PageController extends Controller
 
     public function compare()
     {
-        $campuses = \App\Models\Campus::with([
-            'organisation.organisationType',
-            'departments' => function ($q) {
-                $q->whereIn('status', [1, '1', 'Active', true]);
-            },
-            'departments.courses' => function ($q) {
-                $q->whereIn('status', [1, '1', 'Active', true])->with(['course', 'programLevel', 'specialization']);
-            }
-        ])->whereIn('status', [1, '1', 'Active', true])->get();
-
-        if ($campuses->isEmpty()) {
-            $campuses = \App\Models\Campus::with(['organisation', 'departments.courses.course'])->get();
-        }
+        // Only the campus names: the details of the campuses being compared are fetched by the page (compareData()).
+        $campuses = \App\Support\CompareData::campusList();
 
         $allFacilities = \App\Models\Facility::where('status', 'Active')->get();
 
         return view('compare', compact('campuses', 'allFacilities'));
+    }
+
+    /** Compare data for up to 4 campuses: GET /compare/campus-data?ids=a,b,c */
+    public function compareData(\Illuminate\Http\Request $request)
+    {
+        $ids = array_slice(array_filter(array_map('trim', explode(',', (string) $request->query('ids')))), 0, 4);
+        return response()->json(\App\Support\CompareData::forCampuses($ids));
+    }
+
+    public function dynamicPage($slug)
+    {
+        $page = \App\Models\Page::where('slug', $slug)->where('status', 1)->first();
+        if (!$page) {
+            abort(404);
+        }
+
+        if (view()->exists("pages.{$slug}")) {
+            return view("pages.{$slug}", compact('page'));
+        }
+
+        return view('dynamic-page', compact('page'));
     }
 }

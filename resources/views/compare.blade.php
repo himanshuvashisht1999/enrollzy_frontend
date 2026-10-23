@@ -423,7 +423,12 @@
                 const storedSelections = sessionStorage.getItem('enrollzy_compare_slots');
                 if (storedSelections) {
                     window.selections = JSON.parse(storedSelections);
-                    window.updateComparison();
+                    // The campuses' details are fetched on demand: draw once they are here.
+                    const ids = Object.values(window.selections).filter(Boolean).map(s => s.campusId);
+                    (window.loadCompareData ? window.loadCompareData(ids) : Promise.resolve()).then(() => window.updateComparison());
+                    
+                    // Clear the stored selection so refreshes or direct visits don't auto-load old data
+                    sessionStorage.removeItem('enrollzy_compare_slots');
                 }
             } catch (e) {
                 console.error("Failed to parse selections from storage", e);

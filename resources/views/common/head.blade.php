@@ -10,3 +10,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     @stack('css')
+
+    <!-- Favicon -->
+    @if(isset($siteFavicon) && !empty($siteFavicon))
+        <link rel="icon" href="{{ $siteFavicon }}">
+        <link rel="shortcut icon" href="{{ $siteFavicon }}">
+        <link rel="apple-touch-icon" href="{{ $siteFavicon }}">
+    @else
+        <link rel="icon" href="{{ asset('assets/images/logo.svg') }}">
+    @endif
+
+    @if(isset($organizationSchema) && !empty($organizationSchema))
+    <!-- Organization Schema.org Structured Data -->
+    <script type="application/ld+json">
+{!! json_encode($organizationSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
+    </script>
+    @endif

@@ -10,7 +10,24 @@ class Course extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'status', 'program_level_id', 'stream_offered_id', 'discipline_id', 'duration', 'sort_order'];
+    protected $fillable = [
+        'name', 'slug', 'status', 'is_show_on_website', 'program_level_id', 'stream_offered_id', 
+        'discipline_id', 'duration', 'sort_order',
+        'full_form', 'course_type_id', 'available_modes', 'overview',
+        'generic_eligibility', 'common_entrance_exams', 'core_curriculum',
+        'common_specializations', 'skills_gained', 'career_scope',
+        'average_salary_range', 'higher_education_options', 'course_comparison',
+        'pros_cons', 'faqs'
+    ];
+
+    protected $casts = [
+        'available_modes' => 'array',
+        'common_entrance_exams' => 'array',
+        'common_specializations' => 'array',
+        'faqs' => 'array',
+        'status' => 'boolean',
+        'is_show_on_website' => 'boolean',
+    ];
 
     /**
      * Boot function from Laravel.
@@ -26,9 +43,19 @@ class Course extends Model
         });
     }
 
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc');
+    }
+
+    public function organisationCourses()
+    {
+        return $this->hasMany(OrganisationCourse::class, 'course_id')->orderBy('sort_order', 'asc');
+    }
+
     public function universityCourses()
     {
-        return $this->hasMany(UniversityCourse::class);
+        return $this->hasMany(OrganisationCourse::class, 'course_id')->orderBy('sort_order', 'asc');
     }
 
     public function programLevel()
@@ -44,5 +71,15 @@ class Course extends Model
     public function discipline()
     {
         return $this->belongsTo(Discipline::class, 'discipline_id');
+    }
+
+    public function courseType()
+    {
+        return $this->belongsTo(CourseType::class, 'course_type_id');
+    }
+
+    public function programTypes()
+    {
+        return $this->belongsToMany(ProgramType::class, 'course_program_type');
     }
 }

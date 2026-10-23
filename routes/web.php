@@ -36,17 +36,35 @@ Route::post('/site-login', function (\Illuminate\Http\Request $request) {
     return back()->with('error', 'Invalid username or password');
 })->name('site-login.submit');
 
+// ✅ Public Digital Business Card Routes (Direct QR Scanner Access)
+Route::get('/card/{slug}.vcf', [\App\Http\Controllers\PublicDigitalCardController::class, 'vcard'])->name('digital-cards.vcf');
+Route::get('/card/{slug}/vcard', [\App\Http\Controllers\PublicDigitalCardController::class, 'vcard'])->name('digital-cards.vcard');
+Route::get('/card/{slug}', [\App\Http\Controllers\PublicDigitalCardController::class, 'show'])->name('digital-cards.show');
+Route::get('/api/card/{slug}', [\App\Http\Controllers\PublicDigitalCardController::class, 'apiShow'])->name('digital-cards.api');
+
 Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(function () {
-    Route::get('/', [PageController::class, 'index'])->name('home');
+    Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/about', [PageController::class, 'about']);
     Route::get('/compare', [PageController::class, 'compare'])->name('compare');
+    Route::get('/compare/campus-data', [PageController::class, 'compareData'])->name('compare.campus-data');
     Route::get('/all-schools', [PageController::class, 'allSchools'])->name('all-schools');
     Route::get('/blogs', [PageController::class, 'blogs'])->name('blogs');
     Route::get('/blog/{slug}', [PageController::class, 'blogDetail'])->name('blog.detail');
     Route::get('/contact-us', [PageController::class, 'contactUs'])->name('contact');
     Route::post('/contact-us', [PageController::class, 'submitContactUs'])->name('contact.submit');
-    Route::get('/top-exams', [PageController::class, 'topExams'])->name('top-exams');
-    Route::get('/exam/{slug}', [PageController::class, 'examDetail'])->name('exam.detail');
+    // Exams, Counselling & Cutoffs (data from the backend public API): hub tabs, exam and counselling pages
+    Route::get('/top-exams', [\App\Http\Controllers\ExamHubController::class, 'exams'])->name('top-exams');
+    Route::get('/cutoffs', [\App\Http\Controllers\ExamHubController::class, 'cutoffs'])->name('cutoffs.index');
+    Route::post('/alerts/follow', [\App\Http\Controllers\ExamHubController::class, 'alerts'])->middleware('throttle:10,1')->name('alerts.follow');
+    // One exam URL: /exam/{slug} (Exam Module). Old Dynamic Exam slugs there are 301-redirected to the matching exam.
+    Route::get('/exam/{slug}', [\App\Http\Controllers\ExamHubController::class, 'exam'])->name('exam.detail');
+    Route::get('/exam/{slug}/{tab}', [\App\Http\Controllers\ExamHubController::class, 'exam'])->where('tab', 'counselling|cutoffs|colleges')->name('exam.tab');
+    Route::get('/exams/{slug}', fn (string $slug) => redirect()->route('exam.detail', $slug, 301));
+    Route::get('/counselling', [\App\Http\Controllers\ExamHubController::class, 'counsellings'])->name('counselling.index');
+    Route::get('/counselling/{slug}/cutoffs', [\App\Http\Controllers\ExamHubController::class, 'counsellingCutoffs'])->name('counselling.cutoffs');
+    Route::get('/counselling/{slug}/colleges', [\App\Http\Controllers\ExamHubController::class, 'counsellingColleges'])->name('counselling.colleges');
+    Route::get('/counselling/{slug}/seat-matrix', [\App\Http\Controllers\CounsellingController::class, 'seats'])->name('counselling.seats');
+    Route::get('/counselling/{slug}/{year?}', [\App\Http\Controllers\ExamHubController::class, 'counselling'])->where('year', '[0-9]{4}')->name('counselling.show');
     Route::get('/faq', [App\Http\Controllers\PageController::class, 'faq'])->name('faq');
     Route::get('/about-us', [App\Http\Controllers\PageController::class, 'aboutUs'])->name('about-us');
     Route::get('/scholarships-and-benefits', [PageController::class, 'scholarships'])->name('scholarships');
@@ -54,10 +72,19 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/scholarship', [PageController::class, 'scholarships']);
     Route::get('/scholarship-detail/{id}', [PageController::class, 'scholarshipDetail'])->name('scholarship.detail');
     Route::get('/school-detail/{slug}', [PageController::class, 'schoolDetail'])->name('school.detail');
+    Route::get('/campus-detail/{slug}', [\App\Http\Controllers\CampusController::class, 'show'])->name('campus.detail');
     Route::get('/all-coaching', [PageController::class, 'allCoaching'])->name('all.coaching');
     Route::get('/coaching-detail/{slug}', [PageController::class, 'coachingDetail'])->name('coaching.detail');
     Route::get('/university', [PageController::class, 'university'])->name('university');
-    Route::get('/university-detail/{slug}', [PageController::class, 'universityDetail'])->name('university.detail');
+    // University pages (client design "University page v2"); same URL as before for the overview
+    Route::get('/university-detail/{slug}', [\App\Http\Controllers\UniversityController::class, 'overview'])->name('university.detail');
+    Route::get('/university-detail/{slug}/courses', [\App\Http\Controllers\UniversityController::class, 'courses'])->name('university.courses');
+    Route::get('/university-detail/{slug}/courses/{course}', [\App\Http\Controllers\UniversityController::class, 'course'])->name('university.course');
+    Route::get('/university-detail/{slug}/campuses/{campusSlug?}', [\App\Http\Controllers\UniversityController::class, 'campus'])->name('university.campus');
+    Route::get('/university-detail/{slug}/online', [\App\Http\Controllers\UniversityController::class, 'online'])->name('university.online');
+    Route::get('/university-detail/{slug}/compare', [\App\Http\Controllers\UniversityController::class, 'compare'])->name('university.compare');
+    Route::get('/university-compare/data', [\App\Http\Controllers\UniversityController::class, 'compareData'])->name('university.compare.data');
+    Route::get('/university-compare/options', [\App\Http\Controllers\UniversityController::class, 'compareOptions'])->name('university.compare.options');
     Route::get('/mentors', [PageController::class, 'mentors'])->name('mentors');
     Route::get('/experts', [PageController::class, 'mentors'])->name('experts');
     Route::get('/career-roadmap', [PageController::class, 'careerRoadmap'])->name('career-roadmap.index');
@@ -77,4 +104,23 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/top-universities', [PageController::class, 'topUniversities'])->name('top.universities');
     Route::get('/top-schools', [PageController::class, 'topSchools'])->name('top.schools');
     Route::get('/top-coaching', [PageController::class, 'topCoaching'])->name('top.coaching');
+
+    // Course Routes
+    Route::get('/courses', [\App\Http\Controllers\CourseController::class, 'index'])->name('courses.index');
+    Route::get('/course/{slug}', [\App\Http\Controllers\CourseController::class, 'show'])->name('course.detail');
+
+    Route::get('/career-roadmap/api/stage/{stageId}', [\App\Http\Controllers\CareerRoadmapController::class, 'getStageDetails'])->name('career-roadmap.api.stage');
+    Route::get('/career-roadmap/api/stream/{streamId}', [\App\Http\Controllers\CareerRoadmapController::class, 'getStreamDetails'])->name('career-roadmap.api.stream');
+
+    // User Dashboard Routes
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/user/dashboard', [\App\Http\Controllers\UserController::class, 'dashboard'])->name('user.dashboard');
+        Route::get('/user/profile', [\App\Http\Controllers\UserController::class, 'profile'])->name('user.profile');
+        Route::post('/user/profile', [\App\Http\Controllers\UserController::class, 'updateProfile'])->name('user.profile.update');
+        Route::get('/user/bookings', [\App\Http\Controllers\UserController::class, 'bookings'])->name('user.bookings');
+    });
+
+    Route::get('/{slug}', [\App\Http\Controllers\FilteredPageController::class, 'show'])->name('filtered.page');
+    // Dynamic Pages Route
+    Route::get('/page/{slug}', [PageController::class, 'dynamicPage'])->name('page.dynamic');
 });

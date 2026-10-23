@@ -7,7 +7,7 @@
       </div>
       <div class="container">
         <div class="about-hero-container">
-          <img src="{{ $exam->cover_image ? (str_starts_with($exam->cover_image, 'http') ? $exam->cover_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($exam->cover_image, '/')) : asset('assets/images/top-exam-img.png') }}" alt="{{ $exam->name }}" style="width:100%; object-fit:cover;" />
+          <img src="{{ $exam->cover_image ? (str_starts_with($exam->cover_image, 'http') ? $exam->cover_image : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($exam->cover_image, '/')) : asset('assets/images/top-exam-img.png') }}" alt="{{ $exam->name }}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);" />
 
           <!-- Centered Badge -->
           <div class="about-us-badge-wrapper">
@@ -49,7 +49,7 @@
         <div class="exam-detail-banner">
           <div class="exam-detail-banner-content">
             <div class="exam-detail-banner-logo">
-              <img src="{{ $exam->logo ? (str_starts_with($exam->logo, 'http') ? $exam->logo : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($exam->logo, '/')) : asset('assets/images/top-exam-icon-1.png') }}" alt="{{ $exam->name }}" />
+              <img src="{{ $exam->logo ? (str_starts_with($exam->logo, 'http') ? $exam->logo : rtrim(env('BACKEND_URL', 'http://127.0.0.1:8001'), '/') . '/' . ltrim($exam->logo, '/')) : asset('assets/images/top-exam-icon-1.png') }}" alt="{{ $exam->name }}" style="width: 32px; height: 32px; object-fit: contain;" />
             </div>
             <span>{{ $exam->name }} 2026: Official Notification, Exam Dates, Syllabus, Cutoff & Result Updates</span>
           </div>
@@ -181,11 +181,27 @@
                   <div class="text-muted leading-relaxed" style="font-size: 14px;">
                     @php
                       $cVal = $sec->content ?? $sec->description ?? '';
+                      if (is_string($cVal)) {
+                          $decoded = json_decode($cVal, true);
+                          if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                              $cVal = $decoded;
+                          }
+                      }
                       if (is_array($cVal)) {
                           $htmlOut = '';
                           foreach ($cVal as $item) {
                               if (is_array($item)) {
-                                  $htmlOut .= implode(' ', array_filter($item, 'is_string'));
+                                  if (isset($item['value']) && is_string($item['value'])) {
+                                      $htmlOut .= $item['value'];
+                                  } elseif (isset($item['content']) && is_string($item['content'])) {
+                                      $htmlOut .= $item['content'];
+                                  } elseif (isset($item['html']) && is_string($item['html'])) {
+                                      $htmlOut .= $item['html'];
+                                  } elseif (isset($item['text']) && is_string($item['text'])) {
+                                      $htmlOut .= $item['text'];
+                                  } else {
+                                      $htmlOut .= implode(' ', array_filter($item, 'is_string'));
+                                  }
                               } elseif (is_string($item)) {
                                   $htmlOut .= $item;
                               }
@@ -391,11 +407,27 @@
               @if($admitCardSection && !empty($admitCardSection->content))
                 @php
                   $admitContent = $admitCardSection->content;
+                  if (is_string($admitContent)) {
+                      $decoded = json_decode($admitContent, true);
+                      if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                          $admitContent = $decoded;
+                      }
+                  }
                   if (is_array($admitContent)) {
                       $htmlOut = '';
                       foreach ($admitContent as $item) {
                           if (is_array($item)) {
-                              $htmlOut .= implode(' ', array_filter($item, 'is_string'));
+                              if (isset($item['value']) && is_string($item['value'])) {
+                                  $htmlOut .= $item['value'];
+                              } elseif (isset($item['content']) && is_string($item['content'])) {
+                                  $htmlOut .= $item['content'];
+                              } elseif (isset($item['html']) && is_string($item['html'])) {
+                                  $htmlOut .= $item['html'];
+                              } elseif (isset($item['text']) && is_string($item['text'])) {
+                                  $htmlOut .= $item['text'];
+                              } else {
+                                  $htmlOut .= implode(' ', array_filter($item, 'is_string'));
+                              }
                           } elseif (is_string($item)) {
                               $htmlOut .= $item;
                           }

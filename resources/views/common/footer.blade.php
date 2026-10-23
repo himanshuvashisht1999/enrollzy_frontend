@@ -78,23 +78,13 @@
                                     @foreach($column->children as $link)
                                         @php
                                             $linkUrl = trim($link->url ?? '');
-                                            if (empty($linkUrl) || str_contains($linkUrl, 'enrollzy.com') || $linkUrl === '#') {
-                                                $t = strtolower($link->title);
-                                                if (str_contains($t, 'about')) { $linkUrl = route('about-us'); }
-                                                elseif (str_contains($t, 'contact') || str_contains($t, 'advisor') || str_contains($t, 'speak') || str_contains($t, 'ticket')) { $linkUrl = route('contact'); }
-                                                elseif (str_contains($t, 'school') || str_contains($t, 'boarding')) { $linkUrl = route('all-schools'); }
-                                                elseif (str_contains($t, 'coaching') || str_contains($t, 'neet') || str_contains($t, 'jee') || str_contains($t, 'institute')) { $linkUrl = route('all.coaching'); }
-                                                elseif (str_contains($t, 'university') || str_contains($t, 'college') || str_contains($t, 'roadmap') || str_contains($t, 'career')) { $linkUrl = route('university'); }
-                                                elseif (str_contains($t, 'exam')) { $linkUrl = route('top-exams'); }
-                                                elseif (str_contains($t, 'blog') || str_contains($t, 'media') || str_contains($t, 'news')) { $linkUrl = route('blogs'); }
-                                                elseif (str_contains($t, 'faq')) { $linkUrl = route('faq'); }
-                                                elseif (!empty($linkUrl) && !str_contains($linkUrl, 'enrollzy.com') && $linkUrl !== '#') { $linkUrl = url($linkUrl); }
-                                                else { $linkUrl = route('about-us'); }
-                                            } else {
-                                                $linkUrl = str_starts_with($linkUrl, 'http') ? $linkUrl : url($linkUrl);
+                                            if (empty($linkUrl) || $linkUrl === '#') {
+                                                $linkUrl = '#';
+                                            } elseif (!str_starts_with($linkUrl, 'http://') && !str_starts_with($linkUrl, 'https://') && !str_starts_with($linkUrl, '/')) {
+                                                $linkUrl = url($linkUrl);
                                             }
                                         @endphp
-                                        <li><a href="{{ $linkUrl }}">{{ $link->title }}</a></li>
+                                        <li><a href="{{ $linkUrl }}" {{ str_starts_with($linkUrl, 'http') ? 'target="_blank" rel="noopener"' : '' }}>{{ $link->title }}</a></li>
                                     @endforeach
                                 </ul>
                             </div>

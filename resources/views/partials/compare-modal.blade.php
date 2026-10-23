@@ -1,18 +1,7 @@
 @php
+    // Only campus names are needed here; the details of a campus are fetched when it is picked (see compare-modal.js).
     if (!isset($campuses) || empty($campuses)) {
-        $campuses = \App\Models\Campus::with([
-            'organisation.organisationType',
-            'departments' => function ($q) {
-                $q->whereIn('status', [1, '1', 'Active', true]);
-            },
-            'departments.courses' => function ($q) {
-                $q->whereIn('status', [1, '1', 'Active', true])->with(['course', 'programLevel', 'specialization']);
-            }
-        ])->whereIn('status', [1, '1', 'Active', true])->get();
-
-        if ($campuses->isEmpty()) {
-            $campuses = \App\Models\Campus::with(['organisation', 'departments.courses.course'])->get();
-        }
+        $campuses = \App\Support\CompareData::campusList();
     }
 
     if (!isset($allFacilities) || empty($allFacilities)) {
@@ -108,114 +97,12 @@
 </div>
 
 @push('scripts')
-@php
-    $maxClassProfileYear = 0;
-    $maxPlacementYear = 0;
-
-    $compData = $campuses->mapWithKeys(function($campus) use (&$maxClassProfileYear, &$maxPlacementYear) {
-        $cpList = is_array($campus->class_profile) ? $campus->class_profile : [];
-        $cp = count($cpList) > 0 ? end($cpList) : [];
-        
-        $mapped = [$campus->id => [
-            'name' => $campus->campus_name,
-            'location' => $campus->city . ($campus->state ? ', ' . $campus->state : ''),
-            'ownership' => $campus->organisation->ownership_type ?? 'N/A',
-            'type_of_institute' => $campus->campus_type ?? 'N/A',
-            'college_type' => $campus->organisation->organisationType->title ?? 'N/A',
-            'establishment_year' => $campus->established_year ?? 'N/A',
-            'campus_size' => $campus->campus_area_acres ? $campus->campus_area_acres . ' Acres' : 'N/A',
-            'total_courses_offered' => $campus->departments->flatMap->courses->count(),
-            'c360_rank' => 'N/A',
-            'c360_rating' => 'N/A',
-            'nirf_overall' => $campus->organisation->nirf_rank_overall ?? 'N/A',
-            'nirf_category' => $campus->organisation->nirf_rank_category ?? 'N/A',
-            'approvals' => is_array($campus->organisation->statutory_approvals) ? implode(', ', $campus->organisation->statutory_approvals) : ($campus->organisation->statutory_approvals ?: 'N/A'),
-            'accreditations' => $campus->organisation->naac_accredited ? 'NAAC' . ($campus->organisation->naac_grade ? ' (' . $campus->organisation->naac_grade . ')' : '') : 'N/A',
-            'total_students' => $cp['total_students'] ?? 'N/A',
-            'total_faculty' => $cp['total_faculty'] ?? 'N/A',
-            'total_male_students' => $cp['total_male_students'] ?? 'N/A',
-            'total_female_students' => $cp['total_female_students'] ?? 'N/A',
-            'total_students_outside_state' => $cp['total_outside_state'] ?? 'N/A',
-            'facilities' => is_array($campus->facilities) ? $campus->facilities : [],
-            'class_profile_year' => $cp['year'] ?? 'N/A',
-            'departments' => $campus->departments->mapWithKeys(function($dept) use (&$maxPlacementYear) {
-                $placementStats = is_array($dept->placement_statistics) ? $dept->placement_statistics : [];
-                $latestPlacement = count($placementStats) > 0 
-                    ? end($placementStats) 
-                    : [];
-                    
-                if (isset($latestPlacement['year']) && is_numeric($latestPlacement['year'])) {
-                    $maxPlacementYear = max($maxPlacementYear, $latestPlacement['year']);
-                }
-
-                $reviewsList = is_array($dept->college_reviews) ? $dept->college_reviews : [];
-                $reviews = count($reviewsList) > 0 ? end($reviewsList) : [];
-                return [$dept->id => [
-                    'name' => $dept->department_name,
-                    'placement_year' => $latestPlacement['year'] ?? 'N/A',
-                    'rating_infrastructure' => $reviews['infrastructure'] ?? 'N/A',
-                    'rating_campus_life' => $reviews['campus_life'] ?? 'N/A',
-                    'rating_academics' => $reviews['academics'] ?? 'N/A',
-                    'rating_placements' => $reviews['placements'] ?? 'N/A',
-                    'rating_value_for_money' => $reviews['value_for_money'] ?? 'N/A',
-                    'total_reviews' => count($reviewsList) > 0 ? count($reviewsList) : 'N/A',
-                    'individual_reviews' => [],
-                    'dept_students_placed' => $latestPlacement['dept_students_placed'] ?? 'N/A',
-                    'dept_graduating_students' => $latestPlacement['dept_graduating_students'] ?? 'N/A',
-                    'dept_placement_percentage' => isset($latestPlacement['dept_placement_percentage']) ? $latestPlacement['dept_placement_percentage'] . '%' : 'N/A',
-                    'dept_median_salary' => isset($latestPlacement['dept_median_salary']) ? '₹' . $latestPlacement['dept_median_salary'] . ' LPA' : 'N/A',
-                    'dept_higher_studies' => $latestPlacement['dept_higher_studies'] ?? 'N/A',
-                    'overall_students_placed' => $latestPlacement['overall_students_placed'] ?? 'N/A',
-                    'overall_graduating_students' => $latestPlacement['overall_graduating_students'] ?? 'N/A',
-                    'overall_placement_percentage' => isset($latestPlacement['overall_placement_percentage']) ? $latestPlacement['overall_placement_percentage'] . '%' : 'N/A',
-                    'overall_median_salary' => isset($latestPlacement['overall_median_salary']) ? '₹' . $latestPlacement['overall_median_salary'] . ' LPA' : 'N/A',
-                    'overall_higher_studies' => $latestPlacement['overall_higher_studies'] ?? 'N/A',
-                    'courses' => $dept->courses->map(function($c) {
-                        return [
-                            'id' => $c->id,
-                            'name' => $c->course->name ?? 'N/A',
-                            'course_credential' => $c->programLevel->name ?? ($c->course->programLevel->name ?? 'N/A'),
-                            'degree' => $c->course->name ?? 'N/A',
-                            'branch' => $c->specialization->name ?? ($c->course->discipline->name ?? 'N/A'),
-                            'duration' => $c->duration ? $c->duration . ' Years' : ($c->course->duration ? $c->course->duration . ' Years' : 'N/A'),
-                            'mode' => $c->mode ?? 'N/A',
-                            'approved_intake' => $c->student_strength ?? 'N/A',
-                            'fees' => $c->total_fees ? '₹ ' . $c->total_fees : ($c->fees ? '₹ ' . $c->fees : 'N/A'),
-                            'exams_accepted' => (is_array($c->entrance_exam_ids) && count($c->entrance_exam_ids) > 0) 
-                                ? \App\Models\Exam::whereIn('id', $c->entrance_exam_ids)->pluck('name')->implode(', ') 
-                                : ($c->entranceExam->name ?? 'N/A'),
-                            'course_approval' => 'N/A',
-                            'admission_details' => strip_tags($c->admission_process ?? '') ?: 'N/A',
-                            'eligibility_criteria' => strip_tags($c->eligibility ?? '') ?: 'N/A',
-                            'fees_structure' => strip_tags($c->fees_structure ?? '') ?: 'N/A',
-                            'curriculum' => strip_tags($c->curriculum ?? '') ?: 'N/A',
-                            'career_prospects' => strip_tags($c->career_prospects ?? '') ?: 'N/A',
-                            'placement_details' => strip_tags($c->placement_details ?? '') ?: 'N/A',
-                            'industrial_collaboration' => strip_tags($c->industrial_collaboration ?? '') ?: 'N/A',
-                            'internship_ranking' => strip_tags($c->internship_ranking ?? '') ?: 'N/A',
-                            'total_scholarships' => 'N/A',
-                            'highest_scholarship_authority' => 'N/A'
-                        ];
-                    })
-                ]];
-            })
-        ]];
-
-        if (isset($cp['year']) && is_numeric($cp['year'])) {
-            $maxClassProfileYear = max($maxClassProfileYear, $cp['year']);
-        }
-
-        return $mapped;
-    });
-
-    $maxClassProfileYear = $maxClassProfileYear ?: 'N/A';
-    $maxPlacementYear = $maxPlacementYear ?: 'N/A';
-@endphp
 <script>
-    // Ensure compareModalData is set correctly before compare-modal.js loads
-    window.compareModalData = {!! json_encode($compData ?? []) !!};
-    window.maxClassProfileYear = @json($maxClassProfileYear);
-    window.maxPlacementYear = @json($maxPlacementYear);
+    // Filled per campus on demand by compare-modal.js (window.loadCompareData) from this address.
+    window.compareModalData = window.compareModalData || {};
+    window.compareDataUrl = @json(route('compare.campus-data'));
+    window.maxClassProfileYear = window.maxClassProfileYear || 'N/A';
+    window.maxPlacementYear = window.maxPlacementYear || 'N/A';
 </script>
 <script src="{{ asset('assets/js/compare-modal.js') }}?v={{ time() }}"></script>
 <script>

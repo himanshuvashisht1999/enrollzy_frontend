@@ -26,12 +26,12 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-bold small text-muted">Your Full Name <span class="text-danger">*</span></label>
-                        <input type="text" id="booking_name" name="name" class="form-control" placeholder="Enter your full name" required>
+                        <input type="text" id="booking_name" name="name" class="form-control" placeholder="Enter your full name" value="{{ auth()->check() ? auth()->user()->name : '' }}" required>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold small text-muted">Your Email Address <span class="text-danger">*</span></label>
-                        <input type="email" id="booking_email" name="email" class="form-control" placeholder="name@example.com" required>
+                        <input type="email" id="booking_email" name="email" class="form-control" placeholder="name@example.com" value="{{ auth()->check() ? auth()->user()->email : '' }}" required>
                     </div>
 
                     <div class="mb-3">
@@ -55,6 +55,9 @@ function openBookingModal(expertId, expertName) {
     document.getElementById('booking_expert_id').value = expertId;
     document.getElementById('bookSessionModalLabel').innerHTML = '<i class="fa-solid fa-calendar-check me-2"></i>Book Session with ' + (expertName || 'Expert');
     
+    const form = document.getElementById('bookSessionForm');
+    if (form) form.style.display = 'block';
+
     const slotSelect = document.getElementById('booking_slot_id');
     const warning = document.getElementById('noSlotsWarning');
     const alertDiv = document.getElementById('bookingAlert');
@@ -124,7 +127,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 if (res.ok && data.success) {
-                    alertDiv.innerHTML = `<div class="alert alert-success border-0 shadow-sm"><i class="fa-solid fa-circle-check me-2"></i>${data.message}<br><strong>Booking ID: ${data.booking_id}</strong></div>`;
+                    form.style.display = 'none';
+                    alertDiv.innerHTML = `
+                        <div class="text-center py-4">
+                            <div class="mb-4">
+                                <div class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle shadow-sm" style="width: 80px; height: 80px;">
+                                    <i class="fa-solid fa-check fa-2x"></i>
+                                </div>
+                            </div>
+                            <h4 class="fw-bold mb-2 text-success">Booking Confirmed!</h4>
+                            <p class="text-muted mb-4 fs-6">${data.message}</p>
+                            
+                            <div class="bg-light p-3 rounded-4 mb-4 border" style="border-style: dashed !important; border-color: #cbd5e1 !important; border-width: 2px !important;">
+                                <p class="small text-muted text-uppercase fw-bold mb-1 letter-spacing-1">Booking ID</p>
+                                <div class="fs-4 fw-bold text-dark font-monospace">${data.booking_id}</div>
+                            </div>
+                            
+                            <button type="button" class="btn btn-outline-secondary px-5 py-2 rounded-pill fw-bold" data-bs-dismiss="modal">Done</button>
+                        </div>
+                    `;
                     form.reset();
                 } else {
                     alertDiv.innerHTML = `<div class="alert alert-danger border-0 shadow-sm">${data.message || 'Error submitting booking.'}</div>`;

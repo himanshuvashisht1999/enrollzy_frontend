@@ -16,6 +16,7 @@ class Campus extends Model
 
     protected $fillable = [
         'organisation_id',
+        'sort_order',
         'campus_name',
         'slug',
         'campus_type',
@@ -125,9 +126,14 @@ class Campus extends Model
         });
     }
 
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort_order', 'asc')->orderBy('campus_name', 'asc');
+    }
+
     public function departments()
     {
-        return $this->hasMany(Department::class);
+        return $this->hasMany(Department::class)->orderBy('sort_order', 'asc')->orderBy('department_name', 'asc');
     }
 
     public function organisation()
@@ -137,6 +143,11 @@ class Campus extends Model
 
     public function courses()
     {
-        return $this->hasMany(OrganisationCourse::class);
+        return $this->hasMany(OrganisationCourse::class)->orderBy('sort_order', 'asc');
+    }
+
+    public function organisationCourses()
+    {
+        return $this->hasMany(OrganisationCourse::class)->orderBy('sort_order', 'asc');
     }
 }
