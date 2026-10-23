@@ -43,7 +43,7 @@ Route::get('/card/{slug}', [\App\Http\Controllers\PublicDigitalCardController::c
 Route::get('/api/card/{slug}', [\App\Http\Controllers\PublicDigitalCardController::class, 'apiShow'])->name('digital-cards.api');
 
 Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(function () {
-    Route::get('/', [PageController::class, 'index'])->name('home');
+    Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/about', [PageController::class, 'about']);
     Route::get('/compare', [PageController::class, 'compare'])->name('compare');
     Route::get('/compare/campus-data', [PageController::class, 'compareData'])->name('compare.campus-data');

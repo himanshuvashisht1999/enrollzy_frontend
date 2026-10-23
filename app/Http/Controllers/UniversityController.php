@@ -194,6 +194,10 @@ class UniversityController extends Controller
                 ->get(['oc.id', 'o.id as org_id'])->unique('org_id')->take(3)->pluck('id')->all();
             $slots = array_merge([$base['id']], $others);
         }
+        // columns chosen elsewhere (homepage compare box): ?ids=offering,offering
+        if ($request->filled('ids')) {
+            $slots = collect(explode(',', (string) $request->query('ids')))->map(fn ($v) => (int) $v)->filter()->unique()->take(4)->values()->all();
+        }
         $universities = DB::table('organisations')->where('organisation_type_id', 1)->where('status', 1)->orderBy('name')->get(['id', 'name', 'slug']);
 
         return view('university.compare', $ctx + compact('tab', 'slots', 'universities', 'base') + ['tab_name' => 'compare', 'tab' => 'compare', 'compareTab' => $tab]);
@@ -239,7 +243,24 @@ class UniversityController extends Controller
                 ->orderBy('o.sort_order')->orderBy('o.name')->value('oc.id');
             return response()->json(['offering' => $id]);
         }
+        if ($request->filled('unis_for')) {
+            // homepage "same course" mode: the universities that list this course on a campus
+            $unis = DB::table('organisation_courses as oc')->join('organisations as o', 'o.id', '=', 'oc.organisation_id')
+                ->where('oc.course_id', (int) $request->query('unis_for'))->where('o.organisation_type_id', 1)->where('o.status', 1)
+                ->whereNotNull('oc.campus_id')->whereIn('oc.status', [1, '1', 'Active', 'active'])
+                ->orderBy('o.name')->distinct()->get(['o.slug', 'o.name'])->map(fn ($r) => ['slug' => $r->slug, 'name' => $r->name])->values();
+            return response()->json(['universities' => $unis]);
+        }
         $u = UniversityData::load((string) $request->query('uni')) ?? abort(404);
+        if ($request->query('list') === 'campuses') {
+            $cs = $u->campuses->filter(fn ($c) => $u->onCampus([$c['id']])->isNotEmpty())->map(fn ($c) => ['id' => $c['id'], 'label' => $c['name']])->values();
+            return response()->json(['campuses' => $cs]);
+        }
+        if ($request->filled('campus')) {
+            // programmes taught at one campus; "first" is the offering at that campus
+            $ps = $u->onCampus([(string) $request->query('campus')])->unique('course_id')->sortBy('name')->map(fn ($o) => ['course_id' => $o['course_id'], 'label' => $o['name'], 'first' => $o['id']])->values();
+            return response()->json(['programmes' => $ps]);
+        }
         if ($request->filled('course')) {
             $os = $u->onCampus()->where('course_id', (int) $request->query('course'))->map(fn ($o) => ['id' => $o['id'], 'label' => $u->campus($o['campus_id'])['name'] ?? 'Campus'])->values();
             return response()->json(['offerings' => $os]);

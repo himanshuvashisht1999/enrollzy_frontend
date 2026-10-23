@@ -1438,7 +1438,7 @@ class PageController extends Controller
         }
 
         // 5. Dynamic Exams
-        if (empty($type)) {
+        if (empty($type) || $type === 'exams') {
             // Exam Module exams (backend API)
             $exams = \App\Support\ExamCatalog::safeList(['q' => $q, 'sort' => 'featured', 'per_page' => 5])['items'];
 
