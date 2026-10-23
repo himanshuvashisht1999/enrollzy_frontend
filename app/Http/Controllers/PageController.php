@@ -283,6 +283,20 @@ class PageController extends Controller
             });
         }
 
+        // 8b. School type from the CRM list (Campus Types, e.g. "Girls' Boarding School"), as linked from the homepage
+        // "Boarding schools" tabs: ?campus_type[]=8. A campus stores its types as a JSON list of ids ("8" or 8).
+        if ($request->filled('campus_type')) {
+            $typeIds = array_values(array_filter(array_map('intval', (array) $request->campus_type)));
+            if ($typeIds) {
+                $query->whereExists(function ($q) use ($typeIds) {
+                    $q->selectRaw('1')->from('campuses')->whereColumn('campuses.organisation_id', 'organisations.id')->whereNull('campuses.deleted_at')
+                        ->where(function ($w) use ($typeIds) {
+                            foreach ($typeIds as $id) $w->orWhereRaw('campuses.campus_type_new_id regexp ?', ['(^|[^0-9])' . $id . '([^0-9]|$)']);
+                        });
+                });
+            }
+        }
+
         // 9. School / Coaching Type Filter
         if ($request->filled('school_type')) {
             $types = (array) $request->school_type;

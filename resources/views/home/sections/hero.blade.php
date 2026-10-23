@@ -1,4 +1,4 @@
-{{-- Hero (admin: Homepage Sections → Hero Banner). $s = content; live cards from the exam / counselling API. --}}
+{{-- Hero (admin: Homepage Sections → Hero Banner). $s = content; the 3 "open right now" cards: HomeData::heroCards. --}}
 @php
     $words = $s['rotating_words'];
     $popular = collect($s['popular'])->map(fn ($p) => [$p['label'] ?? '', $link($p['url'] ?? null, '#')])->filter(fn ($p) => $p[0] !== '');
@@ -11,7 +11,7 @@
             @if(!empty($s['badge']))<span class="hz-kicker"><b>DPIIT</b>{{ $s['badge'] }}</span>@endif
             <h1>{{ $s['title'] }}@if($words) <span class="hz-rot"><span data-hz-rot data-words="{{ json_encode(array_values($words)) }}">{{ $words[0] }}</span><svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M2 14 C 50 4, 100 4, 198 12" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg></span>@endif @if($s['title_after'])<br>{{ $s['title_after'] }}@endif</h1>
             @if($s['subtitle'])<p class="hz-lede">{{ $s['subtitle'] }}</p>@endif
-            <div>
+            <div class="hz-searchbox">
                 <form class="hz-search" role="search" action="{{ route('search.results') }}" method="get" data-hz-search autocomplete="off">
                     <label for="hz-type" class="hz-sr">Search in</label>
                     <select id="hz-type" data-hz-type><option value="">Everything</option><option value="colleges">Colleges</option><option value="exams">Exams</option><option value="schools">Schools</option><option value="coaching">Coaching</option><option value="mentors">Experts</option></select>
@@ -39,7 +39,7 @@
             <div class="hz-stop" style="left:56%;top:36%"><span class="dot">UG</span>College</div>
             <div class="hz-stop end" style="right:0;top:2%"><span class="dot">★</span>Career</div>
             @foreach($h['live'] as $i => $r)
-                <a class="hz-live" href="{{ $r['url'] }}" style="{{ $liveSpots[$i] }}"><span class="hz-pill open">{{ $r['step'] ?: 'Open now' }}</span><b>{{ $r['name'] }}</b><span class="m">{{ $r['when'] }}</span></a>
+                <a class="hz-live" href="{{ $r['url'] }}" style="{{ $liveSpots[$i] }}"><span class="hz-pill {{ $r['state'] === 'upcoming' ? 'upcoming' : 'open' }}">{{ $r['step'] ?: ($r['state'] === 'upcoming' ? 'Opening soon' : 'Open now') }}</span><b>{{ $r['name'] }}</b><span class="m">{{ $r['when'] }}</span></a>
             @endforeach
         </div>
     </div>

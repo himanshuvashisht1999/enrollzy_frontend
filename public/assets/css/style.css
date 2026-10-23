@@ -157,7 +157,7 @@ header {
 }
 
 .navbar-expand-lg {
-    padding: 47px 0 65px 0px;
+    padding: 20px 0; /* was 47px 0 65px: the bottom 65px held the secondary link bar, now removed */
 }
 
 .marketplace-badge {

@@ -52,17 +52,19 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/blog/{slug}', [PageController::class, 'blogDetail'])->name('blog.detail');
     Route::get('/contact-us', [PageController::class, 'contactUs'])->name('contact');
     Route::post('/contact-us', [PageController::class, 'submitContactUs'])->name('contact.submit');
-    Route::get('/top-exams', [PageController::class, 'topExams'])->name('top-exams');
-
-    // Exam and counselling pages (data from the backend public API)
+    // Exams, Counselling & Cutoffs (data from the backend public API): hub tabs, exam and counselling pages
+    Route::get('/top-exams', [\App\Http\Controllers\ExamHubController::class, 'exams'])->name('top-exams');
+    Route::get('/cutoffs', [\App\Http\Controllers\ExamHubController::class, 'cutoffs'])->name('cutoffs.index');
+    Route::post('/alerts/follow', [\App\Http\Controllers\ExamHubController::class, 'alerts'])->middleware('throttle:10,1')->name('alerts.follow');
     // One exam URL: /exam/{slug} (Exam Module). Old Dynamic Exam slugs there are 301-redirected to the matching exam.
-    Route::get('/exam/{slug}', [\App\Http\Controllers\CounsellingController::class, 'exam'])->name('exam.detail');
+    Route::get('/exam/{slug}', [\App\Http\Controllers\ExamHubController::class, 'exam'])->name('exam.detail');
+    Route::get('/exam/{slug}/{tab}', [\App\Http\Controllers\ExamHubController::class, 'exam'])->where('tab', 'counselling|cutoffs|colleges')->name('exam.tab');
     Route::get('/exams/{slug}', fn (string $slug) => redirect()->route('exam.detail', $slug, 301));
-    Route::get('/counselling', [\App\Http\Controllers\CounsellingController::class, 'index'])->name('counselling.index');
-    Route::get('/counselling/{slug}/cutoffs', [\App\Http\Controllers\CounsellingController::class, 'cutoffs'])->name('counselling.cutoffs');
+    Route::get('/counselling', [\App\Http\Controllers\ExamHubController::class, 'counsellings'])->name('counselling.index');
+    Route::get('/counselling/{slug}/cutoffs', [\App\Http\Controllers\ExamHubController::class, 'counsellingCutoffs'])->name('counselling.cutoffs');
+    Route::get('/counselling/{slug}/colleges', [\App\Http\Controllers\ExamHubController::class, 'counsellingColleges'])->name('counselling.colleges');
     Route::get('/counselling/{slug}/seat-matrix', [\App\Http\Controllers\CounsellingController::class, 'seats'])->name('counselling.seats');
-    Route::get('/counselling/{slug}/colleges', [\App\Http\Controllers\CounsellingController::class, 'colleges'])->name('counselling.colleges');
-    Route::get('/counselling/{slug}/{year?}', [\App\Http\Controllers\CounsellingController::class, 'show'])->where('year', '[0-9]{4}')->name('counselling.show');
+    Route::get('/counselling/{slug}/{year?}', [\App\Http\Controllers\ExamHubController::class, 'counselling'])->where('year', '[0-9]{4}')->name('counselling.show');
     Route::get('/faq', [App\Http\Controllers\PageController::class, 'faq'])->name('faq');
     Route::get('/about-us', [App\Http\Controllers\PageController::class, 'aboutUs'])->name('about-us');
     Route::get('/scholarships-and-benefits', [PageController::class, 'scholarships'])->name('scholarships');

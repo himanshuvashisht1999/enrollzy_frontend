@@ -43,12 +43,15 @@
 .hz-pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .hz-pill.open { color: var(--green); background: var(--green-soft); }
 .hz-pill.upcoming { color: var(--blue); background: var(--ice); }
+.hz-pill.closed { color: var(--muted); background: #eef1f6; }
 .hz-more { display: flex; justify-content: center; margin-top: 28px; }
 
 /* ---------- hero ---------- */
-.hz-hero { position: relative; overflow: hidden; background: linear-gradient(180deg, var(--band-to) 0%, var(--page) 100%); }
+.hz-hero { position: relative; overflow-x: clip; overflow-y: visible; z-index: 2; background: linear-gradient(180deg, var(--band-to) 0%, var(--page) 100%); }
 .hz-hero .hz-wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 40px; align-items: center; padding-block: 56px 72px; }
 .hz-hero-copy { display: grid; gap: 16px; min-width: 0; }
+/* the search box (and its suggestions) above the chips and ticks under it: the rise animation gives each block its own layer */
+.hz-hero-copy > .hz-searchbox { position: relative; z-index: 30; }
 .hz-kicker { display: inline-flex; align-items: center; gap: 8px; width: fit-content; background: var(--white); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px 5px 6px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
 .hz-kicker b { background: var(--blue); color: #fff; border-radius: 999px; padding: 2px 9px; font-size: 12px; letter-spacing: .04em; }
 .hz-hero h1 { font-size: clamp(32px, 4.2vw, 50px); line-height: 1.08; letter-spacing: -.025em; }
@@ -169,6 +172,8 @@
 .hz-cal .mo { background: var(--blue); color: #fff; font: 700 10.5px var(--body); letter-spacing: .08em; padding: 2px 0; }
 .hz-cal .dy { font: 700 20px var(--display); padding: 2px 0 3px; color: var(--ink); line-height: 1.1; }
 .hz-brow.open .hz-cal .mo { background: var(--green); }
+.hz-brow.closed .hz-cal .mo { background: var(--muted); }
+.hz-board-empty { background: var(--white); border: 1px dashed var(--line); border-radius: 12px; padding: 22px 16px; text-align: center; color: var(--ink-2); font-size: 14.5px; }
 .hz-brow b { font: 600 15.5px var(--display); display: block; }
 .hz-brow .m { display: block; font-size: 13.5px; color: var(--muted); }
 .hz-brow .when { font-size: 13.5px; color: var(--ink-2); display: grid; gap: 4px; justify-items: start; }
@@ -309,6 +314,8 @@ a.hz-skcard:hover { border-color: #bcd0f3; box-shadow: 0 8px 24px rgba(31,95,216
 .hz-iloc { font-size: 13.5px; color: var(--muted); }
 .hz-imeta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13.5px; color: var(--ink-2); margin-top: 4px; }
 .hz-imeta span + span::before { content: "·"; margin-right: 12px; color: var(--muted); }
+.hz-itypes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.hz-itypes span { font-size: 12px; background: #f2f5fb; color: var(--ink-2); border-radius: 6px; padding: 2px 8px; }
 .hz-iact { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
 .hz-iact .hz-btn { padding-inline: 8px; border-radius: 999px; }
 @media (max-width: 1000px) { .hz-instgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

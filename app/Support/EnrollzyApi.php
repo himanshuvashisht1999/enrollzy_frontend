@@ -58,6 +58,27 @@ class EnrollzyApi
         return $data;
     }
 
+    /**
+     * A write to the API (follow for alerts). Never cached. Returns [status, json]; throws ApiUnavailable when the
+     * backend cannot be reached or the route is missing.
+     */
+    public static function post(string $path, array $data): array
+    {
+        $cfg = config('services.enrollzy_api');
+        try {
+            $res = Http::acceptJson()->timeout($cfg['timeout'])->connectTimeout(4)
+                ->withHeaders(array_filter(['X-Site-Key' => $cfg['site_key']]))
+                ->post($cfg['url'] . '/' . ltrim($path, '/'), $data);
+        } catch (\Throwable $e) {
+            Log::warning('Enrollzy API unreachable: POST ' . $path . ' - ' . $e->getMessage());
+            throw new ApiUnavailable($e->getMessage(), 0, $e);
+        }
+        if ($res->status() === 404 || $res->status() >= 500) {
+            throw new ApiUnavailable('API answered ' . $res->status() . ' for POST ' . $path);
+        }
+        return [$res->status(), $res->json() ?? []];
+    }
+
     /** Every page of a paginated list (the counselling list is short: a few pages at most). */
     public static function all(string $path, array $query = [], int $maxPages = 10): array
     {

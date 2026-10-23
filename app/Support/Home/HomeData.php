@@ -27,12 +27,46 @@ class HomeData
         // words, order and visibility from the admin "Homepage Sections"; the cache key changes whenever the admin saves
         $content = HomeContent::load();
         $c = $content['c'];
-        $db = Cache::remember('home-page:v3:' . HomeContent::stamp(), 600, fn () => self::fromDatabase($c));
+        $db = Cache::remember('home-page:v5:' . HomeContent::stamp(), 600, fn () => self::fromDatabase($c));
         $now = in_array('happening_now', $content['order'], true) || $c['hero_banner']['show_live'] ? self::happeningNow($c['happening_now']) : [];
-        // hero cards: what is open right now, one per kind first
-        $live = collect($now)->flatMap(fn ($t, $k) => collect($t['rows'])->where('state', 'open')->take(2)->map(fn ($r) => $r + ['kind' => $k]))
-            ->sortBy(fn ($r) => array_search($r['kind'], ['exams', 'coun', 'sch']))->groupBy('kind')->map->first()->values()->take(3);
-        return $db + ['now' => $now, 'live' => $c['hero_banner']['show_live'] ? $live->all() : [], 'order' => $content['order'], 'c' => $c, 'seo' => self::seo()];
+        return $db + ['now' => $now, 'live' => $c['hero_banner']['show_live'] ? self::heroCards($c['hero_banner']['live_cards'], $now) : [], 'order' => $content['order'], 'c' => $c, 'seo' => self::seo()];
+    }
+
+    /**
+     * The hero's "open right now" cards (up to 3), as the admin set them: each card is automatic (an exam, a counselling
+     * round, a scholarship, or anything) or the admin's own text. An automatic card takes what is open now, else the next
+     * one opening; when its kind has nothing it falls back to its own text, else to the next item of any kind.
+     * No cards set = exam, counselling, scholarship.
+     */
+    private static function heroCards(array $slots, array $now): array
+    {
+        $slots = collect($slots)->filter(fn ($s) => is_array($s))->take(3)->values();
+        if ($slots->isEmpty()) $slots = collect([['source' => 'exams'], ['source' => 'coun'], ['source' => 'sch']]);
+        $all = ['exams', 'coun', 'sch'];
+        $used = [];
+        $take = function (array $kinds) use ($now, &$used) {
+            foreach (['open', 'upcoming'] as $state) {
+                foreach ($kinds as $k) {
+                    foreach ($now[$k]['rows'] ?? [] as $r) {
+                        if ($r['state'] === $state && !in_array($r['url'], $used, true)) { $used[] = $r['url']; return $r + ['kind' => $k]; }
+                    }
+                }
+            }
+            return null;
+        };
+        $own = fn ($s) => trim((string) ($s['title'] ?? '')) === '' ? null
+            : ['name' => trim($s['title']), 'step' => trim((string) ($s['pill'] ?? '')), 'when' => trim((string) ($s['text'] ?? '')), 'url' => HomeContent::url($s['url'] ?? null) ?? '#', 'state' => 'open', 'kind' => 'custom'];
+
+        // own cards and cards of one kind first, so "whatever is open" and fallbacks never take what a later card is for
+        $cards = $slots->map(function ($s) use ($take, $own) {
+            $src = $s['source'] ?? 'any';
+            if ($src === 'custom') return $own($s);
+            return in_array($src, ['exams', 'coun', 'sch'], true) ? ($take([$src]) ?? $own($s)) : null;
+        })->all();
+        foreach ($slots as $i => $s) {
+            if ($cards[$i] === null && ($s['source'] ?? 'any') !== 'custom') $cards[$i] = $take($all);
+        }
+        return array_values(array_filter($cards));
     }
 
     // ------------------------------------------------------------------ live: exams, counselling, scholarship deadlines
@@ -44,57 +78,105 @@ class HomeData
         try {
             $exams = collect((Api::get('exams', ['per_page' => 100, 'sort' => 'featured']) ?? [])['data'] ?? []);
             $rows = $exams->map(function ($e) {
-                // the step that matters now: registration if it is open or coming, else the exam date, else the result
-                foreach (['registration', 'exam-date', 'result'] as $k) {
-                    $s = $e['status'][$k] ?? null;
-                    if ($s && in_array($s['state'], ['open', 'upcoming', 'declared'], true)) {
-                        return ['name' => $e['name'], 'meta' => implode(' · ', array_filter([$e['type_label'] ?? null, $e['categories'][0] ?? null])),
-                            'step' => $s['label'], 'state' => $s['state'] === 'declared' ? 'open' : $s['state'], 'when' => $s['text'], 'url' => $e['url'] ?? route('exam.detail', $e['slug'])];
-                    }
-                }
-                return null;
+                // registration first (open, then coming); once it has closed, the exam date, then the result (as in the design:
+                // "Closes 7 Mar 2027", "Opens Feb 2027", "Closed · exam 7 Dec"). [state, hero label, short date text, date, precision, pill]
+                $st = $e['status'] ?? [];
+                $is = fn ($k, ...$states) => in_array($st[$k]['state'] ?? null, $states, true);
+                $reg = $e['key_dates']['registration'] ?? null;
+                $ex = $e['key_dates']['exam'] ?? null;
+                $res = $e['key_dates']['result'] ?? null;
+                if ($is('registration', 'open')) $r = ['open', 'Registration open', $reg && $reg['end'] ? 'Closes ' . self::short($reg['end']) : 'Open now', $reg['end'] ?? null, null, null];
+                elseif ($is('registration', 'upcoming', 'expected') && $reg) $r = ['upcoming', 'Registration opens', 'Opens ' . self::short($reg['start'], $reg['precision']), $reg['start'], $reg['precision'], null];
+                elseif ($is('exam-date', 'open')) $r = ['open', 'Exam on', $ex && $ex['end'] ? 'Exam until ' . self::short($ex['end']) : 'Exam today', $ex['end'] ?? null, null, 'Exam on'];
+                // "Closed" only when registration really closed; dates not announced yet just show the exam / result date
+                elseif ($is('exam-date', 'upcoming', 'expected') && $ex) $r = $is('registration', 'closed')
+                    ? ['closed', 'Exam coming up', 'Closed · exam ' . self::short($ex['start'], $ex['precision']), $ex['start'], $ex['precision'], null]
+                    : ['upcoming', 'Exam coming up', 'Exam ' . self::short($ex['start'], $ex['precision']), $ex['start'], $ex['precision'], null];
+                elseif ($is('result', 'upcoming', 'expected') && $res) $r = [$is('registration', 'closed') ? 'closed' : 'upcoming', 'Result awaited',
+                    ($is('registration', 'closed') ? 'Closed · result ' : 'Result ') . self::short($res['start'], $res['precision']), $res['start'], $res['precision'], null];
+                elseif ($is('result', 'declared') && $ex && ($ex['end'] ?? $ex['start']) >= now()->subDays(45)->toDateString()) $r = ['open', 'Result out', 'Result declared', $res['start'] ?? null, null, 'Result out'];
+                else return null;
+                $name = $e['short_name'] ?: $e['name'];
+                $year = $e['cycle']['year'] ?? null;
+                if ($year && !str_contains($name, (string) $year)) $name .= ' ' . $year;
+                if (!empty($e['cycle']['session_label'])) $name .= ' · ' . $e['cycle']['session_label'];
+                return ['name' => $name, 'meta' => implode(' · ', array_filter([$e['type_label'] ?? null, $e['categories'][0] ?? null])),
+                    'state' => $r[0], 'step' => $r[1], 'when' => $r[2], 'date' => $r[3], 'precision' => $r[4], 'pill' => $r[5], 'url' => $e['url'] ?? route('exam.detail', $e['slug'])];
             })->filter();
-            if ($rows->isNotEmpty()) $tabs['exams'] = ['label' => $cfg['exams_label'], 'all' => route('top-exams'), 'rows' => self::order($rows, $max)];
+            $tabs['exams'] = ['label' => $cfg['exams_label'], 'all' => route('top-exams'), 'rows' => self::order($rows, $max), 'empty' => 'No exam registrations open right now.'];
 
             $couns = collect((Api::get('counselling', ['per_page' => 100]) ?? [])['data'] ?? []);
             $rows = $couns->map(function ($c) {
                 $n = $c['now'] ?? [];
                 if (!in_array($n['state'] ?? null, ['open', 'upcoming', 'declared'], true)) return null;
-                return ['name' => $c['name'], 'meta' => implode(' · ', array_filter([ucfirst((string) $c['level']), $c['states'] ? implode(', ', array_slice($c['states'], 0, 2)) : null])),
-                    'step' => $n['step'] ?? null, 'state' => $n['state'] === 'declared' ? 'open' : $n['state'], 'when' => $n['when'] ?? null, 'url' => $c['url'] ?? route('counselling.index')];
+                return ['name' => $c['name'], 'meta' => implode(' · ', array_filter([$c['level'] === 'state' ? 'State' : 'National', $n['step'] ?? null])),
+                    'step' => $n['step'] ?? null, 'state' => $n['state'] === 'declared' ? 'open' : $n['state'], 'pill' => $n['state'] === 'declared' ? 'Result out' : null,
+                    'when' => self::shortWhen($n['when'] ?? null), 'date' => self::dateIn($n['when'] ?? null), 'precision' => null, 'url' => $c['url'] ?? route('counselling.index')];
             })->filter();
-            if ($rows->isNotEmpty()) $tabs['coun'] = ['label' => $cfg['coun_label'], 'all' => route('counselling.index'), 'rows' => self::order($rows, $max)];
+            $tabs['coun'] = ['label' => $cfg['coun_label'], 'all' => route('counselling.index'), 'rows' => self::order($rows, $max), 'empty' => 'No counselling round open right now.'];
         } catch (ApiUnavailable $e) {
             // the API is not reachable: the board shows scholarships only, or hides
         }
 
         $today = now()->toDateString();
-        $rows = DB::table('scholarship_dates as d')->join('scholarships as s', 's.id', '=', 'd.scholarship_id')
-            ->where('s.status', 1)->whereNull('s.deleted_at')->whereNotNull('d.application_end_date')->where('d.application_end_date', '>=', $today)
-            ->orderBy('d.application_end_date')->limit($max)->get(['s.id', 's.slug', 's.title', 's.provider_name', 'd.application_start_date', 'd.application_end_date'])
+        // "live" as on the scholarships page: active and the application window not over (no end date = open, no deadline).
+        // Deadlines first (soonest), then open without a deadline (homepage-featured, featured, admin order), then not open yet.
+        $rows = DB::table('scholarships as s')->leftJoin('scholarship_dates as d', 'd.scholarship_id', '=', 's.id')
+            ->where('s.status', 1)->whereNull('s.deleted_at')
+            ->where(fn ($q) => $q->whereNull('d.application_end_date')->orWhere('d.application_end_date', '>=', $today))
+            ->orderByRaw('case when d.application_start_date > ? then 2 when d.application_end_date is not null then 0 else 1 end', [$today])
+            ->orderBy('d.application_end_date')->orderBy('d.application_start_date')
+            ->orderByDesc('s.featured_on_homepage')->orderByDesc('s.featured')->orderBy('s.sort_order')->orderByDesc('s.id')
+            ->limit($max)->get(['s.id', 's.slug', 's.title', 's.provider_name', 'd.application_start_date', 'd.application_end_date'])
             ->map(function ($r) use ($today) {
                 $open = !$r->application_start_date || $r->application_start_date <= $today;
-                $end = \Carbon\Carbon::parse($r->application_end_date);
-                return ['name' => $r->title, 'meta' => (string) $r->provider_name, 'step' => 'Applications', 'state' => $open ? 'open' : 'upcoming',
-                    'when' => $open ? 'Apply by ' . $end->format('j M Y') : 'Opens ' . \Carbon\Carbon::parse($r->application_start_date)->format('j M Y'),
+                $date = $open ? $r->application_end_date : $r->application_start_date;
+                return ['name' => $r->title, 'meta' => (string) $r->provider_name, 'step' => $open ? 'Applications open' : 'Applications open soon', 'state' => $open ? 'open' : 'upcoming',
+                    'when' => $date ? ($open ? 'Apply by ' : 'Opens ') . self::short($date) : 'No closing date yet',
+                    'date' => $date ? \Carbon\Carbon::parse($date)->toDateString() : null, 'precision' => null, 'pill' => null,
                     'url' => route('scholarship.detail', $r->slug ?: $r->id)];
             });
-        if ($rows->isNotEmpty()) $tabs['sch'] = ['label' => $cfg['sch_label'], 'all' => route('scholarships'), 'rows' => self::order($rows, $max)];
+        $tabs['sch'] = ['label' => $cfg['sch_label'], 'all' => route('scholarships'), 'rows' => self::order($rows, $max), 'empty' => 'No scholarship open right now.'];
 
-        return $tabs;
+        // the three tabs always show (an empty one says so), unless nothing at all is open or coming
+        return collect($tabs)->contains(fn ($t) => $t['rows']) ? $tabs : [];
     }
 
-    /** Open first, then upcoming; a calendar tile (month + day) taken from the date in the text when there is one. */
+    /** Open, then upcoming, then closed (registration over, exam ahead); soonest first. The calendar tile shows the row's date. */
     private static function order(Collection $rows, int $max): array
     {
-        return $rows->sortBy(fn ($r) => $r['state'] === 'open' ? 0 : 1)->take($max)->map(function ($r) {
-            $r['mo'] = $r['dy'] = null;
-            if (preg_match('/\b(\d{1,2})\s+(' . implode('|', self::MONTHS) . ')[a-z]*/i', (string) $r['when'], $m)) {
-                $r['dy'] = (int) $m[1];
-                $r['mo'] = strtoupper(substr($m[2], 0, 3));
-            }
+        return $rows->sortBy(fn ($r) => [['open' => 0, 'upcoming' => 1][$r['state']] ?? 2, $r['date'] ?: '9999'])->take($max)->map(function ($r) {
+            $d = $r['date'] ? rescue(fn () => \Carbon\Carbon::parse($r['date']), null, false) : null;
+            $r['mo'] = $d ? strtoupper($d->format('M')) : null;
+            $r['dy'] = $d && $r['precision'] !== 'month_only' ? $d->day : null;
             return $r;
         })->values()->all();
+    }
+
+    /** "31 Oct" this year, "7 Mar 2027" otherwise; "Feb 2027" when only the month is known. */
+    private static function short(?string $date, ?string $precision = null): string
+    {
+        $d = $date ? rescue(fn () => \Carbon\Carbon::parse($date), null, false) : null;
+        if (!$d) return 'soon';
+        if ($precision === 'month_only') return $d->format('M Y');
+        return $d->format($d->year === now()->year ? 'j M' : 'j M Y');
+    }
+
+    /** The counselling API's step text, shortened like the design: "Open, closes 30 Oct 2026" -> "Closes 30 Oct". */
+    private static function shortWhen(?string $t): string
+    {
+        $t = trim((string) $t);
+        if (preg_match('/^Open, closes (.+)$/i', $t, $m)) return 'Closes ' . self::short(self::dateIn($m[1]) ?? $m[1]);
+        if (preg_match('/^Starts on (.+)$/i', $t, $m)) return 'Opens ' . self::short(self::dateIn($m[1]) ?? $m[1]);
+        if ($t === 'Open today') return 'Closes today';
+        return $t;
+    }
+
+    /** The first "30 Oct 2026" style date in a text, as Y-m-d. */
+    private static function dateIn(?string $t): ?string
+    {
+        if (!preg_match('/\b(\d{1,2})\s+(' . implode('|', self::MONTHS) . ')[a-z]*\.?\s*(\d{4})?/i', (string) $t, $m)) return null;
+        return rescue(fn () => \Carbon\Carbon::parse($m[1] . ' ' . $m[2] . ' ' . ($m[3] ?? now()->year))->toDateString(), null, false);
     }
 
     // ------------------------------------------------------------------ database (cached)
@@ -185,21 +267,33 @@ class HomeData
         $schLevels = collect(['School', 'UG', 'PG'])->filter(fn ($l) => $scholarships->contains(fn ($s) => in_array($l, $s['levels'], true)))->values()->all();
         $schCats = collect(['Merit', 'Girls', 'SC / ST / OBC', 'Minority', 'Income-based'])->filter(fn ($c) => $scholarships->contains(fn ($s) => in_array($c, $s['cats'], true)))->values()->all();
 
-        // ---- boarding schools and coaching institutes, by board / by nothing (no type data yet)
-        $inst = function (Organisation $o, string $route) use ($file, $initials, $json) {
+        // ---- boarding schools and coaching institutes
+        $inst = function (Organisation $o, string $route, array $types = []) use ($file, $initials, $json) {
             $c = DB::table('campuses')->where('organisation_id', $o->id)->whereNull('deleted_at')->orderBy('sort_order')->first(['city', 'state', 'target_classes']);
             $classes = collect($json($c->target_classes ?? null))->map(fn ($x) => (int) preg_replace('/\D/', '', $x))->filter();
             return ['name' => $o->name, 'logo' => $file($o->logo_url), 'initials' => $initials($o->short_name ?: $o->name),
                 'place' => implode(', ', array_filter([trim((string) ($c->city ?? '')), trim((string) ($c->state ?? ''))])) ?: Str::limit((string) $o->head_office_location, 40),
                 'boards' => array_values(array_filter($json($o->education_boards_supported))), 'classes' => $classes->isNotEmpty() ? 'Class ' . $classes->min() . '–' . $classes->max() : null,
-                'url' => route($route, $o->slug ?: $o->id)];
+                'types' => $types, 'url' => route($route, $o->slug ?: $o->id)];
         };
+        // tabs by type of boarding (design: Fully / Day / Weekly / Girls / Boys / Co-ed boarding) from the CRM's school types
+        // (Campus Types; a school's campuses list them). Matched by title, so the ids may differ between databases.
         $schools = Organisation::where('organisation_type_id', 4)->where('status', 1)->orderBy('sort_order')->orderBy('name')->get();
-        $boardTabs = collect(['CBSE', 'ICSE', 'IB', 'IGCSE', 'State Board'])->mapWithKeys(fn ($b) => [$b => $schools->filter(fn ($s) => in_array($b, $json($s->education_boards_supported), true))])
-            ->filter(fn ($l) => $l->count() >= 2);
-        $boarding = $schools->isEmpty() ? [] : collect(['all' => ['label' => 'All', 'items' => $schools->take(4), 'more' => route('all-schools')]])
-            ->merge($boardTabs->map(fn ($l, $b) => ['label' => $b, 'items' => $l->take(4), 'more' => route('all-schools', ['board' => $b])]))
-            ->map(fn ($t) => ['label' => $t['label'], 'more' => $t['more'], 'items' => $t['items']->map(fn ($o) => $inst($o, 'school.detail'))->values()->all()])->all();
+        $typeTitles = DB::table('campus_type_news')->where('status', 1)->pluck('title', 'id');
+        $tabType = collect(['full' => ['Fully boarding', '/fully\s*boarding/i'], 'day' => ['Day boarding', '/^day\s*boarding/i'], 'weekly' => ['Weekly boarding', '/weekly/i'],
+                'girls' => ['Girls boarding', '/girl.*boarding/i'], 'boys' => ['Boys boarding', '/boy.*boarding/i'], 'coed' => ['Co-ed boarding', '/co-?ed.*boarding/i']])
+            ->map(fn ($d) => ['label' => $d[0], 'id' => $typeTitles->search(fn ($t) => preg_match($d[1], (string) $t))])->filter(fn ($d) => $d['id']);
+        $schoolTypes = DB::table('campuses')->whereIn('organisation_id', $schools->pluck('id'))->whereNull('deleted_at')->get(['organisation_id', 'campus_type_new_id'])
+            ->groupBy('organisation_id')->map(fn ($g) => $g->flatMap(fn ($c) => array_map('intval', (array) $json($c->campus_type_new_id)))->unique()->all());
+        $typesOf = fn ($o) => $tabType->filter(fn ($d) => in_array((int) $d['id'], $schoolTypes[$o->id] ?? [], true))->pluck('label')->take(3)->values()->all();
+        $boardingIds = $tabType->pluck('id')->map(fn ($id) => (int) $id)->values()->all();
+        $anyBoarding = $schools->filter(fn ($o) => array_intersect($boardingIds, $schoolTypes[$o->id] ?? []));
+        $tabs = collect(['all' => ['label' => 'All', 'list' => $anyBoarding->isNotEmpty() ? $anyBoarding : $schools,
+                'more' => $boardingIds ? route('all-schools', ['campus_type' => $boardingIds]) : route('all-schools')]])
+            ->merge($tabType->map(fn ($d) => ['label' => $d['label'], 'list' => $schools->filter(fn ($o) => in_array((int) $d['id'], $schoolTypes[$o->id] ?? [], true)),
+                'more' => route('all-schools', ['campus_type' => [(int) $d['id']]])])->filter(fn ($t) => $t['list']->isNotEmpty()));
+        $boarding = $schools->isEmpty() ? [] : $tabs->map(fn ($t) => ['label' => $t['label'], 'more' => $t['more'],
+            'items' => $t['list']->take(4)->map(fn ($o) => $inst($o, 'school.detail', $typesOf($o)))->values()->all()])->all();
         $coaching = Organisation::where('organisation_type_id', 3)->where('status', 1)->orderBy('sort_order')->orderBy('name')->take(4)->get()->map(fn ($o) => $inst($o, 'coaching.detail'))->all();
 
         // ---- experts (featured first)

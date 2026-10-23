@@ -840,6 +840,7 @@
                         </button>
                     </div>
                 </div>
+                {{-- Bottom nav card (secondary links): not used any more, kept for reference
                 <div class="text-center">
                     <!-- Bottom Nav Card (Secondary Links) -->
                     <div class="nav-card-bottom d-none d-lg-inline-block">
@@ -866,6 +867,7 @@
                         </ul>
                     </div>
                 </div>
+                --}}
 
 
             </div>

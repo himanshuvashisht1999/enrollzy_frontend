@@ -64,7 +64,7 @@
                         <button type="submit" class="btn btn-primary w-100 fw-bold rounded-pill">
                             Search Schools
                         </button>
-                        @if(request()->hasAny(['search', 'region', 'state', 'city', 'board', 'class', 'ownership', 'school_type', 'gender']))
+                        @if(request()->hasAny(['search', 'region', 'state', 'city', 'board', 'class', 'ownership', 'school_type', 'campus_type', 'gender']))
                         <a href="{{ request('is_top') ? route('top.schools') : route('all-schools') }}" class="btn btn-outline-danger text-nowrap rounded-pill px-3" title="Clear All Filters">
                             <i class="fa-solid fa-rotate-left"></i> Reset
                         </a>
@@ -72,7 +72,7 @@
                     </div>
                 </form>
 
-                @if(request()->hasAny(['search', 'region', 'state', 'city', 'board', 'class', 'ownership', 'school_type', 'gender']))
+                @if(request()->hasAny(['search', 'region', 'state', 'city', 'board', 'class', 'ownership', 'school_type', 'campus_type', 'gender']))
                 <div class="d-flex flex-wrap align-items-center gap-2 mt-3 pt-3 border-top" style="font-size: 13px;">
                     <span class="text-muted fw-bold">Active Filters:</span>
                     @if(request('search'))
@@ -98,6 +98,9 @@
                     @endforeach
                     @foreach((array)request('school_type') as $st)
                         <span class="badge bg-light text-dark border rounded-pill px-3 py-1">Type: {{ $st }}</span>
+                    @endforeach
+                    @foreach(\Illuminate\Support\Facades\DB::table('campus_type_news')->whereIn('id', array_map('intval', (array) request('campus_type')))->pluck('title') as $ct)
+                        <span class="badge bg-light text-dark border rounded-pill px-3 py-1">Type: {{ $ct }}</span>
                     @endforeach
                     @foreach((array)request('gender') as $g)
                         <span class="badge bg-light text-dark border rounded-pill px-3 py-1">Gender: {{ $g }}</span>

@@ -31,7 +31,8 @@ class HomeContent
                 'search_placeholder' => 'Try “MBA in Pune” or “NEET UG”',
                 'popular' => [['label' => 'Online MBA', 'url' => '#online'], ['label' => 'B.Tech', 'url' => '/search?q=B.Tech'], ['label' => 'MBA', 'url' => '/search?q=MBA'], ['label' => 'Scholarships', 'url' => '/scholarships-and-benefits']],
                 'popular_live_exam' => true,
-                'assurances' => ['Exam dates from official notices', 'Counselling is free', 'Compare before you apply'], 'show_live' => true],
+                'assurances' => ['Exam dates from official notices', 'Counselling is free', 'Compare before you apply'], 'show_live' => true,
+                'live_cards' => []],   // empty = an exam, a counselling round and a scholarship, picked automatically (HomeData::heroCards)
             'journey_stages' => ['badge' => 'Start here', 'title' => 'Where are you on the road?', 'subtitle' => 'Pick your stage. We\'ll show you the four things that matter most right now.', 'default_stage' => 2,
                 'stages' => [
                     ['name' => 'After Class 10', 'icon' => 'ten', 'cards' => [

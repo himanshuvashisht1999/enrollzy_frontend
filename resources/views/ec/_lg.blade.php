@@ -1,0 +1,3 @@
+{{-- Logo tile: the logo image when there is one, else short initials on the stream's colour. $lgName, $lgShort, $lgStates, $lgLogo, $lgStream, $lgClass --}}
+@php $ini = \App\Support\Ec\Ec::initials($lgName, $lgShort ?? null, $lgStates ?? null); @endphp
+<span class="ec-lg {{ $lgClass ?? '' }}" style="background:{{ \App\Support\Ec\Ec::tint(($lgStates ?? null) && count($lgStates) === 1 ? 'state' : ($lgStream ?? '')) }}" data-i="{{ $ini }}">@if(!empty($lgLogo))<img src="{{ $lgLogo }}" alt="" loading="lazy" onerror="this.parentNode.textContent=this.parentNode.dataset.i">@else{{ $ini }}@endif</span>
