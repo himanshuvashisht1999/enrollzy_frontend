@@ -87,7 +87,10 @@ Route::middleware([\App\Http\Middleware\SimpleAuthMiddleware::class])->group(fun
     Route::get('/university-compare/options', [\App\Http\Controllers\UniversityController::class, 'compareOptions'])->name('university.compare.options');
     Route::get('/mentors', [PageController::class, 'mentors'])->name('mentors');
     Route::get('/experts', [PageController::class, 'mentors'])->name('experts');
-    Route::get('/career-roadmap', [PageController::class, 'careerRoadmap'])->name('career-roadmap.index');
+    // Career roadmap page (client design "Career roadmap redesign") on the Career Roadmap module (categories, stages, sub modules)
+    Route::get('/career-roadmap', [\App\Http\Controllers\CareerController::class, 'index'])->name('career-roadmap.index');
+    Route::post('/career-roadmap/lead', [\App\Http\Controllers\CareerController::class, 'lead'])->middleware('throttle:12,1')->name('career.lead');
+    Route::get('/career-roadmap/group/{id}', [\App\Http\Controllers\CareerController::class, 'group'])->whereNumber('id')->name('career.group');
     Route::get('/mentor-detail/{id?}', [PageController::class, 'mentorDetail'])->name('mentor.detail');
     Route::get('/expert-detail/{id?}', [PageController::class, 'expertDetail'])->name('expert.detail');
     Route::post('/mentor-detail/review', [PageController::class, 'submitMentorReview'])->name('mentor.review.submit');
