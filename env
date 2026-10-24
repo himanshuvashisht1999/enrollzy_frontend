@@ -65,3 +65,6 @@ AWS_USE_PATH_STYLE_ENDPOINT=false
 VITE_APP_NAME="${APP_NAME}"
 
 BACKEND_URL=http://127.0.0.1:8001
+
+# Counselling/exam pages read the backend API at BACKEND_URL; same value as CNS_SITE_KEY in the backend .env
+CNS_SITE_KEY=32718c110373c2173a409e86c1611482ec22a588
