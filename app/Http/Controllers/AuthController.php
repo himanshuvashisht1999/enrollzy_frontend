@@ -73,7 +73,7 @@ class AuthController extends Controller
             'otp' => $otp
         ]);
 
-        $authKey = env('MSG91_AUTH_KEY', '509095AeRzdoYXdas69e1d083P1');
+        $authKey = env('MSG91_AUTH_KEY');
         
         // Try sending SMS via MSG91 API if needed
         try {
@@ -199,7 +199,7 @@ class AuthController extends Controller
                 'token' => 'required'
             ]);
 
-            $authKey = env('MSG91_AUTH_KEY', '509095AeRzdoYXdas69e1d083P1');
+            $authKey = env('MSG91_AUTH_KEY');
             $response = Http::withoutVerifying()->withHeaders([
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
